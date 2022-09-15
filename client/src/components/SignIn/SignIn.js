@@ -33,7 +33,7 @@ export default function SignIn() {
         message: 'Авторизация прошла успешно',
         severity: 'success'
       }));
-      navigate('/account');
+      navigate('/document');
     } catch (err) {
       const errMsg = err?.data?.error?.data || 'Произошла ошибка.'
       dispatch(showSnackbar({
