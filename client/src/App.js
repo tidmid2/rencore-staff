@@ -44,6 +44,7 @@ function App() {
                 <Container component="main" sx={{ mt: 8, mb: 2}} maxWidth="lg">
                   <Routes>
                           <Route path="/" element={<Main />} />
+                          
                           <Route path="/signin" element={<SignIn />} />
                           <Route path="/signup" element={<SignUp />} />
                           <Route path="/account"
@@ -58,7 +59,7 @@ function App() {
                                       </RequireAuth>
                             }/>
                           <Route
-                            path="/document/:user_id"
+                            path="/document"
                             element={<Document />}
                           />
                   </Routes>

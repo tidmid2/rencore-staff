@@ -4,7 +4,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useGetSecretMsgQuery } from '../../services/api';
 
 
-
 function Private() {
 
     const { data, isLoading } = useGetSecretMsgQuery();

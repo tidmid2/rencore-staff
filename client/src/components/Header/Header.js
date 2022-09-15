@@ -148,7 +148,7 @@ export default function Nav({showAlert}) {
                 Приватный вход 
               </MenuItem>}
 
-              { user && <MenuItem component={Link} to="/document:user_id" color="inherit">
+              { user && <MenuItem component={Link} to="/document" color="inherit">
                 <ListItemIcon>
                   <Settings fontSize="small" />
                 </ListItemIcon>

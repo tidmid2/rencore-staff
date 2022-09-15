@@ -1,37 +1,16 @@
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import { useDocumentQuery } from '../../services/api';
-
+import UserTable from '../UserTables/userTable';
 
 
 function Document() {
-
-    const { data, isLoading } = useDocumentQuery();
-
-    return (
-        <Typography component="div">
-            <Typography component="h1" variant="h4" align="center">
-            Private
-            </Typography>
-            <Box sx={{ textAlign: 'justify', my: 3 }}>
-            This page is using a React Router v6 style "protected route" on the client side. If you try to access /private without being logged in then there will be a redirected to /signin.
-            </Box>
-            <Box sx={{ textAlign: 'justify', my: 3 }}>
-            This page also makes an API-call to a protected API route ('api/document'). Access to the route is enabled by having the session ID in a httpOnly cookie. It fetches the super secret string below. :
-            </Box>
-
-            {data ?
-                <Box sx={{ textAlign: 'justify', my: 3 }}>
-                    {data}
-                </Box> :
-            isLoading ?
-                <Box sx={{ textAlign: 'center', my: 3 }}>
-                    <CircularProgress color="secondary" />
-                </Box>
-                : null }
-      </Typography>
-    );
- }
+  return(
+    <Typography component="div" sx={{ marginTop: "45px" }}>
+        <Box sx={{ width: "100%"  }}>
+          <UserTable/>
+        </Box>
+    </Typography>
+  );
+}
 
 export default Document;

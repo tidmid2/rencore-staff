@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require("cors");
 
 // iPmb+7OXhs7GzSNK6lDr3cFFGZxCB490jclSwHTRajbvLPEsmkFoZWKWlvSwRJGW/nUOetvbpUUXXkdcmcPI5PV2QX4h6PCLBWr+YTg3dClkBQl9JmOY3EC5Bf/N7s9CUgZLUkzRakqao6F6/I3qdRMsf47vESKxE3ERaVJBc3cOmLMhu53R02NUL0X8nk6jKUgrptEDx8VCzzkhClD0YkNZB1aoT5ewQQyaN3/VsAZYcKKNK+QuKQX10+dVBaJ59sArAnjeYqB4nvr28vXd/EFxaFFuCgna5zhiAtb2SXIK1Wh71z/mH47MWAYQSMz2z42EXLGugoiKgc6VYEHA==
 
@@ -8,6 +9,12 @@ const pgSession = require('connect-pg-simple')(session);
 
 require('dotenv').config();
 require('./config/db');
+
+var corsOptions = {
+  origin: "http://localhost:3001"
+};
+
+
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -77,6 +84,8 @@ if (!isProduction) {
     { swaggerOptions: { supportedSubmitMethods: [] }
   }));
 }
+
+app.use(cors(corsOptions));
 
 app.listen(process.env.PORT, () => {
 	console.log(`API listening at http://localhost:${process.env.PORT}`);
