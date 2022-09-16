@@ -1,4 +1,4 @@
-const { fetchUserByEmail, createUser, fetchDocumentByUser } = require('../services/users-service');
+const { fetchUserByEmail, createUser, fetchDocumentByUser,createDocument,fetchAllDocumentByUser } = require('../services/users-service');
 
 const passport = require('passport');
 const bcrypt = require('bcrypt');
@@ -30,6 +30,38 @@ const signUpUser = async (req, res, next) => {
     }
 }
 
+//Создание отметки в documents
+const createDocumentByUser = async (req, res, next) => {
+    const { user_id,dt,time,comment,status } = req.body;
+    try {
+        const document = {
+            user_id, 
+            dt, 
+            time, 
+            comment,
+            status
+        }
+        const newDocument = await createDocument(document);
+        return res.status(201).json(newDocument);
+    } catch(err) {
+        return next(err);
+    }
+}
+
+const fetchDocument = async (req, res, next) => {
+    try {
+        const document = await fetchAllDocumentByUser()
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        res.status(200).json(document)
+    } catch(err) {
+        return next(err);
+    }
+}
+
 //вход в учетку
 const loginUser = (req, res, next) => {
         passport.authenticate(
@@ -54,7 +86,7 @@ const loginUser = (req, res, next) => {
 const documentData = async (req, res, next) => {
     try {
         
-        const {uid, user_id, dt, time, comment} = req.params
+        const {user_id} = req.params
         const document = await fetchDocumentByUser(user_id)
         if (!document) {
             return res.status(422).json({
@@ -84,5 +116,5 @@ const logoutUser = (req, res, next) => {
 }
 
 module.exports = {
-    signUpUser, loginUser, logoutUser, documentData
+    signUpUser, loginUser, logoutUser, documentData,createDocumentByUser,fetchDocument
 }

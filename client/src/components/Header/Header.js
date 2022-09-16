@@ -76,7 +76,7 @@ export default function Nav({showAlert}) {
           {/* Главная */}
           <Button component={Link} to="/" color="inherit">Главная</Button>
           { user && <Button component={Link} to="/document" color="inherit">Успеваемость</Button>}
-
+          { user && <Button component={Link} to="/admin" color="inherit">Admin</Button>}
           {/* Профиль */}
           <Tooltip title="Account settings" sx={{ marginLeft: "auto" }}>
             <IconButton

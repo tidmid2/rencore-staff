@@ -16,6 +16,13 @@ const validateSignUpUser = [
     validationHandler
 ]
 
+const validatePostDocument = [
+    check('user_id').not().isEmpty(),
+    check('dt').not().isEmpty(),
+    check('time').not().isEmpty(),
+    validationHandler
+]
+
 const validateLoginUser = [
     check('password').not().isEmpty().isLength({max: 100}),
     check('email').not().isEmpty().isEmail().isLength({max: 100}),
@@ -36,4 +43,5 @@ module.exports = {
     validateSignUpUser,
     validateLoginUser,
     validateGetDocument,
+    validatePostDocument,
 }

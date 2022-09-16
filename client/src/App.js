@@ -14,6 +14,7 @@ import StickyFooter from './components/Footer/Footer';
 import SignUp from './components/SignUp/SignUp';
 import Private from './components/Private/Private';
 import Document from './components/Private/Document';
+import Admin from './components/Admin/Admin';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -60,8 +61,16 @@ function App() {
                             }/>
                           <Route
                             path="/document"
-                            element={<Document />}
-                          />
+                            element={ <RequireAuth redirectTo="/signin">
+                                        <Document />
+                                      </RequireAuth>
+                            }/>
+                          <Route
+                          path="/admin"
+                          element={ <RequireAuth redirectTo="/signin">
+                                      <Admin />
+                                    </RequireAuth>
+                          }/>
                   </Routes>
                 </Container>
                 {/* <Secondary/> */}

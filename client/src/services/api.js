@@ -44,14 +44,14 @@ export const api = createApi({
       getSecretMsg: builder.query({
         query: () => '/data/secret',
       }),
-      document: builder.query({
-        query: (docbase) => ({
-          url: '/document/:user_id',
-          method: 'GET',
-          body: docbase,
+      document: builder.mutation({
+        query: (uid) => ({
+          url: '/document/add',
+          method: 'POST',
+          body: uid,
         }),
       }),
     }),
 })
 
-export const { useLoginMutation, useSignupMutation, useLogoutMutation, useGetSecretMsgQuery, useDocumentQuery } = api;
+export const { useLoginMutation, useSignupMutation, useLogoutMutation, useGetSecretMsgQuery, useDocumentMutation } = api;

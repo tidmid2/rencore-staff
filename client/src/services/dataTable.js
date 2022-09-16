@@ -15,7 +15,7 @@ const DataTable = ({
     return (
         <Box
         sx={{
-            height: 300,
+            minHeight: 300,
             width: '100%',
             '& .super-app-theme--cell': {
               backgroundColor: 'rgba(224, 183, 60, 0.55)',
@@ -44,7 +44,8 @@ const DataTable = ({
             hideFooter={true} 
             initialState={{
                 sorting: {
-                  sortModel: [{ field: 'dt', sort: 'desc' }],
+                  // sortModel: [{ field: 'dt', sort: 'desc' }],
+                  sortModel: [{ field: 'time', sort: 'desc' }],
                 }}}
         />
         </Box>

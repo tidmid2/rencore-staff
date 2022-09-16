@@ -1,8 +1,11 @@
-const { fetchUserByEmailDb,
+const { 
+        fetchUserByEmailDb,
         createUserDb, 
-        fetchDocumentByUserDb
+        fetchDocumentByUserDb,
+        createDocumentByUserDb,
+        fetchAllDocumentByUserDb,
     }
-        = require('../db/users-db');
+    = require('../db/users-db');
 
 const fetchUserByEmail = async (email) => {
     try {
@@ -20,6 +23,22 @@ const fetchDocumentByUser = async (user_id) => {
     }
 }
 
+const createDocument = async (uid) => {
+    try {
+        return await createDocumentByUserDb(uid);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+const fetchAllDocumentByUser = async () => {
+    try {
+        return await fetchAllDocumentByUserDb();
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
 
 
 const createUser = async (user) => {
@@ -30,7 +49,10 @@ const createUser = async (user) => {
     }
 }
 
-module.exports = {  fetchUserByEmail,
+module.exports = {  
+                    fetchUserByEmail,
                     createUser, 
-                    fetchDocumentByUser 
+                    fetchDocumentByUser,
+                    createDocument,
+                    fetchAllDocumentByUser,
                 }

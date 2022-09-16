@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import DataTable from '../../services/dataTable.js';
-import { useAuth } from '../../hooks/useAuth';
 import clsx from 'clsx';
 
 const columns = [
+  {
+    field: "user_id",
+    headerName: "Сотрудник",
+    width: 250,
+    editable: false,
+  },
   {
     field: "dt",
     headerName: "Дата",
@@ -21,13 +26,13 @@ const columns = [
   {
     field: "comment",
     headerName: "Комментарий",
-    width: 400,
+    width: 350,
     editable: false
   },
   {
     field: "status",
     headerName: "",
-    width: 150,
+    width: 125,
     editable: false,
     type: 'boolean',
     cellClassName: (params) => {
@@ -44,20 +49,19 @@ const columns = [
 ];
 
 const userTableStyles = {
-    minHeight: '500px',
+    minHeight: '600px',
 };
 
 
 
-const UserTable = () => {
+const AdminTable = () => {
     const [users, setUsers] = useState([]);
-    const { user } = useAuth();
     useEffect(() => {
-        fetch('/api/document/id/' + user.id)
+        fetch('/api/admin/all')
             .then((response) => response.json())
             .then((json) => setUsers(json))
             .catch((error) => error)
-    }, [user]);
+    }, []);
 
     return (
         <DataTable
@@ -65,9 +69,8 @@ const UserTable = () => {
             columns={columns}
             loading={!users}
             sx={userTableStyles}
-            
         />
     );
 };
 
-export default UserTable
+export default AdminTable

@@ -1,7 +1,17 @@
-const { signUpUser, loginUser, logoutUser, documentData } = require('../controllers/auth-controller.js')
-const { validateSignUpUser,
+const { 
+        signUpUser, 
+        loginUser, 
+        logoutUser, 
+        documentData,
+        createDocumentByUser ,
+        fetchDocument,
+    } = require('../controllers/auth-controller.js')
+const { 
+        validateSignUpUser,
         validateLoginUser,
-        validateGetDocument } = require('./validation')
+        validateGetDocument,
+        validatePostDocument
+    } = require('./validation')
 const express = require('express');
 const { getSecretAnswer } = require('../controllers/data-controller.js');
 
@@ -26,6 +36,8 @@ router
     .post('/auth/logout', logoutUser)
     .get('/data/secret', checkAuth, getSecretAnswer)
     
-router.get('/document/:user_id', validateGetDocument, documentData )
+router.get('/document/id/:user_id', validateGetDocument, documentData )
+router.post('/document/add', validatePostDocument, createDocumentByUser )
+router.get('/admin/all',  fetchDocument )
 
 module.exports = router;
