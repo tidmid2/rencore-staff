@@ -18,8 +18,6 @@ const validateSignUpUser = [
 
 const validatePostDocument = [
     check('user_id').not().isEmpty(),
-    check('dt').not().isEmpty(),
-    check('time').not().isEmpty(),
     validationHandler
 ]
 
@@ -30,14 +28,9 @@ const validateLoginUser = [
 ]
 
 const validateGetDocument = [
-    check('user_id').not().isEmpty().isInt()
-    , (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(422).json({ errors: errors.array() });
-        }
-        else next();
-}]
+    check('user_id').not().isEmpty().isInt(),
+    validationHandler
+]
 
 module.exports = {
     validateSignUpUser,

@@ -1,4 +1,10 @@
-const { fetchUserByEmail, createUser, fetchDocumentByUser,createDocument,fetchAllDocumentByUser } = require('../services/users-service');
+const { fetchUserByEmail, 
+        createUser, 
+        fetchDocumentByUser,
+        createDocument,
+        fetchAllDocumentByUser ,
+        fetchDocumentOPByUser
+    } = require('../services/users-service');
 
 const passport = require('passport');
 const bcrypt = require('bcrypt');
@@ -32,14 +38,11 @@ const signUpUser = async (req, res, next) => {
 
 //Создание отметки в documents
 const createDocumentByUser = async (req, res, next) => {
-    const { user_id,dt,time,comment,status } = req.body;
+    const { user_id,comment } = req.body;
     try {
         const document = {
             user_id, 
-            dt, 
-            time, 
-            comment,
-            status
+            comment
         }
         const newDocument = await createDocument(document);
         return res.status(201).json(newDocument);
@@ -48,6 +51,7 @@ const createDocumentByUser = async (req, res, next) => {
     }
 }
 
+//вывод всех документов
 const fetchDocument = async (req, res, next) => {
     try {
         const document = await fetchAllDocumentByUser()
@@ -106,6 +110,30 @@ const documentData = async (req, res, next) => {
 }
 
 
+
+//вывод информации с таблицы с условием
+const fetchDocuments = async (req, res, next) => {
+    try {
+        
+        const {user_id,id_smeny} = req.params
+        const document = await fetchDocumentOPByUser(user_id,id_smeny)
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+
+        // //возвращает все документы
+        return res.json(document)
+
+        //возвращает только 1 документ
+        // return res.json(document)
+        next()
+    } catch(err) {
+        return next(err);
+    }
+}
+
 //выход с учетки
 const logoutUser = (req, res, next) => {
     req.logout();
@@ -116,5 +144,11 @@ const logoutUser = (req, res, next) => {
 }
 
 module.exports = {
-    signUpUser, loginUser, logoutUser, documentData,createDocumentByUser,fetchDocument
+    signUpUser, 
+    loginUser, 
+    logoutUser, 
+    documentData,
+    createDocumentByUser,
+    fetchDocument,
+    fetchDocuments
 }

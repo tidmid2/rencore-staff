@@ -6,7 +6,7 @@ function Admin() {
 
     return (
     <Typography component="div" sx={{ marginTop: "45px" }}>
-      <Box sx={{ width: "100%"  }}>
+      <Box sx={{ minHeight: "500px", width: "100%"  }}>
         <AdminTable/>
       </Box>
     </Typography>

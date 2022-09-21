@@ -1,12 +1,6 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate
-} from "react-router-dom";
+import { BrowserRouter,Routes,Route,Navigate} from "react-router-dom";
 import MsgSnackBar from './util/SnackBar';
 import Main from './components/Main/Main';
-// import Secondary from './components/Main/Secondary';
 import SignIn from './components/SignIn/SignIn';
 import Account from './components/Account/Account';
 import Header from './components/Header/Header';

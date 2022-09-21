@@ -51,7 +51,17 @@ export const api = createApi({
           body: uid,
         }),
       }),
+      // getData: builder.query({
+      //   query: () => '/document/op/1',
+      // }),
     }),
 })
 
-export const { useLoginMutation, useSignupMutation, useLogoutMutation, useGetSecretMsgQuery, useDocumentMutation } = api;
+export const { 
+      useLoginMutation, 
+      useSignupMutation, 
+      useLogoutMutation,
+      // useGetDataQuery, 
+      useGetSecretMsgQuery,
+      useDocumentMutation,
+} = api;

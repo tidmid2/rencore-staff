@@ -5,6 +5,7 @@ const {
         documentData,
         createDocumentByUser ,
         fetchDocument,
+        fetchDocuments
     } = require('../controllers/auth-controller.js')
 const { 
         validateSignUpUser,
@@ -38,6 +39,7 @@ router
     
 router.get('/document/id/:user_id', validateGetDocument, documentData )
 router.post('/document/add', validatePostDocument, createDocumentByUser )
+router.get('/document/id/:user_id/id_smeny/:id_smeny',fetchDocuments  )
 router.get('/admin/all',  fetchDocument )
 
 module.exports = router;

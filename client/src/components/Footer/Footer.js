@@ -8,7 +8,7 @@ function Copyright() {
     <Typography variant="body2" color="text.secondary">
       {'Copyright © '}
       <Link color="inherit" href="https://connect.bestprofi.com/">
-        Ваш сайт
+        tidmid2
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -32,7 +32,7 @@ export default function StickyFooter() {
       >
         <Container maxWidth="sm" align="center">
           <Typography variant="body1">
-            Первый возможно удачный проект
+            Разработано силами усилия и терпения
           </Typography>
           <Copyright />
         </Container>

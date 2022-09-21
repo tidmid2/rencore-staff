@@ -63,22 +63,25 @@ export default function Nav({showAlert}) {
         <Toolbar> 
 
           {/* Logo */} 
-          <Toolbar>
-            <Box
-              component="img"
-              sx={{height: 64,}}
-              alt="RenCore."
-              src={logo}
-              action="/home"
-            />
-          </Toolbar>
+          <Tooltip title="RenCore">
+            <Toolbar>
+              <Box
+                component="img"
+                sx={{height: 64,}}
+                alt="RenCore."
+                src={logo}
+                action="/home"
+              />
+            </Toolbar>
+          </Tooltip>
           
           {/* Главная */}
           <Button component={Link} to="/" color="inherit">Главная</Button>
           { user && <Button component={Link} to="/document" color="inherit">Успеваемость</Button>}
           { user && <Button component={Link} to="/admin" color="inherit">Admin</Button>}
+          
           {/* Профиль */}
-          <Tooltip title="Account settings" sx={{ marginLeft: "auto" }}>
+          <Tooltip title="Аккаунт" sx={{ marginLeft: "auto" }}>
             <IconButton
               onClick={handleClick}
               size="small"

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import DataTable from '../../services/dataTable.js';
-import clsx from 'clsx';
 
 const columns = [
   {
@@ -30,26 +29,15 @@ const columns = [
     editable: false
   },
   {
-    field: "status",
-    headerName: "",
+    field: "id_op",
+    headerName: "Статус",
     width: 125,
     editable: false,
-    type: 'boolean',
-    cellClassName: (params) => {
-      if (params.value == null) {
-        return '';
-      }
-
-      return clsx('super-app', {
-        negative: params.value > 0,
-        positive: params.value < 1,
-      });
-    }
   }
 ];
 
 const userTableStyles = {
-    minHeight: '600px',
+    minHeight: '500px',
 };
 
 
@@ -69,6 +57,7 @@ const AdminTable = () => {
             columns={columns}
             loading={!users}
             sx={userTableStyles}
+            sortingMode="server"
         />
     );
 };
