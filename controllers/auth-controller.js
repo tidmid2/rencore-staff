@@ -79,8 +79,8 @@ const loginUser = (req, res, next) => {
                         }
                     req.login(user, (err) => {
                         if (err) return next(err);
-                        const { id, first_name, last_name, email } = req.user;
-                        return res.json({id, first_name, last_name, email});
+                        const { id, first_name, last_name, email, isAdmin } = req.user;
+                        return res.json({id, first_name, last_name, email, isAdmin});
                     })
             }
     )(req, res, next);

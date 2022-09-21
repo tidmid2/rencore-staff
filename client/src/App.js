@@ -22,6 +22,11 @@ function RequireAuth({ children, redirectTo }) {
   return user ? children : <Navigate to={redirectTo} />;
 }
 
+function RequireAdmin({ children, redirectTo }) {
+  const { user } = useAuth();
+  return user.isAdmin===1 ? children : <Navigate to={redirectTo} />;
+}
+
 function App() {
 
   return (
@@ -62,7 +67,9 @@ function App() {
                           <Route
                           path="/admin"
                           element={ <RequireAuth redirectTo="/signin">
-                                      <Admin />
+                                      <RequireAdmin redirectTo="/">
+                                        <Admin />
+                                      </RequireAdmin>
                                     </RequireAuth>
                           }/>
                   </Routes>

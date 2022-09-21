@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import { useAuth } from "../../hooks/useAuth";
+import AdminButton from './Adminbutton';
 import { useDispatch } from 'react-redux';
 import { logOut } from '../../features/auth/authSlice';
 import { useLogoutMutation } from '../../services/api';
@@ -22,10 +23,12 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import logo from './favicon.ico';
 
+
 export default function Nav({showAlert}) {
   let navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useAuth();
+
   const [logoutOfApi] = useLogoutMutation();
 
   async function logout() {
@@ -44,8 +47,6 @@ export default function Nav({showAlert}) {
       }));
     }
   }
-
-
 
   //burgermenu
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -78,7 +79,11 @@ export default function Nav({showAlert}) {
           {/* Главная */}
           <Button component={Link} to="/" color="inherit">Главная</Button>
           { user && <Button component={Link} to="/document" color="inherit">Успеваемость</Button>}
-          { user && <Button component={Link} to="/admin" color="inherit">Admin</Button>}
+          { user && <AdminButton/>}
+          
+          {/* { user.isAdmin===1 ? <Button component={Link} to="/admin" color="inherit">Admin</Button> : <></> } */}
+          {/* { user.isAdmin===1 && <Button component={Link} to="/admin" color="inherit">Admin</Button>} */}
+          
           
           {/* Профиль */}
           <Tooltip title="Аккаунт" sx={{ marginLeft: "auto" }}>
