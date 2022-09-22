@@ -4,7 +4,9 @@ const {
         fetchDocumentByUserDb,
         createDocumentByUserDb,
         fetchAllDocumentByUserDb,
-        fetchDocumentOPByUserDb
+        fetchDocumentOPByUserDb,
+        adminStage1,
+        adminStage2,
     }
     = require('../db/users-db');
 
@@ -27,6 +29,22 @@ const fetchDocumentByUser = async (user_id) => {
 const fetchDocumentOPByUser = async (user_id,id_smeny) => {
     try {
         return await fetchDocumentOPByUserDb(user_id,id_smeny);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+const adminStageS1 = async () => {
+    try {
+        return await adminStage1();
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+const adminStageS2 = async (id_smeny) => {
+    try {
+        return await adminStage2(id_smeny);
     } catch (e) {
         throw new Error(e.message);
     }
@@ -64,5 +82,7 @@ module.exports = {
                     fetchDocumentByUser,
                     createDocument,
                     fetchAllDocumentByUser,
-                    fetchDocumentOPByUser
+                    fetchDocumentOPByUser,
+                    adminStageS1,
+                    adminStageS2,
                 }

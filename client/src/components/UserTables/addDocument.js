@@ -81,7 +81,7 @@ export default function AddDocument({showAlert}) {
     const data = new FormData(e.currentTarget);
 
     
-  //  сохранение текущей времени в переменную
+    //  сохранение текущей времени в переменную
     // let DT = (
     //     addZero(date.getFullYear()) + '-' + 
     //     addZero(date.getMonth() + 1) + '-' +
@@ -120,7 +120,7 @@ export default function AddDocument({showAlert}) {
     try {
         const id = await document({
           user_id: user.id,
-          comment: data.get('comment')
+          comment: data.get("comment")
       }).unwrap();
       dispatch(showSnackbar({
         message: 'Вы успешно отметились',
@@ -153,7 +153,6 @@ export default function AddDocument({showAlert}) {
       >
         Отметиться
       </Button>
-    
       <Modal
         open={open}
         onClose={handleClose}
@@ -162,23 +161,23 @@ export default function AddDocument({showAlert}) {
       >
         <Box sx={style}>
           {/* <Grid item xs={12}> */}
-          <TextField
-            inputProps= {{minLength:0, maxLength: 100}}
-            fullWidth
-            name="comment"
-            label="Комментарии"
-            id="comment"
-            autoFocus
-          />
-          {/* </Grid> */}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            {/* тут был radiogroup, но он портит стиль, позже нужно что-то придумать */}
-            {/* <RadioGroup row aria-labelledby="operacii_type" value={value} onChange={handleRadioChange}>
+            <TextField
+              inputProps= {{minLength:0, maxLength: 100}}
+              fullWidth
+              name="comment"
+              label="Комментарии"
+              id="comment"
+              autoFocus
+            />
+            {/* </Grid>
+            тут был radiogroup, но он портит стиль, позже нужно что-то придумать
+            <RadioGroup row aria-labelledby="operacii_type" value={value} onChange={handleRadioChange}>
               <FormControlLabel value="work" control={<Radio />} label="Работа" />
               <FormControlLabel disabled value="lunch" control={<Radio />} label="Обед" />
-            </RadioGroup> */}
+            </RadioGroup>
             
-            {/* <FormHelperText>{helperText}</FormHelperText> */}
+            <FormHelperText>{helperText}</FormHelperText> */}
             <Button
               type="submit"
               fullWidth

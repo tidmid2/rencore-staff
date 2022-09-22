@@ -81,10 +81,6 @@ export default function Nav({showAlert}) {
           { user && <Button component={Link} to="/document" color="inherit">Успеваемость</Button>}
           { user && <AdminButton/>}
           
-          {/* { user.isAdmin===1 ? <Button component={Link} to="/admin" color="inherit">Admin</Button> : <></> } */}
-          {/* { user.isAdmin===1 && <Button component={Link} to="/admin" color="inherit">Admin</Button>} */}
-          
-          
           {/* Профиль */}
           <Tooltip title="Аккаунт" sx={{ marginLeft: "auto" }}>
             <IconButton

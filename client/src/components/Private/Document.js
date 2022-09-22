@@ -1,6 +1,6 @@
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import UserTable from '../UserTables/userTable';
+import CollapsibleTable from '../UserTables/collapsDate';
 import AddDocument from '../UserTables/addDocument';
 
 function Document() {
@@ -8,7 +8,7 @@ function Document() {
     <Typography component="div" sx={{ marginTop: "45px" }}>
         <Box sx={{ minHeight: "500px", width: "100%"  }}>
           <AddDocument/>
-          <UserTable/>
+          <CollapsibleTable/>
         </Box>
     </Typography>
   );

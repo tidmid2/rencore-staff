@@ -3,7 +3,9 @@ const { fetchUserByEmail,
         fetchDocumentByUser,
         createDocument,
         fetchAllDocumentByUser ,
-        fetchDocumentOPByUser
+        fetchDocumentOPByUser,
+        adminStageS1,
+        adminStageS2
     } = require('../services/users-service');
 
 const passport = require('passport');
@@ -109,7 +111,36 @@ const documentData = async (req, res, next) => {
     }
 }
 
+const adminStag1 = async (req, res, next) => {
+    try {
+        const document = await adminStageS1()
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        //возвращает все документы
+        res.status(200).json(document)
+    } catch(err) {
+        return next(err);
+    }
+}
 
+const adminStag2 = async (req, res, next) => {
+    try {
+        const {id_smeny} = req.params
+        const document = await adminStageS2(id_smeny)
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        //возвращает все документы
+        res.status(200).json(document)
+    } catch(err) {
+        return next(err);
+    }
+}
 
 //вывод информации с таблицы с условием
 const fetchDocuments = async (req, res, next) => {
@@ -150,5 +181,7 @@ module.exports = {
     documentData,
     createDocumentByUser,
     fetchDocument,
-    fetchDocuments
+    fetchDocuments,
+    adminStag1,
+    adminStag2
 }

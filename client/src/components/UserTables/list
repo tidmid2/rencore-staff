@@ -1,0 +1,267 @@
+// import React, { useEffect, useState } from 'react'
+// import DataTable from '../../services/dataTable.js';
+// import Box from '@mui/material/Box';
+// import Modal from '@mui/material/Modal';
+// import List from '@mui/material/List';
+// import ListItemText from '@mui/material/ListItemText';
+// import ListItemButton from '@mui/material/ListItemButton';
+// import ExpandLess from '@mui/icons-material/ExpandLess';
+// import ExpandMore from '@mui/icons-material/ExpandMore';
+// import Collapse from '@mui/material/Collapse';
+// import Button from '@mui/material/Button';
+// import * as XLSX from 'xlsx';
+
+// const col = [
+//   {
+//     field: "uid",
+//     headerName: "ID",
+//     width: 250,
+//     editable: false,
+//   },
+//   {
+//     field: "dtstart",
+//     headerName: "Дата",
+//     width: 250,
+//     editable: false,
+//     type: 'dateTime',
+//   }
+// ];
+// const columns = [
+//   {
+//     field: "user_id",
+//     headerName: "Сотрудник",
+//     width: 250,
+//     editable: false,
+//   },
+//   {
+//     field: "dt",
+//     headerName: "Дата",
+//     width: 250,
+//     editable: false,
+//     type: 'date',
+//     valueGetter: (params) => new Date(params.row.dt),
+//   },
+//   {
+//     field: "time",
+//     headerName: "Пришел",
+//     width: 150,
+//     editable: false,
+//   },
+//   {
+//     field: "comment",
+//     headerName: "Комментарий",
+//     width: 200,
+//     editable: false
+//   },
+//   {
+//     field: "time2",
+//     headerName: "Ушел",
+//     width: 150,
+//     editable: false
+//   },
+//   {
+//     field: "comment2",
+//     headerName: "Комментарий",
+//     width: 200,
+//     editable: false
+//   }
+// ];
+// const style = {
+//   position: 'absolute',
+//   top: '50%',
+//   left: '50%',
+//   transform: 'translate(-50%, -50%)',
+//   width: '80%',
+//   height: '50%',
+//   bgcolor: 'background.paper',
+//   border: '2px solid #000',
+//   boxShadow: 24,
+//   p: 4,
+// };
+
+// const color = {
+//   height: 300,
+//         width: '100%',
+//         '& .opo': {
+//           backgroundColor: '#DD0F0F',
+//           color: '#FFFFFF',
+//         },
+//         '& .ush': {
+//           backgroundColor: '#303F9F',
+//           color: '#FFFFFF',
+//         },
+//         '& .ver': {
+//           backgroundColor: '#2FB18A',
+//           color: '#FFFFFF',
+//         },
+//         '& .pri': {
+//           backgroundColor: '#00FFB2',
+//           color: '#000000',
+//         },
+// }
+
+// const userTableStyles = {
+//     minHeight: '500px',
+// };
+
+
+
+// const AdminTable = () => {
+//     const [users, setUsers] = useState([]);
+//     const [open, setOpen] = React.useState(false);
+//     const handleClose = () => setOpen(false);
+//     const [userinfo, setUserinfo] = useState([]);
+//     const [isLoading, setIsLoading] = useState(false);
+//     const [openn, setOpenn] = React.useState(true);
+//     //вывод в Эксель
+//     const handleClick = () => {
+//         var wb = XLSX.utils.book_new(),
+//         ws = XLSX.utils.json_to_sheet(users);
+
+//         XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
+
+//         XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
+//     };
+
+//     const fetchData = async (id) => {
+//       setIsLoading(true);
+//       try{ 
+//         const response = await fetch('/api/admin/smeny/'+id)
+//         if (!response.ok) {
+//           throw new Error(`Error! status: ${response.status}`);
+//         }
+//         const result = await response.json();
+//         setUserinfo(result);
+//       } catch (err) {
+//         return err;
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     };
+
+//     // старое говно, полное отображение отметок
+//     // useEffect(() => {
+//     //     fetch('/api/admin/all')
+//     //         .then((response) => response.json())
+//     //         .then((json) => setUsers(json))
+//     //         .catch((error) => error)
+//     // }, []);
+
+//     useEffect(() => {
+//           fetch('/api/admin/date')
+//               .then((response) => response.json())
+//               .then((json) => setUsers(json))
+//               .catch((error) => error)
+//       }, []);
+
+//     return (
+//       <Box
+//       sx={{color,
+//       display: 'flex',
+//       flexDirection: 'row'}}>
+//         <Modal
+//             open={open}
+//             onClose={handleClose}
+//             aria-labelledby="modal-modal-title"
+//             aria-describedby="modal-modal-description"
+//           >
+//             <Box
+//               onClick={handleClose}
+//               sx={{
+//                 height: 300,
+//                 width: '100%',
+//                 '& .opo': {
+//                   backgroundColor: '#DD0F0F',
+//                   color: '#FFFFFF',
+//                 },
+//                 '& .ush': {
+//                   backgroundColor: '#303F9F',
+//                   color: '#FFFFFF',
+//                 },
+//                 '& .ver': {
+//                   backgroundColor: '#2FB18A',
+//                   color: '#FFFFFF',
+//                 },
+//                 '& .pri': {
+//                   backgroundColor: '#00FFB2',
+//                   color: '#000000',
+//                 },
+//               }}
+//             > 
+//               <DataTable 
+//                 rows={userinfo}
+//                 columns={columns}
+//                 loading={isLoading}
+//                 sx={style}
+//                 onCellClick={() => {
+//                   setOpen(false);
+//                 }}
+//                 getCellClassName={(params) => {
+//                   if (params.field === 'user_id' || params.value == null || params.field === 'uid' || params.field === 'dt' || params.field === 'comment' || params.field === 'comment2') {
+//                     return '';
+//                   }
+//                   else  {
+//                     if(params.field === 'time'  ){return 'opo';}
+//                     else if(params.field === 'time2'){if(params.value != null ){return 'ush';}}
+//                   };
+//                 }}
+//               />
+//               <Button onClick={() => {
+//                   var wb = XLSX.utils.book_new(),
+//                   ws = XLSX.utils.json_to_sheet(userinfo);
+
+//                   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
+
+//                   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
+//               }}>Export</Button>
+//             </Box>
+//           </Modal>
+          
+//           <Box sx={{
+//             display: 'flex',
+//             flexDirection: 'column', width: '15%', justifyContent: 'start'}}
+//           >
+
+//           <List
+//             sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+//             <ListItemButton onClick={() => {
+//                 setOpenn(!openn);
+//               }}>
+//               <ListItemText primary="Отчеты" />
+//               {openn ? <ExpandLess /> : <ExpandMore />}
+//             </ListItemButton>
+//             <Collapse in={openn} timeout="auto" unmountOnExit>
+//               <List component="div" disablePadding>
+//                 <ListItemButton sx={{ pl: 4 }}>
+//                   <ListItemText primary="Ежедневные отчеты" />
+//                 </ListItemButton>
+//               </List>
+//             </Collapse>
+//             <ListItemButton onClick={() => {
+//                 setOpenn(!openn);
+//               }}>
+//               <ListItemText primary="Сводный отчет" />
+//             </ListItemButton>
+//           </List>
+//           </Box>
+//           <Box sx={{
+//             width: '85%'}}
+//           >
+//             <DataTable
+//               rows={users}
+//               columns={col}
+//               loading={!users}
+//               // sx={userTableStyles}
+//               sortingMode="server"
+//               onRowClick={(params) => {
+//                 setOpen(true);
+//                 fetchData(params.id);
+//               }}
+//             />
+//             <Button onClick={handleClick}>Export</Button>
+//           </Box>
+//         </Box>
+//     );
+// };
+
+// export default AdminTable
