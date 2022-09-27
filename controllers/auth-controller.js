@@ -5,7 +5,8 @@ const { fetchUserByEmail,
         fetchAllDocumentByUser ,
         fetchDocumentOPByUser,
         adminStageS1,
-        adminStageS2
+        adminStageS2,
+        fetchAdminDocumentByUser,fetchAdminUDocumentByUser
     } = require('../services/users-service');
 
 const passport = require('passport');
@@ -53,21 +54,51 @@ const createDocumentByUser = async (req, res, next) => {
     }
 }
 
-//вывод всех документов
+//вывод Admin документов
 const fetchDocument = async (req, res, next) => {
     try {
-        const document = await fetchAllDocumentByUser()
-        if (!document) {
+        const {dt1,dt2} = req.params
+        const newDocument = await fetchAllDocumentByUser(dt1,dt2)
+        if (!newDocument) {
             return res.status(422).json({
                 error: { status: 422, data: "Нет данных."}
             });
         }
-        res.status(200).json(document)
+        return res.json(newDocument)
     } catch(err) {
         return next(err);
     }
 }
 
+const fetchAdminDocument = async (req, res, next) => {
+    try {
+        const {dt1,dt2,user} = req.params
+        const newDocument = await fetchAdminDocumentByUser(dt1,dt2,user)
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
+
+const fetchAdminUDocument = async (req, res, next) => {
+    try {
+        const {dt1,dt2} = req.params
+        const newDocument = await fetchAdminUDocumentByUser(dt1,dt2)
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
 //вход в учетку
 const loginUser = (req, res, next) => {
         passport.authenticate(
@@ -183,5 +214,6 @@ module.exports = {
     fetchDocument,
     fetchDocuments,
     adminStag1,
-    adminStag2
+    adminStag2,
+    fetchAdminDocument,fetchAdminUDocument
 }

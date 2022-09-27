@@ -74,16 +74,50 @@ const createDocumentByUserDb = async ({user_id, comment}) => {
     }
 }
 
-const fetchAllDocumentByUserDb = async () => {
+const fetchAllDocumentByUserDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select d.uid as uid,concat(u.first_name,' ',u.last_name) as user_id,d.dt as dt,d.time as time,d.comment as comment,o.name as id_op
-        from documents d inner join users u on d.user_id = u.id inner join operacii_type o on d.id_op=o.id
-        ORDER BY d.uid DESC`);
+        const res = await db.query(`select s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) user,sum(l.late_day) as Ydays,count(l.id)-sum(l.late_day) as Zdays, l.later as late,l.work as work
+        from tblate l
+        left join users u ON u.id = l.iduser
+        inner join tbsmeny s ON s.id = l.smena
+        where s.dtstart::Date > $1 and  s.dtstart::Date <= $2
+        group by s.dtstart,u.id,u.first_name,u.last_name, l.work , l.later,l.id
+        order by s.dtstart desc`,[dt1,dt2]);
         return res.rows;
     } catch(e) {
         throw new Error(e.message);
     }
 }
+
+const fetchAdminDocumentByUserDb = async (dt1,dt2,user) => {
+    try {
+        const res = await db.query(`select s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) user,(l.later+'09:00:00') as statred, l.later as late,l.work as work
+        from tblate l
+        left join users u ON u.id = l.iduser
+        inner join tbsmeny s ON s.id = l.smena
+        where (s.dtstart::Date > $1 and  s.dtstart::Date <= $2) and u.id=$3
+        group by s.dtstart,u.id,u.first_name,u.last_name, l.work , l.later,l.id
+        order by s.dtstart desc`,[dt1,dt2,user]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const fetchAdminUDocumentByUserDb = async (dt1,dt2) => {
+    try {
+        const res = await db.query(`select u.id as user_id,concat(u.first_name,' ',u.last_name) user
+        from tblate l
+        left join users u ON u.id = l.iduser
+        inner join tbsmeny s ON s.id = l.smena
+        where (s.dtstart::Date > $1 and  s.dtstart::Date <= $2)
+        group by u.id,u.first_name,u.last_name`,[dt1,dt2]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
 
 const createUserDb = async ({email, first_name, last_name, pwd_hash}) => {
     const text = `INSERT INTO users(email, first_name, last_name, pwd_hash)
@@ -106,5 +140,7 @@ module.exports = {
                     fetchDocumentOPByUserDb,
                     adminStage1,
                     adminStage2,
+                    fetchAdminDocumentByUserDb,
+                    fetchAdminUDocumentByUserDb
                     // adminStage3
                 }

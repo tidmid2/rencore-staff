@@ -9,10 +9,12 @@ import SignUp from './components/SignUp/SignUp';
 import Private from './components/Private/Private';
 import Document from './components/Private/Document';
 import Admin from './components/Admin/Admin';
+import Journal from './components/Admin/Journal';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import Personal from "./components/UserTables/personal";
 import { useAuth } from './hooks/useAuth';
 
 const theme = createTheme();
@@ -69,6 +71,22 @@ function App() {
                           element={ <RequireAuth redirectTo="/signin">
                                       <RequireAdmin redirectTo="/">
                                         <Admin />
+                                      </RequireAdmin>
+                                    </RequireAuth>
+                          }/>
+                          <Route
+                          path="/journal"
+                          element={ <RequireAuth redirectTo="/signin">
+                                      <RequireAdmin redirectTo="/">
+                                        <Journal />
+                                      </RequireAdmin>
+                                    </RequireAuth>
+                          }/>
+                          <Route
+                          path="/journal/:user/:dt1/:dt2"
+                          element={ <RequireAuth redirectTo="/signin">
+                                      <RequireAdmin redirectTo="/">
+                                        <Personal />
                                       </RequireAdmin>
                                     </RequireAuth>
                           }/>

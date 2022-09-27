@@ -154,14 +154,14 @@ row2: PropTypes.shape({
 
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
-  const handleClick = () => {
-    var wb = XLSX.utils.book_new(),
-    ws = XLSX.utils.json_to_sheet(users);
+  // const handleClick = () => {
+  //   var wb = XLSX.utils.book_new(),
+  //   ws = XLSX.utils.json_to_sheet(users);
 
-    XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
+  //   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
 
-    XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
-  };
+  //   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
+  // };
 
   useEffect(() => {
       fetch('/api/admin/date')
@@ -172,6 +172,8 @@ export default function AdminTable() {
  }, []);
 
 return (
+  <Box sx={{ margin: 1 }}>
+  <Typography variant="h6" gutterBottom component="div">Ежедневый отчет</Typography>
   <TableContainer component={Paper}>
     <Table aria-label="collapsible table">
       <TableHead>
@@ -192,5 +194,6 @@ return (
     </Table>
     {/* <Button onClick={handleClick}>Export</Button> */}
   </TableContainer>
+  </Box>
 );
 }

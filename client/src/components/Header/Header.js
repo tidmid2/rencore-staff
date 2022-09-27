@@ -58,6 +58,8 @@ export default function Nav({showAlert}) {
     setAnchorEl(null);
   };
 
+  
+
   return (
     <Box>
       <AppBar>
@@ -78,8 +80,9 @@ export default function Nav({showAlert}) {
           
           {/* Главная */}
           <Button component={Link} to="/" color="inherit">Главная</Button>
-          { user && <Button component={Link} to="/document" color="inherit">Успеваемость</Button>}
+          { user && <Button component={Link} to="/document" color="inherit" >Успеваемость</Button>}
           { user && <AdminButton/>}
+          
           
           {/* Профиль */}
           <Tooltip title="Аккаунт" sx={{ marginLeft: "auto" }}>
@@ -152,13 +155,6 @@ export default function Nav({showAlert}) {
                 </ListItemIcon>
                 Приватный вход 
               </MenuItem>}
-{/* 
-              { user && <MenuItem component={Link} to="/document" color="inherit">
-                <ListItemIcon>
-                  <Settings fontSize="small" />
-                </ListItemIcon>
-                Docs
-              </MenuItem>} */}
 
               {user && <MenuItem color="inherit" onClick={logout}>
                 <ListItemIcon>

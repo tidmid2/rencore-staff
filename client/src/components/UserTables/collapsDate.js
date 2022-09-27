@@ -60,7 +60,7 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => {setOpen(!open); isLoading ? <CircularProgress color="secondary" /> : fetchData(row.id_smeny);}}
+            onClick={() => {setOpen(!open); fetchData(row.id_smeny);}}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
@@ -95,6 +95,7 @@ function Row(props) {
                     <TableCell align="right">Статус</TableCell>
                   </TableRow>
                 </TableHead>
+                {isLoading ? <CircularProgress color="secondary" /> : 
                  <TableBody>
                   {userinfo.map((row2) => (
                     <TableRow key={row2.uid}>
@@ -115,7 +116,7 @@ function Row(props) {
                       </TableCell>
                     </TableRow>
                   ))}
-                </TableBody>
+                </TableBody>}
               </Table>
             </Box>
           </Collapse>
@@ -143,11 +144,12 @@ Row.propTypes = {
 export default function CollapsibleTable() {
     const [users, setUsers] = useState([]);
     const { user } = useAuth();
-
+    const [isLoading, setIsLoading] = useState(false);  
     useEffect(() => {
+        setIsLoading(true);
         fetch('/api/document/id/' + user.id)
            .then((response) => response.json())
-           .then((json) => setUsers(json))
+           .then((json) => setUsers(json), setIsLoading(false))
            .catch((error) => error)
      // console.log(users);
    }, [user]);
@@ -164,12 +166,13 @@ export default function CollapsibleTable() {
             <TableCell align="right">Статус</TableCell>
           </TableRow>
         </TableHead>
+        {isLoading ? <CircularProgress color="secondary" /> : 
         <TableBody>
           {users.map((row) => (
             <Row key={row.uid} row={row} 
             />
           ))}
-        </TableBody>
+        </TableBody>}
       </Table>
     </TableContainer>
   );

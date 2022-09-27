@@ -1,16 +1,16 @@
 import Typography from '@mui/material/Typography';
-import AdminTable from '../UserTables/adminTables';
 import Box from '@mui/material/Box';
+import UserTable from '../UserTables/userTable';
 
-function Admin() {
+function Journal() {
 
     return (
     <Typography component="div" sx={{ marginTop: "45px" }}>
       <Box sx={{ minHeight: "500px", width: "100%"  }}>
-        <AdminTable/>
+        <UserTable/>
       </Box>
     </Typography>
   );
  }
 
-export default Admin;
+export default Journal;

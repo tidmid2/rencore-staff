@@ -7,7 +7,8 @@ const {
         fetchDocument,
         fetchDocuments,
         adminStag1,
-        adminStag2
+        adminStag2,
+        fetchAdminDocument,fetchAdminUDocument
     } = require('../controllers/auth-controller.js')
 const { 
         validateSignUpUser,
@@ -42,7 +43,9 @@ router
 router.get('/document/id/:user_id', validateGetDocument, documentData )
 router.post('/document/add', validatePostDocument, createDocumentByUser )
 router.get('/document/id/:user_id/id_smeny/:id_smeny',fetchDocuments  )
-router.get('/admin/all',  fetchDocument )
+router.get('/admin/dt1/:dt1/dt2/:dt2',  fetchDocument )
+router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  fetchAdminDocument )
+router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  fetchAdminUDocument )
 router.get('/admin/date',  adminStag1 )
 router.get('/admin/smeny/:id_smeny',  adminStag2 )
 // router.get('/admin/all',  fetchDocument )
