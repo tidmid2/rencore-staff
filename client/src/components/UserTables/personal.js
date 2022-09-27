@@ -83,7 +83,6 @@ return (
         alignItems="flex-end"
         spacing={2}
     >
-        <Box>Back</Box>
         <FormControl sx={{width: "250px"}}>
           <Box>
             <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>

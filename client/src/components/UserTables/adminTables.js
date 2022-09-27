@@ -212,13 +212,12 @@ export default function AdminTable() {
      .catch((error) => error)
 }, [value]);
 return (
-  <Box sx={{ margin: 1 }}>
+  <Box>
   <Typography variant="h6" gutterBottom component="div">Ежедневый отчет</Typography>
     <Stack 
       direction="row"
       justifyContent="flex-end"
       alignItems="flex-end"
-      spacing={2}
     >
       <TextField
         id="date"
@@ -234,8 +233,8 @@ return (
         onChange={(e) => {setValue(e.target.value)}}
       />
     </Stack>
-  <TableContainer component={Paper}>
-    <Table aria-label="collapsible table">
+  <TableContainer component={Paper} sx={{ marginTop: "45px" }}>
+    <Table aria-label="collapsible table" >
       <TableHead>
         <TableRow>
           <TableCell />

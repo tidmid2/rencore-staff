@@ -147,7 +147,7 @@ return (
             Найти
         </Button>
     </Stack>
-<TableContainer component={Paper}>
+<TableContainer component={Paper} sx={{ marginTop: "45px" }}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
