@@ -60,7 +60,8 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => {setOpen(!open); fetchData(row.id_smeny);}}
+            onClick={() => {setOpen(!open);
+               {!open ? (isLoading ? <CircularProgress color="secondary" /> : fetchData(row.id_smeny)) : <></>}}}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>

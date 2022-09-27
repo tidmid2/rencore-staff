@@ -46,8 +46,8 @@ router.get('/document/id/:user_id/id_smeny/:id_smeny',fetchDocuments  )
 router.get('/admin/dt1/:dt1/dt2/:dt2',  fetchDocument )
 router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  fetchAdminDocument )
 router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  fetchAdminUDocument )
-router.get('/admin/date',  adminStag1 )
-router.get('/admin/smeny/:id_smeny',  adminStag2 )
+router.get('/admin/:id_smeny',  adminStag1 )
+router.get('/admin/:user_id/:id_smeny',  adminStag2 )
 // router.get('/admin/all',  fetchDocument )
 
 module.exports = router;

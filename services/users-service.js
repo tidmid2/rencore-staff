@@ -34,17 +34,17 @@ const fetchDocumentOPByUser = async (user_id,id_smeny) => {
     }
 }
 
-const adminStageS1 = async () => {
+const adminStageS1 = async (id_smeny) => {
     try {
-        return await adminStage1();
+        return await adminStage1(id_smeny);
     } catch (e) {
         throw new Error(e.message);
     }
 }
 
-const adminStageS2 = async (id_smeny) => {
+const adminStageS2 = async (user_id,id_smeny) => {
     try {
-        return await adminStage2(id_smeny);
+        return await adminStage2(user_id,id_smeny);
     } catch (e) {
         throw new Error(e.message);
     }

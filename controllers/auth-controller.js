@@ -144,7 +144,8 @@ const documentData = async (req, res, next) => {
 
 const adminStag1 = async (req, res, next) => {
     try {
-        const document = await adminStageS1()
+        const {id_smeny} = req.params
+        const document = await adminStageS1(id_smeny)
         if (!document) {
             return res.status(422).json({
                 error: { status: 422, data: "Нет данных."}
@@ -159,8 +160,8 @@ const adminStag1 = async (req, res, next) => {
 
 const adminStag2 = async (req, res, next) => {
     try {
-        const {id_smeny} = req.params
-        const document = await adminStageS2(id_smeny)
+        const {user_id,id_smeny} = req.params
+        const document = await adminStageS2(user_id,id_smeny)
         if (!document) {
             return res.status(422).json({
                 error: { status: 422, data: "Нет данных."}

@@ -43,7 +43,7 @@ const Personal = () => {
   const {user,dt1,dt2} = useParams();
   const [users, setUsers] = useState([]);
   const [userss, setUserss] = useState([]);
-  const [iduser, setIduser] = useState(user);
+  const [iduser, setIduser] = useState([user]);
   const[value, setValue] = useState(dt2); 
   const[value2, setValue2] = useState(dt1); 
   const [isLoading, setIsLoading] = useState(false);  
@@ -64,10 +64,6 @@ const Personal = () => {
     }};
 
   useEffect(() => {
-    //   fetch('/api/admin/user/'+user+'/dt1/'+value2+'/dt2/'+value)
-    //      .then((response) => response.json())
-    //      .then((json) => setUsers(json))
-    //      .catch((error) => error)
     fetchData(iduser,value,value2);
  }, [iduser,value,value2]);
 
@@ -88,26 +84,19 @@ return (
         spacing={2}
     >
         <Box>Back</Box>
-        <Box sx={{width: "250px"}}/>
         <FormControl sx={{width: "250px"}}>
-            
-                <Box>
-                    <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>
-                    <Select
-                        // value={row.user_id}
-                        sx={{width: "100%"}}
-                        defaultValue={iduser}
-                        label="Сотрудник"
-                        onChange={(e) => {setIduser(e.target.value)}}
-                        >
-                            {userss.map((row) => (
-                            <MenuItem value={row.user_id}>{row.user}</MenuItem> 
-                            ))}
-                    </Select>
-                </Box>
-           
+          <Box>
+            <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>
+            <Select
+              sx={{width: "100%"}}
+              defaultValue={iduser}
+              label="Сотрудник"
+              onChange={(e) => {setIduser(e.target.value)}}
+            >
+              {userss.map((row) => (<MenuItem value={row.user_id}>{row.user}</MenuItem>))}
+            </Select>
+          </Box>
         </FormControl>
-        
         <Typography>С</Typography>
     <TextField
         id="date"
@@ -145,6 +134,7 @@ return (
         </Button>
     </Stack>
 <TableContainer component={Paper} sx={{ marginTop: "45px" }}>
+    
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
@@ -158,7 +148,7 @@ return (
         {isLoading ? <Box sx={{display: "flex", justifyContent: "center",
         alignItems: "center"}}><CircularProgress /></Box> :<TableBody>
           {users.map((row) => (
-            <TableRow
+            <TableRow 
               key={row.user}
             >
                     <TableCell component="th" scope="row">

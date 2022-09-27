@@ -17,6 +17,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {makeStyles} from '@material-ui/core/styles';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
+import { Stack } from '@mui/material';
+import TextField from '@mui/material/TextField';
 
 const useStyles = makeStyles((theme) => ({
   status:{
@@ -27,19 +29,29 @@ const useStyles = makeStyles((theme) => ({
   borderRadius: 8,
   padding: '3px 10px',
   display: 'inline-block'
-  }
+  },
+  dt:{
+    fontWeight: 'bold',
+// fontSize: '0.75rem',
+color: 'white',
+backgroundColor: 'grey',
+alignContent: "center",
+borderRadius: 35,
+padding: '3px 10px',
+display: 'inline-block'
+}
 }));
 
 function Row(props) {
 const { row } = props;
 const [open, setOpen] = React.useState(false);
- const [userinfo, setUserinfo] = useState([]);
- const [isLoading, setIsLoading] = useState(false);
- const classes = useStyles();
-  const fetchData = async (id) => {
+const [userinfo, setUserinfo] = useState([]);
+const [isLoading, setIsLoading] = useState(false);
+const classes = useStyles();
+  const fetchData = async (user_id,dt) => {
   setIsLoading(true);
   try{ 
-    const response = await fetch('/api/admin/smeny/'+id)
+    const response = await fetch('/api/admin/'+user_id+'/'+dt)
     if (!response.ok) {
       throw new Error(`Error! status: ${response.status}`);
     }
@@ -69,16 +81,40 @@ return (
           size="small"
           onClick={() => {
             setOpen(!open); 
-            isLoading ? <CircularProgress color="secondary" /> : fetchData(row.uid);
+            {!open ? (isLoading ? <CircularProgress color="secondary" /> : fetchData(row.user,row.dt)) : <Box/> }
           }}
         >
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
       </TableCell>
-      <TableCell ><span>{ (new Date(row.dtstart)).toLocaleDateString() }</span></TableCell>
+      <TableCell component="th" scope="row">
+                      {row.user_id}
+      </TableCell>
+      <TableCell><span>{ (new Date(row.dt)).toLocaleDateString() }</span></TableCell>
+                    <TableCell>
+                      <Typography className={classes.status}  style={{
+                            backgroundColor:
+                            ((row.time>'09:00:00' && '#E55151') ||
+                            (row.time<='09:00:00' && '#56C114'))
+                      }}>
+                        {row.time}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{row.comment}</TableCell>
+                    <TableCell>
+                    <Typography className={classes.status}  style={{
+                            backgroundColor:
+                            ((row.time2<'18:00:00' && '#303F9F')||
+                            // (row2.time2===null && '#E55151') ||
+                            (row.time2>'18:00:00' && '#56C114'))
+                      }}>
+                        {row.time2}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>{row.comment2}</TableCell>
     </TableRow>
     <TableRow>
-      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box sx={{ margin: 1 }}>
             <Typography variant="h6" gutterBottom component="div">
@@ -87,45 +123,33 @@ return (
             <Table size="small" aria-label="purchases">
               <TableHead>
                 <TableRow>
-                  <TableCell>Сотрудник</TableCell>
                   <TableCell>Дата</TableCell>
-                  <TableCell>Время прихода</TableCell>
+                  <TableCell>Время</TableCell>
                   <TableCell>Комментарии</TableCell>
-                  <TableCell>Время ухода</TableCell>
-                  <TableCell>Комментарии</TableCell>
+                  <TableCell align="right">Статус</TableCell>
                 </TableRow>
               </TableHead>
-               <TableBody>
+              {isLoading ? <CircularProgress color="secondary" /> : 
+                 <TableBody>
                 {userinfo.map((row2) => (
                   <TableRow key={row2.uid}>
-                    <TableCell component="th" scope="row">
-                      {row2.user_id}
-                    </TableCell>
-                    <TableCell><span>{ (new Date(row2.dt)).toLocaleDateString() }</span></TableCell>
-                    <TableCell>
-                      <Typography className={classes.status}  style={{
-                            backgroundColor:
-                            ((row2.time>'09:00:00' && '#E55151') ||
-                            (row2.time<='09:00:00' && '#56C114'))
-                      }}>
-                        {row2.time}
-                      </Typography>
-                    </TableCell>
+                    <TableCell component="th" scope="row"><span>{ (new Date(row2.dt)).toLocaleDateString() }</span></TableCell>
+                    <TableCell>{row2.time}</TableCell>
                     <TableCell>{row2.comment}</TableCell>
-                    <TableCell>
-                    <Typography className={classes.status}  style={{
-                            backgroundColor:
-                            ((row2.time2<'18:00:00' && '#303F9F')||
-                            // (row2.time2===null && '#E55151') ||
-                            (row2.time2>'18:00:00' && '#56C114'))
-                      }}>
-                        {row2.time2}
+                    <TableCell align="right">
+                      <Typography className={classes.status}  style={{
+                        backgroundColor:
+                          ((row2.id_op==='Опоздал' && '#E55151') ||
+                          (row2.id_op==='Ушел' && '#303F9F') ||
+                          (row2.id_op==='Вернулся' && '#2FB18A') ||
+                          (row2.id_op==='Пришел' && '#56C114'))
+                        }}>
+                        {row2.id_op}
                       </Typography>
                     </TableCell>
-                    <TableCell>{row2.comment2}</TableCell>
                   </TableRow>
                 ))}
-              </TableBody>
+              </TableBody>}
             </Table>
             <Button onClick={handleClick}>Export</Button>
           </Box>
@@ -140,49 +164,87 @@ return (
 
 Row.propTypes = {
 row: PropTypes.shape({
-  dtstart: PropTypes.string.isRequired,
+  user_id: PropTypes.string.isRequired,
+  dt: PropTypes.string,
+  time: PropTypes.string.isRequired,
+  comment: PropTypes.string,
+  time2: PropTypes.string,
+  comment2: PropTypes.string,
 }).isRequired,
 row2: PropTypes.shape({
   user_id: PropTypes.string.isRequired,
   dt: PropTypes.string,
   time: PropTypes.string.isRequired,
   comment: PropTypes.string,
-  time2: PropTypes.string.isRequired,
-  comment2: PropTypes.string.isRequired,
+  status: PropTypes.string,
+  id_op: PropTypes.string,
+  id_smeny: PropTypes.string,
 }),
 };
-
+function addZero(num) {
+  if (num >= 0 && num <= 9) {
+      return '0' + num;
+  } else {
+      return num;
+  }
+};
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
-  // const handleClick = () => {
-  //   var wb = XLSX.utils.book_new(),
-  //   ws = XLSX.utils.json_to_sheet(users);
+  const handleClick = () => {
+    var wb = XLSX.utils.book_new(),
+    ws = XLSX.utils.json_to_sheet(users);
 
-  //   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
+    XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
 
-  //   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
-  // };
-
-  useEffect(() => {
-      fetch('/api/admin/date')
-         .then((response) => response.json())
-         .then((json) => setUsers(json))
-         .catch((error) => error)
-   // console.log(users);
- }, []);
-
+    XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
+  };
+  let date = new Date();
+  let DT = (
+    addZero(date.getFullYear()) + '-' + 
+    addZero(date.getMonth() + 1) + '-' +
+    addZero(date.getDate())
+    );
+  const[value, setValue] = useState(DT);
+ useEffect(() => {
+  fetch('/api/admin/'+value)
+     .then((response) => response.json())
+     .then((json) => setUsers(json))
+     .catch((error) => error)
+}, [value]);
 return (
   <Box sx={{ margin: 1 }}>
   <Typography variant="h6" gutterBottom component="div">Ежедневый отчет</Typography>
+    <Stack 
+      direction="row"
+      justifyContent="flex-end"
+      alignItems="flex-end"
+      spacing={2}
+    >
+      <TextField
+        id="date"
+        mt={2}
+        value={value}
+        inputFormat="YYYY-MM-DD"
+        label="Дата"
+        type="date"
+        sx={{ width: 150, marginLeft: "auto" }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={(e) => {setValue(e.target.value)}}
+      />
+    </Stack>
   <TableContainer component={Paper}>
     <Table aria-label="collapsible table">
       <TableHead>
         <TableRow>
           <TableCell />
+          <TableCell>Сотрудник</TableCell>
           <TableCell>Дата</TableCell>
-          {/* <TableCell>Время</TableCell>
+          <TableCell>Время прихода</TableCell>
           <TableCell>Комментарии</TableCell>
-          <TableCell align="right">Статус</TableCell> */}
+          <TableCell>Время ухода</TableCell>
+          <TableCell>Комментарии</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
@@ -192,8 +254,8 @@ return (
         ))}
       </TableBody>
     </Table>
-    {/* <Button onClick={handleClick}>Export</Button> */}
   </TableContainer>
+    <Button onClick={handleClick}>Export</Button>
   </Box>
 );
 }
