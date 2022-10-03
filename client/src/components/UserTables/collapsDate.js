@@ -52,6 +52,12 @@ function Row(props) {
      setIsLoading(false);
    }
  };
+  const handleClick = () => {
+    setOpen(!open);
+    if(!open)  {
+    isLoading ? <CircularProgress color="secondary" /> : fetchData(row.id_smeny)
+  }
+}
 
   return (
     <React.Fragment>
@@ -60,13 +66,12 @@ function Row(props) {
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => {setOpen(!open);
-               {!open ? (isLoading ? <CircularProgress color="secondary" /> : fetchData(row.id_smeny)) : <></>}}}
+            onClick={handleClick}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell ><span>{ (new Date(row.dt)).toLocaleDateString() }</span></TableCell>
+        <TableCell >{(new Date(row.dt)).toLocaleDateString()}</TableCell>
         <TableCell>{row.time}</TableCell>
         <TableCell>{row.comment}</TableCell>
         <TableCell align="right">
@@ -76,9 +81,7 @@ function Row(props) {
                             (row.id_op==='Ушел' && '#303F9F') ||
                             (row.id_op==='Вернулся' && '#2FB18A') ||
                             (row.id_op==='Пришел' && '#56C114'))
-                            }}>
-                            {row.id_op}
-            </Typography>
+                            }}>{row.id_op}</Typography>
         </TableCell>
       </TableRow>
       <TableRow>
@@ -100,9 +103,7 @@ function Row(props) {
                  <TableBody>
                   {userinfo.map((row2) => (
                     <TableRow key={row2.uid}>
-                      <TableCell component="th" scope="row">
-                        {row2.time}
-                      </TableCell>
+                      <TableCell component="th" scope="row">{row2.time}</TableCell>
                       <TableCell>{row2.comment}</TableCell>
                       <TableCell align="right">
                         <Typography className={classes.status}  style={{
@@ -111,9 +112,7 @@ function Row(props) {
                             (row2.id_op==='Ушел' && '#303F9F') ||
                             (row2.id_op==='Вернулся' && '#2FB18A') ||
                             (row2.id_op==='Пришел' && '#56C114'))
-                            }}>
-                            {row2.id_op}
-                        </Typography>
+                            }}>{row2.id_op}</Typography>
                       </TableCell>
                     </TableRow>
                   ))}

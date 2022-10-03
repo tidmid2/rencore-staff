@@ -71,7 +71,12 @@ const classes = useStyles();
 
     XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
   };
-
+  const handleClicke = () => {
+    setOpen(!open);
+    if(!open)  {
+    isLoading ? <CircularProgress color="secondary" /> : fetchData(row.user,row.dt)
+  }
+};
 return (
   <React.Fragment>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -79,10 +84,7 @@ return (
         <IconButton
           aria-label="expand row"
           size="small"
-          onClick={() => {
-            setOpen(!open); 
-            {!open ? (isLoading ? <CircularProgress color="secondary" /> : fetchData(row.user,row.dt)) : <Box/> }
-          }}
+          onClick={handleClicke}
         >
           {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
         </IconButton>
@@ -90,7 +92,7 @@ return (
       <TableCell component="th" scope="row">
                       {row.user_id}
       </TableCell>
-      <TableCell><span>{ (new Date(row.dt)).toLocaleDateString() }</span></TableCell>
+      <TableCell>{(new Date(row.dt)).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Typography className={classes.status}  style={{
                             backgroundColor:

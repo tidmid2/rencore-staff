@@ -43,7 +43,7 @@ const Personal = () => {
   const {user,dt1,dt2} = useParams();
   const [users, setUsers] = useState([]);
   const [userss, setUserss] = useState([]);
-  const [iduser, setIduser] = useState([user]);
+  const [iduser, setIduser] = useState(user);
   const[value, setValue] = useState(dt2); 
   const[value2, setValue2] = useState(dt1); 
   const [isLoading, setIsLoading] = useState(false);  
@@ -73,7 +73,8 @@ const Personal = () => {
          .then((json) => setUserss(json))
          .catch((error) => error)
  }, [value,value2]);
-   
+ const handleChange = (event) => setIduser(event.target.value);
+
 return (
     <Box sx={{ marginTop: "45px" }}>
     <Typography variant="h6" gutterBottom component="div">Сводный отчет по Сотруднику</Typography>
@@ -87,12 +88,17 @@ return (
           <Box>
             <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>
             <Select
-              sx={{width: "100%"}}
-              defaultValue={iduser}
+            fullWidth
+              // sx={{width: "100%"}}
+              value={iduser}
+              id="demo-simple-select-label"
               label="Сотрудник"
-              onChange={(e) => {setIduser(e.target.value)}}
+              onChange={handleChange}
             >
-              {userss.map((row) => (<MenuItem value={row.user_id}>{row.user}</MenuItem>))}
+            {userss ?  
+              userss.map((row) => (
+                <MenuItem key={row.row} value={row.user_id}>{row.user}</MenuItem>
+                )) : <MenuItem value={'0'}/>}
             </Select>
           </Box>
         </FormControl>
@@ -148,7 +154,7 @@ return (
         alignItems: "center"}}><CircularProgress /></Box> :<TableBody>
           {users.map((row) => (
             <TableRow 
-              key={row.user}
+              key={row.row}
             >
                     <TableCell component="th" scope="row">
                       <span>{ (new Date(row.dt)).toLocaleDateString() }</span>

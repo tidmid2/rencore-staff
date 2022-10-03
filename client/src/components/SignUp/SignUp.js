@@ -34,6 +34,7 @@ export default function SignUp({showAlert}) {
       severity: 'success'
     }));
       navigate('/account');
+      return id;
     } catch (err) {
       console.log(err);
       const errMsg = err?.data?.error?.data || 'Произошла ошибка при регистрации.'

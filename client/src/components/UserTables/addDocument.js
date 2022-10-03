@@ -128,6 +128,7 @@ export default function AddDocument({showAlert}) {
       }));
        navigate('/');
        navigate('/document');
+       return id;
       } catch (err) {
         console.log(err);
         const errMsg = err?.data?.error?.data || 'Произошла ошибка при отметке.'

@@ -89,7 +89,9 @@ const fetchAllDocumentByUserDb = async (dt1,dt2) => {
 
 const fetchAdminDocumentByUserDb = async (dt1,dt2,user) => {
     try {
-        const res = await db.query(`select s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) user,(l.later+'09:00:00') as statred, l.later as late,l.work as work
+        const res = await db.query(`select ROW_NUMBER () OVER (
+            ORDER BY u.id
+         ) as row,s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) user,(l.later+'09:00:00') as statred, l.later as late,l.work as work
         from tblate l
         left join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
@@ -104,7 +106,9 @@ const fetchAdminDocumentByUserDb = async (dt1,dt2,user) => {
 
 const fetchAdminUDocumentByUserDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select u.id as user_id,concat(u.first_name,' ',u.last_name) as user,sum(l.later) as lated, sum(l.work) as worked
+        const res = await db.query(`select ROW_NUMBER () OVER (
+            ORDER BY u.id
+         ) as row,u.id as user_id,concat(u.first_name,' ',u.last_name) as user --,sum(l.later) as lated, sum(l.work) as worked, 
         from tblate l
         left join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
