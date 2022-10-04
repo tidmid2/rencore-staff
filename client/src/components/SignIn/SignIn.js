@@ -33,7 +33,11 @@ export default function SignIn() {
         message: 'Авторизация прошла успешно',
         severity: 'success'
       }));
+      const token  =  user.token;
+      localStorage.setItem("x-access-token", token);
+      // setAuthToken(token);
       navigate('/document');
+      
     } catch (err) {
       const errMsg = err?.data?.error?.data || 'Произошла ошибка.'
       dispatch(showSnackbar({

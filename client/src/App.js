@@ -1,4 +1,5 @@
 import { BrowserRouter,Routes,Route,Navigate} from "react-router-dom";
+import React, { useEffect, useState } from 'react'
 import MsgSnackBar from './util/SnackBar';
 import Main from './components/Main/Main';
 import SignIn from './components/SignIn/SignIn';
@@ -29,7 +30,24 @@ function RequireAdmin({ children, redirectTo }) {
   return user.isAdmin===1 ? children : <Navigate to={redirectTo} />;
 }
 
-function App() {
+
+
+function App() {  
+  const [userd, setUserd] = useState();
+//   async function getInfo() {
+//     await fetch("/", {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         'x-access-token': localStorage.getItem('x-access-token'),
+//       },
+//     });
+// }
+  if(!(localStorage.getItem('x-access-token'))){
+    return <SignIn  setUserd={setUserd}/>
+  };
+
+
 
   return (
       <ThemeProvider theme={theme}>

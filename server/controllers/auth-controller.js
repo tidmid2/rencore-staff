@@ -8,10 +8,9 @@ const { fetchUserByEmail,
         adminStageS2,
         fetchAdminDocumentByUser,fetchAdminUDocumentByUser
     } = require('../services/users-service');
-
+const jwt = require("jsonwebtoken");
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-
 
 //регистрация
 const signUpUser = async (req, res, next) => {
@@ -113,7 +112,27 @@ const loginUser = (req, res, next) => {
                     req.login(user, (err) => {
                         if (err) return next(err);
                         const { id, first_name, last_name, email, isAdmin } = req.user;
-                        return res.json({id, first_name, last_name, email, isAdmin});
+                        const token = jwt.sign({id: user.id, email: user.email}, process.env.SESSION_SECRET, {expiresIn: "24h"})
+                        // const userinfo = {
+                        //     id, first_name, last_name, email, isAdmin
+                        // }
+                        // return res.json({
+                        //     token,
+                        //     userinfo: {
+                        //         id: userinfo.id,
+                        //         first_name: userinfo.first_name,
+                        //         last_name: userinfo.last_name,
+                        //         email: userinfo.email,
+                        //         isAdmin: userinfo.isAdmin
+                        //     }
+                        // })
+                        let options = {
+                            maxAge: 7 * 24 * 60 * 60 * 1000, // would expire after 15 minutes
+                            httpOnly: true, // The cookie only accessible by the web server
+                            signed: true // Indicates if the cookie should be signed
+                        }
+                        return res.cookie('x-access-token', 'token', options), res.header('x-access-token', [token]),res.json({token,id, first_name, last_name, email, isAdmin});
+                        
                     })
             }
     )(req, res, next);

@@ -14,11 +14,11 @@ const {
         validateSignUpUser,
         validateLoginUser,
         validateGetDocument,
-        validatePostDocument
+        validatePostDocument,
+        verifyToken
     } = require('./validation')
 const express = require('express');
 const { getSecretAnswer } = require('../controllers/data-controller.js');
-
 
 // Add this function as a middleware to routes requiring authentication
 // req.user will contain the current user in the routes
@@ -33,12 +33,12 @@ function checkAuth(req,res,next){
 }
 
 const router = express.Router();
-
+router .get('/', verifyToken)
 router  
     .post('/auth/signup', validateSignUpUser, signUpUser)
     .post('/auth/login', validateLoginUser, loginUser)
     .post('/auth/logout', logoutUser)
-    .get('/data/secret', checkAuth, getSecretAnswer)
+    .get('/data/secret', verifyToken, checkAuth, getSecretAnswer)
     
 router.get('/document/id/:user_id', validateGetDocument, documentData )
 router.post('/document/add', validatePostDocument, createDocumentByUser )

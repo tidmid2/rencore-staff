@@ -1,5 +1,7 @@
 const { check, validationResult } = require('express-validator')
-
+const jwt = require("jsonwebtoken");
+const jwt_decode = require('jwt-decode');
+const config = process.env;
 // Function that validates and sends back response
 const validationHandler = (req, res, next) => {
     const errors = validationResult(req)
@@ -32,9 +34,30 @@ const validateGetDocument = [
     validationHandler
 ]
 
+const verifyToken = async (req, res, next) => {
+    const token =
+      req.body.token || req.query.token || 
+      req.headers["x-access-token"];
+  
+    if (!token) {
+      return res.status(403).send("Для аутентификации требуется токен");
+    }
+    try {
+      // const decoded = jwt.verify(token, config.SESSION_SECRET);
+      // req.decoded;
+
+      const decoded = await jwt_decode(token, config.SESSION_SECRET);
+      return res.status(200).send(decoded);
+    } catch (err) {
+      return res.status(401).send("Неверный токен");
+    }
+    return next();
+  };
+
 module.exports = {
     validateSignUpUser,
     validateLoginUser,
     validateGetDocument,
     validatePostDocument,
+    verifyToken
 }

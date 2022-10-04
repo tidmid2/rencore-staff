@@ -41,6 +41,8 @@ app.use(compression());
 const helmet = require("helmet")
 app.use(helmet())
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser(process.env.SESSION_SECRET));
 // configure express-session to store data in postgres
 const { pool } = require('./config/db');
 app.use(session({ 
