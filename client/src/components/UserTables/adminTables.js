@@ -135,7 +135,7 @@ return (
                  <TableBody>
                 {userinfo.map((row2) => (
                   <TableRow key={row2.uid}>
-                    <TableCell component="th" scope="row"><span>{ (new Date(row2.dt)).toLocaleDateString() }</span></TableCell>
+                    <TableCell component="th" scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
                     <TableCell>{row2.time}</TableCell>
                     <TableCell>{row2.comment}</TableCell>
                     <TableCell align="right">

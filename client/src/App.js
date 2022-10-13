@@ -24,17 +24,22 @@ import { setCredentials } from './features/auth/authSlice';
 
 const theme = createTheme();
 
-function RequireAuth({ children, redirectTo }) {
+//require auth if yes then stay children else? go nahuy
+// function Redirect({ redirectTo }){
+//   <Navigate to={redirectTo} />;
+// }
+
+function RequireAuth({ children,redirectTo }) {
   const { user } = useAuth();
   return user ? children : <Navigate to={redirectTo} />;
 }
 
-function RequireAdmin({ children, redirectTo }) {
+function RequireAdmin({ children,redirectTo }) {
   const { user } = useAuth();
   return user.isAdmin===1 ? children : <Navigate to={redirectTo} />;
 }
 
-function App() {  
+function App() {
   const [authed, setAuthed] = useState(false);
   // const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -69,9 +74,10 @@ function App() {
       else{
         setAuthed(true);
         checkauth();
+        
       };
     },[]);
-
+    
 
 
   return (
@@ -93,25 +99,25 @@ function App() {
                           <Route path="/signin" element={<SignIn />} />
                           <Route path="/signup" element={<SignUp />} />
                           <Route path="/account"
-                            element={ <RequireAuth redirectTo="/signin">
+                            element={ <RequireAuth redirectTo="/">
                                         <Account />
                                       </RequireAuth>
                             }/>
                           <Route
                             path="/private"
-                            element={ <RequireAuth redirectTo="/signin">
+                            element={ <RequireAuth redirectTo="/">
                                         <Private />
                                       </RequireAuth>
                             }/>
                           <Route
                             path="/document"
-                            element={ <RequireAuth redirectTo="/signin">
+                            element={ <RequireAuth redirectTo="/">
                                         <Document />
                                       </RequireAuth>
                             }/>
                           <Route
                           path="/admin"
-                          element={ <RequireAuth redirectTo="/signin">
+                          element={ <RequireAuth redirectTo="/">
                                       <RequireAdmin redirectTo="/">
                                         <Admin />
                                       </RequireAdmin>
@@ -119,7 +125,7 @@ function App() {
                           }/>
                           <Route
                           path="/journal"
-                          element={ <RequireAuth redirectTo="/signin">
+                          element={ <RequireAuth redirectTo="/">
                                       <RequireAdmin redirectTo="/">
                                         <Journal />
                                       </RequireAdmin>
@@ -127,7 +133,7 @@ function App() {
                           }/>
                           <Route
                           path="/journal/:user/:dt1/:dt2"
-                          element={ <RequireAuth redirectTo="/signin">
+                          element={ <RequireAuth redirectTo="/">
                                       <RequireAdmin redirectTo="/">
                                         <Personal />
                                       </RequireAdmin>

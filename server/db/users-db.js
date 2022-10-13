@@ -75,7 +75,7 @@ const createDocumentByUserDb = async ({user_id, comment}) => {
 
 const fetchAllDocumentByUserDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select u.id as user_id,concat(u.first_name,' ',u.last_name) user,sum(l.late_day) as Ydays,count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
+        const res = await db.query(`select u.id as user_id,concat(u.first_name,' ',u.last_name) as user,sum(l.late_day) as Ydays,count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
         from tblate l
         left join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
@@ -91,7 +91,7 @@ const fetchAdminDocumentByUserDb = async (dt1,dt2,user) => {
     try {
         const res = await db.query(`select ROW_NUMBER () OVER (
             ORDER BY u.id
-         ) as row,s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) user,(l.later+'09:00:00') as statred, l.later as late,l.work as work
+         ) as row,s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) as  user,(l.later+'09:00:00') as statred, l.later as late,l.work as work
         from tblate l
         left join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena

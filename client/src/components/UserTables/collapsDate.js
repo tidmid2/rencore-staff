@@ -16,6 +16,8 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { useAuth } from '../../hooks/useAuth';
 import {makeStyles} from '@material-ui/core/styles';
 import CircularProgress from '@mui/material/CircularProgress';
+import Clear from './Clear';
+import Load from './Loading';
 
 const useStyles = makeStyles((theme) => ({
     status:{
@@ -55,10 +57,9 @@ function Row(props) {
   const handleClick = () => {
     setOpen(!open);
     if(!open)  {
-    isLoading ? <CircularProgress color="secondary" /> : fetchData(row.id_smeny)
+    isLoading ? <Load/> : fetchData(row.id_smeny)
   }
 }
-
   return (
     <React.Fragment>
       <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -87,6 +88,7 @@ function Row(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
+            { userinfo.length!==0 ? 
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 История отметок
@@ -99,7 +101,7 @@ function Row(props) {
                     <TableCell align="right">Статус</TableCell>
                   </TableRow>
                 </TableHead>
-                {isLoading ? <CircularProgress color="secondary" /> : 
+                {!isLoading ?  
                  <TableBody>
                   {userinfo.map((row2) => (
                     <TableRow key={row2.uid}>
@@ -116,12 +118,12 @@ function Row(props) {
                       </TableCell>
                     </TableRow>
                   ))}
-                </TableBody>}
+                </TableBody> : <Load/>}
               </Table>
-            </Box>
+            </Box> : <Clear/>}
           </Collapse>
         </TableCell>
-              </TableRow>
+      </TableRow>
     </React.Fragment>
   );
 }

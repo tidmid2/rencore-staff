@@ -148,6 +148,7 @@ export default function Nav({showAlert}) {
               >
                 <MenuItem component={Link} to="/" color="inherit" onClick={handleClose2}>Главная</MenuItem>
                 { user && <MenuItem component={Link} to="/document" color="inherit" onClick={handleClose2}>Успеваемость</MenuItem>}
+                { user && <Divider/> }
                 { user && <MenuItem onClick={handleClose2}><AdminWeb/></MenuItem>}
                 { user && <MenuItem onClick={handleClose2}><AdminWeb2/></MenuItem>}
               </Menu>
