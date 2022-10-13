@@ -1,4 +1,5 @@
 import { BrowserRouter,Routes,Route,Navigate} from "react-router-dom";
+import { useDispatch } from 'react-redux';
 import React, { useEffect, useState } from 'react'
 import MsgSnackBar from './util/SnackBar';
 import Main from './components/Main/Main';
@@ -17,6 +18,9 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Personal from "./components/UserTables/personal";
 import { useAuth } from './hooks/useAuth';
+import { useAuthMutation } from './services/api';
+import { showSnackbar } from './features/ui/uiSlice';
+import { setCredentials } from './features/auth/authSlice';
 
 const theme = createTheme();
 
@@ -30,22 +34,43 @@ function RequireAdmin({ children, redirectTo }) {
   return user.isAdmin===1 ? children : <Navigate to={redirectTo} />;
 }
 
-
-
 function App() {  
-  const [userd, setUserd] = useState();
-//   async function getInfo() {
-//     await fetch("/", {
-//       method: "GET",
-//       headers: {
-//         "Content-Type": "application/json",
-//         'x-access-token': localStorage.getItem('x-access-token'),
-//       },
-//     });
-// }
-  if(!(localStorage.getItem('x-access-token'))){
-    return <SignIn  setUserd={setUserd}/>
-  };
+  const [authed, setAuthed] = useState(false);
+  // const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [document] = useAuthMutation();
+  function hasJWT() {
+    let flag = false;
+    localStorage.getItem("x-access-token") ? flag=true : flag=false
+    return flag;
+  }
+
+  async function checkauth(){
+      try {
+        const user = await document()
+        .unwrap();
+        dispatch(setCredentials({user}));
+        //  navigate('/');
+        // navigate('/document');
+      } 
+      catch (err) {
+        console.log(err);
+        const errMsg = err?.data?.error?.data || 'Авторизуйтесь пожалуйста.'
+        dispatch(showSnackbar({
+          message: errMsg,
+          severity: 'error'
+        }));
+    }}
+ 
+    useEffect( () => {
+      if (!authed && !hasJWT){
+        return;
+      }
+      else{
+        setAuthed(true);
+        checkauth();
+      };
+    },[]);
 
 
 

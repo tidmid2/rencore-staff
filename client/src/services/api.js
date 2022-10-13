@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { logOut } from '../features/auth/authSlice';
 import { showSnackbar } from '../features/ui/uiSlice';
 
-
+const auth = localStorage.getItem('x-access-token');
 const baseQuery = fetchBaseQuery({ baseUrl: '/api' })
 
 const baseQueryWithLogout = async (args, api, extraOptions) => {
@@ -26,6 +26,16 @@ export const api = createApi({
           url: '/auth/login',
           method: 'POST',
           body: credentials,
+        }),
+      }),
+      auth: builder.mutation({
+        query: (credentials) => ({
+          url: '/auth',
+          method: 'POST',
+          body: credentials,
+          headers: {
+            'x-access-token': auth,
+          }
         }),
       }),
       signup: builder.mutation({
@@ -59,6 +69,7 @@ export const api = createApi({
 
 export const { 
       useLoginMutation, 
+      useAuthMutation,
       useSignupMutation, 
       useLogoutMutation,
       // useGetDataQuery, 
