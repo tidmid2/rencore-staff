@@ -33,12 +33,11 @@ function checkAuth(req,res,next){
 }
 
 const router = express.Router();
-router .post('/auth', verifyToken)
-router  
-    .post('/auth/signup', validateSignUpUser, signUpUser)
-    .post('/auth/login', validateLoginUser, loginUser)
-    .post('/auth/logout', logoutUser)
-    .get('/data/secret', checkAuth, getSecretAnswer)
+router.post('/auth', verifyToken)
+router.post('/auth/signup', validateSignUpUser, signUpUser)
+router.post('/auth/login', validateLoginUser, loginUser)
+router.post('/auth/logout', logoutUser)
+router.get('/data/secret', checkAuth, getSecretAnswer)
     
 router.get('/document/id/:user_id', validateGetDocument, documentData )
 router.post('/document/add', validatePostDocument, createDocumentByUser )

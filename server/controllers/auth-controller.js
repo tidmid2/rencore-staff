@@ -105,8 +105,8 @@ const loginUser = (req, res, next) => {
                     if (err) return res.status(500).send();
                     if (!user) {
                         return res.status(401)
-                                  .json({ error: { status: 401,
-                                                   data: info.message }
+                                .json({ error: { status: 401,
+                                                data: info.message }
                                             })
                         }
                     req.login(user, (err) => {
