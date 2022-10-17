@@ -21,6 +21,7 @@ import { useAuth } from './hooks/useAuth';
 import { useAuthMutation } from './services/api';
 import { showSnackbar } from './features/ui/uiSlice';
 import { setCredentials } from './features/auth/authSlice';
+import UsersTable from "./components/UserTables/UsersTable";
 
 const theme = createTheme();
 
@@ -36,7 +37,7 @@ function RequireAuth({ children,redirectTo }) {
 
 function RequireAdmin({ children,redirectTo }) {
   const { user } = useAuth();
-  return user.isAdmin===1 ? children : <Navigate to={redirectTo} />;
+  return user.isadmin===1 ? children : <Navigate to={redirectTo} />;
 }
 
 function App() {
@@ -137,6 +138,12 @@ function App() {
                                       <RequireAdmin redirectTo="/">
                                         <Personal />
                                       </RequireAdmin>
+                                    </RequireAuth>
+                          }/>
+                          <Route
+                          path="/users"
+                          element={ <RequireAuth redirectTo="/">
+                                        <UsersTable />
                                     </RequireAuth>
                           }/>
                   </Routes>

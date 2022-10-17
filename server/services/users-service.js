@@ -6,13 +6,24 @@ const {
         fetchAllDocumentByUserDb,
         fetchDocumentOPByUserDb,
         adminStage1,
-        adminStage2,fetchAdminDocumentByUserDb,fetchAdminUDocumentByUserDb
+        adminStage2,
+        fetchAdminDocumentByUserDb,
+        fetchAdminUDocumentByUserDb,
+        getUsersDb
     }
     = require('../db/users-db');
 
 const fetchUserByEmail = async (email) => {
     try {
         return await fetchUserByEmailDb(email);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+const getUsers = async () => {
+    try {
+        return await getUsersDb();
     } catch (e) {
         throw new Error(e.message);
     }
@@ -99,5 +110,7 @@ module.exports = {
                     fetchDocumentOPByUser,
                     adminStageS1,
                     adminStageS2,
-                    fetchAdminDocumentByUser,fetchAdminUDocumentByUser
+                    fetchAdminDocumentByUser,
+                    fetchAdminUDocumentByUser,
+                    getUsers,
                 }

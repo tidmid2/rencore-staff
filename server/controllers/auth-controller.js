@@ -6,7 +6,10 @@ const { fetchUserByEmail,
         fetchDocumentOPByUser,
         adminStageS1,
         adminStageS2,
-        fetchAdminDocumentByUser,fetchAdminUDocumentByUser
+        fetchAdminDocumentByUser,
+        fetchAdminUDocumentByUser,
+        getUsers,
+        
     } = require('../services/users-service');
 const jwt = require("jsonwebtoken");
 const passport = require('passport');
@@ -69,6 +72,21 @@ const fetchDocument = async (req, res, next) => {
     }
 }
 
+//вывод пользователей
+const fetchUsers = async (req, res, next) => {
+    try {
+        const newDocument = await getUsers()
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
+
 const fetchAdminDocument = async (req, res, next) => {
     try {
         const {dt1,dt2,user} = req.params
@@ -111,8 +129,8 @@ const loginUser = (req, res, next) => {
                         }
                     req.login(user, (err) => {
                         if (err) return next(err);
-                        const { id, first_name, last_name, email, isAdmin } = req.user;
-                        const token = jwt.sign({id: user.id, email: user.email,first_name: first_name,last_name: last_name,isAdmin: isAdmin}, process.env.SESSION_SECRET, {expiresIn: "24h"})
+                        const { id, first_name, last_name, email, isadmin } = req.user;
+                        const token = jwt.sign({id: user.id, email: user.email,first_name: first_name,last_name: last_name,isadmin: isadmin}, process.env.SESSION_SECRET, {expiresIn: "24h"})
                         // const userinfo = {
                         //     id, first_name, last_name, email, isAdmin
                         // }
@@ -131,7 +149,7 @@ const loginUser = (req, res, next) => {
                             httpOnly: true, // The cookie only accessible by the web server
                             signed: true // Indicates if the cookie should be signed
                         }
-                        return res.cookie('x-access-token', 'token', options), res.header('x-access-token', [token]),res.json({token,id, first_name, last_name, email, isAdmin});
+                        return res.cookie('x-access-token', 'token', options), res.header('x-access-token', [token]),res.json({token,id, first_name, last_name, email, isadmin});
                         
                     })
             }
@@ -235,5 +253,7 @@ module.exports = {
     fetchDocuments,
     adminStag1,
     adminStag2,
-    fetchAdminDocument,fetchAdminUDocument
+    fetchAdminDocument,
+    fetchAdminUDocument,
+    fetchUsers,
 }

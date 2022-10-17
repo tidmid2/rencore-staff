@@ -24,6 +24,19 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminWeb from './adminWeb'
 import AdminWeb2 from './adminWeb2'
+import GroupsIcon from '@mui/icons-material/Groups';
+
+function RequireAdmin() {
+  const { user } = useAuth();
+  
+  return (<div>{user.isAdmin===1 ? <MenuItem component={Link} to="/users" color="inherit">
+  <ListItemIcon>
+    <GroupsIcon fontSize="small"/> 
+  </ListItemIcon>
+  Пользователи
+</MenuItem>:<></>}</div>) ;
+};
+
 
 export default function Nav({showAlert}) {
   let navigate = useNavigate();
@@ -227,7 +240,9 @@ export default function Nav({showAlert}) {
                 </ListItemIcon>
                 Приватный вход 
               </MenuItem>}
-
+               
+               { user && <RequireAdmin/>}
+              
               {user && <MenuItem color="inherit" onClick={logout}>
                 <ListItemIcon>
                   <Logout fontSize="small"/>

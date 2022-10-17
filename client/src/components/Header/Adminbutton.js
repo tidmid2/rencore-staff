@@ -20,7 +20,7 @@ export default function AdminButton() {
     
   return (
   <Box>
-      {user.isAdmin===1 ?  <Button id="basic-button"
+      {user.isadmin===1 ?  <Button id="basic-button"
           aria-controls={openn ? 'basic-menu' : undefined}
           aria-haspopup="true"
           aria-expanded={openn ? 'true' : undefined}

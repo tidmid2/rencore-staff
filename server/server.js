@@ -62,15 +62,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const routes = require('./routes');
-app.use(express.static('../client/build'));
 
-  // Express serve up index.html file if it doesn't recognize route
+if(isProduction){
   const path = require('path');
-  app.use('/api', routes);
+  app.use(express.static('../client/build'));
   app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname,'..', 'client', 'build', 'index.html'));
   });
-// app.use('/api', routes);
+}
+
+  app.use('/api', routes);
+  
 
 
 // Improved error handling

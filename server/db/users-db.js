@@ -50,6 +50,16 @@ const adminStage1 = async (id_smeny) => {
     }
 }
 
+const getUsersDb = async () => {
+    try {
+        const res = await db.query(`select u.email as email, concat(u.first_name,' ',u.last_name) as name, case when u.isadmin=1 then 'Администратор' else 'Пользователь' end as isadmin
+        from users u ORDER BY id DESC`,[]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
 const adminStage2 = async (user_id,id_smeny) => {
     try {
         const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
@@ -143,6 +153,7 @@ module.exports = {
                     adminStage1,
                     adminStage2,
                     fetchAdminDocumentByUserDb,
-                    fetchAdminUDocumentByUserDb
+                    fetchAdminUDocumentByUserDb,
+                    getUsersDb
                     // adminStage3
                 }
