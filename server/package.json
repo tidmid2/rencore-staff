@@ -5,8 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"nodemon ./server.js\" \"cd ../client && npm start\"",
-    "build": "concurrently \"nodemon ./server.js\" \"cd ../client && serve -s build\""
+    "start": "nodemon ./server.js",
+    "react-start": "concurrently \"nodemon ./server.js\" \"cd ../client && npm start\"",
+    "dev": "concurrently \"nodemon ./server.js\" \"cd ../client && serve -s build\""
   },
   "author": "",
   "license": "ISC",

@@ -1,9 +1,7 @@
 const express = require('express');
 const cors = require("cors");
 
-// iPmb+7OXhs7GzSNK6lDr3cFFGZxCB490jclSwHTRajbvLPEsmkFoZWKWlvSwRJGW/nUOetvbpUUXXkdcmcPI5PV2QX4h6PCLBWr+YTg3dClkBQl9JmOY3EC5Bf/N7s9CUgZLUkzRakqao6F6/I3qdRMsf47vESKxE3ERaVJBc3cOmLMhu53R02NUL0X8nk6jKUgrptEDx8VCzzkhClD0YkNZB1aoT5ewQQyaN3/VsAZYcKKNK+QuKQX10+dVBaJ59sArAnjeYqB4nvr28vXd/EFxaFFuCgna5zhiAtb2SXIK1Wh71z/mH47MWAYQSMz2z42EXLGugoiKgc6VYEHA==
 
-// connect-pg-simple stores session info in postgres db
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 
@@ -24,6 +22,8 @@ require('./config/passport');
 const morgan = require('morgan')
 
 const app = express();
+
+// app.use(express.static('build'));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -62,7 +62,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const routes = require('./routes');
-app.use('/api', routes);
+app.use(express.static('../client/build'));
+
+  // Express serve up index.html file if it doesn't recognize route
+  const path = require('path');
+  app.use('/api', routes);
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname,'..', 'client', 'build', 'index.html'));
+  });
+// app.use('/api', routes);
+
 
 // Improved error handling
 app.use((error, req, res, next) => {
