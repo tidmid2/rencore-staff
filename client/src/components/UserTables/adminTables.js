@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import * as XLSX from 'xlsx';
 import PropTypes from 'prop-types';
@@ -29,17 +28,17 @@ function addZero(num) {
   }
 };
 
-function formatDate(date){
-  let comp='';
-  for(let i = 0; i < date.length; i++){
-    if(date[i]!=='T'){
-      comp+=date[i];
-    }
-    else{ 
-      return(comp);
-    }
-  }
-};
+// function formatDate(date){
+//   let comp='';
+//   for(let i = 0; i < date.length; i++){
+//     if(date[i]!=='T'){
+//       comp+=date[i];
+//     }
+//     else{ 
+//       return(comp);
+//     }
+//   }
+// };
 const useStyles = makeStyles((theme) => ({
   status:{
       fontWeight: 'bold',
