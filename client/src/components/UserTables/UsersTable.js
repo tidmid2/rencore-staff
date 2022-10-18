@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Box from '@mui/material/Box';
-import * as XLSX from 'xlsx';
 import PropTypes from 'prop-types';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -12,11 +9,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {makeStyles} from '@material-ui/core/styles';
-import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
 import { Tooltip } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 // import BlockIcon from '@mui/icons-material/Block';
@@ -25,12 +18,11 @@ const useStyles = makeStyles((theme) => ({
   status:{
       fontWeight: 'bold',
   fontSize: '0.75rem',
-  color: 'white',
+  color: 'black',
   backgroundColor: 'grey',
   borderRadius: 8,
   padding: '3px 10px',
   display: 'inline-block',
-  color: 'black',
   },
 }));
 

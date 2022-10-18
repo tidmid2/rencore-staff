@@ -36,13 +36,13 @@ const adminStage1 = async (id_smeny) => {
         const res = await db.query(`select d.user_id as user,d.uid as uid,concat(u.first_name,' ',u.last_name) as user_id,d.dt as dt,d.time as time,d.comment as comment,(
             select case when id_op=5 then time
                     else null 
-            end from documents where user_id=d.user_id and dt::Date = $1 ORDER BY uid DESC limit 1) as time2, (
+            end from documents where user_id=d.user_id and dt = $1 ORDER BY uid DESC limit 1) as time2, (
             select case when id_op=5 then comment
                     else null 
-            end from documents where user_id=d.user_id and dt::Date = $1 ORDER BY uid DESC limit 1
+            end from documents where user_id=d.user_id and dt = $1 ORDER BY uid DESC limit 1
         ) as comment2
         from documents d inner join users u on d.user_id = u.id inner join operacii_type o on d.id_op=o.id
-        where d.dt::Date = $1 and (d.id_op=1 or d.id_op=2)
+        where d.dt = $1 and (d.id_op=1 or d.id_op=2)
         ORDER BY d.uid DESC`,[id_smeny]);
         return res.rows;
     } catch(e) {
@@ -62,9 +62,9 @@ const getUsersDb = async () => {
 
 const adminStage2 = async (user_id,id_smeny) => {
     try {
-        const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+        const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt::Date as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
         from documents d inner join operacii_type o on d.id_op=o.id 
-        WHERE d.user_id = $1 and d.dt::Date = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,[user_id,id_smeny]);
+        WHERE d.user_id = $1 and TO_CHAR(d.dt, 'dd.MM.yyyy') = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,[user_id,id_smeny]);
         return res.rows;
     } catch(e) {
         throw new Error(e.message);

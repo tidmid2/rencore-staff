@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import * as XLSX from 'xlsx';
 import PropTypes from 'prop-types';
@@ -20,6 +21,25 @@ import Button from '@mui/material/Button';
 import { Stack } from '@mui/material';
 import TextField from '@mui/material/TextField';
 
+function addZero(num) {
+  if (num >= 0 && num <= 9) {
+      return '0' + num;
+  } else {
+      return num;
+  }
+};
+
+function formatDate(date){
+  let comp='';
+  for(let i = 0; i < date.length; i++){
+    if(date[i]!=='T'){
+      comp+=date[i];
+    }
+    else{ 
+      return(comp);
+    }
+  }
+};
 const useStyles = makeStyles((theme) => ({
   status:{
       fontWeight: 'bold',
@@ -74,9 +94,13 @@ const classes = useStyles();
   const handleClicke = () => {
     setOpen(!open);
     if(!open)  {
-    isLoading ? <CircularProgress color="secondary" /> : fetchData(row.user,row.dt)
+    isLoading ? <CircularProgress color="secondary" /> : fetchData(row.user,(new Date(row.dt)).toLocaleDateString())
   }
 };
+
+
+// const[val, setVal] = useState(DT);
+// console.log(val);
 return (
   <React.Fragment>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -183,13 +207,7 @@ row2: PropTypes.shape({
   id_smeny: PropTypes.string,
 }),
 };
-function addZero(num) {
-  if (num >= 0 && num <= 9) {
-      return '0' + num;
-  } else {
-      return num;
-  }
-};
+
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
   const handleClick = () => {
