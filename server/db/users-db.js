@@ -9,6 +9,36 @@ const fetchUserByEmailDb = async (email) => {
     }
 }
 
+const forgotPassDb = async (email) =>{
+    try {
+      const res = await db.query(`SELECT * FROM users WHERE email = $1`, [email]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+  
+}
+
+const forgotPass1Db = async (id) =>{
+    try {
+      const res = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+  
+}
+
+const forgotPass2Db = async (password,id) =>{
+    try {
+      const res = await db.query(`update users set pwd_hash = $1 where id = $2`, [password,id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+  
+}
+
 const fetchDocumentByUserDb = async (user_id) => {
     try {
         const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt as dt, d.time as "time", d.comment as "comment",d.status as status,o.name as id_op,d.id_smeny as id_smeny 
@@ -154,6 +184,9 @@ module.exports = {
                     adminStage2,
                     fetchAdminDocumentByUserDb,
                     fetchAdminUDocumentByUserDb,
-                    getUsersDb
+                    getUsersDb,
+                    forgotPassDb,
+                    forgotPass1Db,
+                    forgotPass2Db
                     // adminStage3
                 }

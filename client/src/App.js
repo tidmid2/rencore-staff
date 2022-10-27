@@ -22,7 +22,8 @@ import { useAuthMutation } from './services/api';
 import { showSnackbar } from './features/ui/uiSlice';
 import { setCredentials } from './features/auth/authSlice';
 import UsersTable from "./components/UserTables/UsersTable";
-
+import ResetPassword from "./components/ResetPass/ResetPass";
+import ResetPass from "./components/ResetPass/ResetPass1";
 const theme = createTheme();
 
 //require auth if yes then stay children else? go nahuy
@@ -41,8 +42,9 @@ function RequireAdmin({ children,redirectTo }) {
 }
 
 function App() {
+
   const [authed, setAuthed] = useState(false);
-  // const navigate = useNavigate();
+  // const navigate = Navigate();
   const dispatch = useDispatch();
   const [document] = useAuthMutation();
   function hasJWT() {
@@ -56,7 +58,7 @@ function App() {
         const user = await document()
         .unwrap();
         dispatch(setCredentials({user}));
-        //  navigate('/');
+        // navigate('/');
         // navigate('/document');
       } 
       catch (err) {
@@ -99,6 +101,8 @@ function App() {
                           
                           <Route path="/signin" element={<SignIn />} />
                           <Route path="/signup" element={<SignUp />} />
+                          <Route path="/resetpassword" element={<ResetPassword />} />
+                          <Route path="/resetpassword/:id/:token" element={<ResetPass />}/>
                           <Route path="/account"
                             element={ <RequireAuth redirectTo="/">
                                         <Account />

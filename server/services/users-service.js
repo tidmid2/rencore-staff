@@ -9,7 +9,10 @@ const {
         adminStage2,
         fetchAdminDocumentByUserDb,
         fetchAdminUDocumentByUserDb,
-        getUsersDb
+        getUsersDb,
+        forgotPassDb,
+        forgotPass1Db,
+        forgotPass2Db
     }
     = require('../db/users-db');
 
@@ -17,6 +20,30 @@ const fetchUserByEmail = async (email) => {
     try {
         return await fetchUserByEmailDb(email);
     } catch (e) {
+        throw new Error(e.message);
+    }
+}
+
+const forgotPass = async (email) => {
+    try {
+        return await forgotPassDb(email);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const forgot1Pass = async (id) => {
+    try {
+        return await forgotPass1Db(id);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const forgot2Pass = async (password,id) => {
+    try {
+        return await forgotPass2Db(password,id);
+    } catch(e) {
         throw new Error(e.message);
     }
 }
@@ -113,4 +140,7 @@ module.exports = {
                     fetchAdminDocumentByUser,
                     fetchAdminUDocumentByUser,
                     getUsers,
+                    forgotPass,
+                    forgot1Pass,
+                    forgot2Pass
                 }

@@ -25,7 +25,6 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminWeb from './adminWeb'
 import AdminWeb2 from './adminWeb2'
 import GroupsIcon from '@mui/icons-material/Groups';
-
 function RequireAdmin() {
   const { user } = useAuth();
   
@@ -53,6 +52,7 @@ export default function Nav({showAlert}) {
           message: 'Вы успешно вышли с аккаунта',
           severity: 'success'
         }));
+        localStorage.clear('x-access-token');
         navigate('/');
     } catch(err) {
       dispatch(showSnackbar({

@@ -10,7 +10,10 @@ const {
         adminStag2,
         fetchAdminDocument,
         fetchAdminUDocument,
-        fetchUsers
+        fetchUsers,
+        fetchPass,
+        fetch1Pass,
+        fetch2Pass,
     } = require('../controllers/auth-controller.js')
 const { 
         validateSignUpUser,
@@ -35,19 +38,33 @@ function checkAuth(req,res,next){
 }
 
 const router = express.Router();
+//auth and authorize
 router.post('/auth', verifyToken)
 router.post('/auth/signup', validateSignUpUser, signUpUser)
 router.post('/auth/login', validateLoginUser, loginUser)
 router.post('/auth/logout', logoutUser)
+
+//nothing
 router.get('/data/secret', checkAuth, getSecretAnswer)
+
+//get all users for admin
 router.get('/admin/users', fetchUsers)
-    
+
+//reset password
+router.post('/auth/forgot-pass', fetchPass)
+router.get("/auth/reset-password/:id/:token",fetch1Pass)
+router.post("/auth/reset-password/:id/:token",fetch2Pass)
+
+//user create or fetch documents
 router.get('/document/id/:user_id', validateGetDocument, documentData )
 router.post('/document/add', validatePostDocument, createDocumentByUser )
 router.get('/document/id/:user_id/id_smeny/:id_smeny',fetchDocuments  )
+
+//admin fetch documents
 router.get('/admin/dt1/:dt1/dt2/:dt2',  fetchDocument )
 router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  fetchAdminDocument )
 router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  fetchAdminUDocument )
+
 router.get('/admin/:id_smeny',  adminStag1 )
 router.get('/admin/:user_id/:id_smeny',  adminStag2 )
 // router.get('/admin/all',  fetchDocument )
