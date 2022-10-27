@@ -29,7 +29,7 @@ const forgotPass1Db = async (id) =>{
   
 }
 
-const forgotPass2Db = async (password,id) =>{
+const forgotPass2Db = async (password,id,token) =>{
     try {
       const res = await db.query(`update users set pwd_hash = $1 where id = $2`, [password,id]);
       return res.rows[0];

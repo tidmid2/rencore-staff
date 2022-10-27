@@ -40,9 +40,9 @@ const forgot1Pass = async (id) => {
     }
 }
 
-const forgot2Pass = async (password,id) => {
+const forgot2Pass = async (password) => {
     try {
-        return await forgotPass2Db(password,id);
+        return await forgotPass2Db(password);
     } catch(e) {
         throw new Error(e.message);
     }

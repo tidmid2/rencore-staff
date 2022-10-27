@@ -46,16 +46,17 @@ export const api = createApi({
         }),
       }),
       updatePass: builder.mutation({
-        query: (password) => ({
-          url: '/auth/reset-password/:id/:token',
+        query: (credentials) => ({
+          url: `/auth/reset-password`,
           method: 'POST',
-          body: password,
+          body: credentials,
         }),
       }),
       reset: builder.mutation({
-        query: () => ({
+        query: (email) => ({
           url: '/auth/forgot-pass',
           method: 'POST',
+          body: email,
         }),
       }),
       logout: builder.mutation({
@@ -74,9 +75,6 @@ export const api = createApi({
           body: uid,
         }),
       }),
-      // getData: builder.query({
-      //   query: () => '/document/op/1',
-      // }),
     }),
 })
 
@@ -87,7 +85,6 @@ export const {
       useUpdatePassMutation,
       useResetMutation,
       useLogoutMutation,
-      // useGetDataQuery, 
       useGetSecretMsgQuery,
       useDocumentMutation,
 } = api;

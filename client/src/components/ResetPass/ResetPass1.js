@@ -12,6 +12,8 @@ import { useNavigate,useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showSnackbar } from '../../features/ui/uiSlice';
 import { useUpdatePassMutation } from '../../services/api';
+import { CircularProgress } from '@mui/material';
+import Loading from '../UserTables/Loading';
 
 export default function ResetPass({showAlert}) {
     const [tokenstatus, setTokenstatus] = useState();
@@ -19,19 +21,19 @@ export default function ResetPass({showAlert}) {
     const dispatch = useDispatch();
     const [reset] = useUpdatePassMutation();
     const {id,token} = useParams();
+    const [isLoading, setIsLoading] = useState(false);
     const handleSubmit = async(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         try {
-          const id = await reset({
-            password: data.get('password'),
-        }).unwrap();
-        dispatch(showSnackbar({
-          message: 'Пароль успешно обновлён',
-          severity: 'success'
-        }));
+          // setIsLoading(true);
+          const idd = await reset({password: data.get('password'), id: id, token: token}).unwrap();
+          dispatch(showSnackbar({
+            message: 'Пароль успешно обновлён',
+            severity: 'success'
+          }));
+          // setIsLoading(false)
           navigate('/');
-          return id;
         } catch (err) {
           console.log(err);
           const errMsg = err?.data?.error?.data || 'Произошла ошибка при обновлении пароля.'
@@ -43,7 +45,7 @@ export default function ResetPass({showAlert}) {
       }
 
     const fetchData = async (id,token) => {
-        // setIsLoading(true);
+        setIsLoading(true);
         try{ 
           const response = await fetch('/api/auth/reset-password/'+id+'/'+token)
           if (!response.ok) {
@@ -54,7 +56,7 @@ export default function ResetPass({showAlert}) {
         } catch (err) {
           return err;
         } finally {
-        //   setIsLoading(false);
+          setIsLoading(false);
       }};
   
     useEffect(() => {
@@ -131,7 +133,8 @@ export default function ResetPass({showAlert}) {
     );
    }
    else{
-    return(        
+    return(
+      !isLoading ?        
     <Container component="main" maxWidth="xs">
         <Box
         sx={{
@@ -151,6 +154,6 @@ export default function ResetPass({showAlert}) {
         Попробуйте снова!
         </Typography>
         </Box>
-    </Container>);
+    </Container> : <Loading></Loading> );
    }
 }

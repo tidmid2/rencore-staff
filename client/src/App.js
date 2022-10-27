@@ -47,6 +47,7 @@ function App() {
   // const navigate = Navigate();
   const dispatch = useDispatch();
   const [document] = useAuthMutation();
+
   function hasJWT() {
     let flag = false;
     localStorage.getItem("x-access-token") ? flag=true : flag=false
@@ -63,7 +64,7 @@ function App() {
       } 
       catch (err) {
         console.log(err);
-        const errMsg = err?.data?.error?.data || 'Авторизуйтесь пожалуйста.'
+        const errMsg = err?.data?.error?.data || 'Произошло ошибка при авторизации.'
         dispatch(showSnackbar({
           message: errMsg,
           severity: 'error'
@@ -71,7 +72,8 @@ function App() {
     }}
  
     useEffect( () => {
-      if (!authed && !hasJWT){
+      hasJWT();
+      if (!authed && !hasJWT()){
         return;
       }
       else{

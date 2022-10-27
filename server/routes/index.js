@@ -20,6 +20,8 @@ const {
         validateLoginUser,
         validateGetDocument,
         validatePostDocument,
+        validateResetPass,
+        validateResetPassHandler,
         verifyToken
     } = require('./validation')
 const express = require('express');
@@ -51,9 +53,9 @@ router.get('/data/secret', checkAuth, getSecretAnswer)
 router.get('/admin/users', fetchUsers)
 
 //reset password
-router.post('/auth/forgot-pass', fetchPass)
+router.post('/auth/forgot-pass',validateResetPassHandler, fetchPass)
 router.get("/auth/reset-password/:id/:token",fetch1Pass)
-router.post("/auth/reset-password/:id/:token",fetch2Pass)
+router.post("/auth/reset-password",validateResetPass, fetch2Pass)
 
 //user create or fetch documents
 router.get('/document/id/:user_id', validateGetDocument, documentData )

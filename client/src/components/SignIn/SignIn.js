@@ -85,16 +85,21 @@ export default function SignIn() {
               autoComplete="current-password"
             />
             <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Войти
-            </Button>
-            <Grid container justifyContent="center">
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Войти
+              </Button>
+            <Grid container justifyContent="space-around">
               <Grid item>
-                <Link href="/signup" variant="body2">
+                <Link href="/resetpassword" variant="body2">
+                {"Забыли пароль?"}
+                </Link>
+              </Grid>
+              <Grid item xs={5}>
+                <Link href="/signup" variant="body2" justifyContent="center">
                   {"Нет учетной записи? Зарегестрируйтесь"}
                 </Link>
               </Grid>

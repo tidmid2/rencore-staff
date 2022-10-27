@@ -29,6 +29,17 @@ const validateLoginUser = [
     validationHandler
 ]
 
+const validateResetPassHandler = [
+  check('email').not().isEmpty().isEmail().isLength({max: 100}),
+  validationHandler
+]
+
+const validateResetPass = [
+  check('id').not().isEmpty().isInt(),
+  check('password').not().isEmpty().isLength({max: 100}),
+  validationHandler
+]
+
 const validateGetDocument = [
     check('user_id').not().isEmpty().isInt(),
     validationHandler
@@ -60,5 +71,7 @@ module.exports = {
     validateGetDocument,
     validatePostDocument,
     verifyToken,
-    validationHandler
+    validationHandler,
+    validateResetPassHandler,
+    validateResetPass
 }
