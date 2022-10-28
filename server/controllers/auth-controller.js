@@ -137,6 +137,12 @@ const loginUser = (req, res, next) => {
                 req.login(user, (err) => {
                     if (err) return next(err);
                     const { id, first_name, last_name, email, isadmin } = req.user;
+                    const oldUser = changePassAdminCheck(user.id)
+                    if (oldUser.blocked!==false) {
+                        return res.status(422).json({
+                            error: { status: 422, data: "Ошибка! У вас нет доступа к системе"}
+                        });
+                    }
                     const token = jwt.sign({id: user.id, email: user.email,first_name: first_name,last_name: last_name,isadmin: isadmin}, process.env.SESSION_SECRET, {expiresIn: "24h"})
                     // const userinfo = {
                     //     id, first_name, last_name, email, isAdmin
