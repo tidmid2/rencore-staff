@@ -143,6 +143,16 @@ return (
   <React.Fragment>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
       <TableCell>
+        <Typography 
+        className={classes.status}  
+        style={{
+          backgroundColor:
+            ((row.blocked===false && '#00FFB2') ||
+            (row.blocked===true && '#E55151'))
+        }}
+        >
+          { row.blocked===true ? "Заблокирован" : "Активен"}
+        </Typography>
       </TableCell>
       <TableCell component="th" scope="row">{row.email}</TableCell>
       <TableCell>{row.name}</TableCell>
@@ -268,6 +278,7 @@ return (
       <TableHead>
         <TableRow>
           <TableCell />
+          <TableCell>Статус</TableCell>
           <TableCell>Email</TableCell>
           <TableCell>Сотрудник</TableCell>
           <TableCell>Уровень доступа</TableCell>
