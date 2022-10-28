@@ -173,7 +173,7 @@ return (
           container
           direction="column"
           justifyContent="center"
-          alignItems="flex-start"
+          alignItems="center"
           spacing={1}
         >
           <Grid item><Tooltip title="Изменить"><CreateIcon onClick={()=>{setUserId((row.id)); setTypeBeat(1); handleOpen();}}/></Tooltip></Grid>
@@ -277,7 +277,6 @@ return (
     <Table aria-label="collapsible table" >
       <TableHead>
         <TableRow>
-          <TableCell />
           <TableCell>Статус</TableCell>
           <TableCell>Email</TableCell>
           <TableCell>Сотрудник</TableCell>
