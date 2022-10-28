@@ -136,9 +136,8 @@ const loginUser = (req, res, next) => {
                     }
                 req.login(user, (err) => {
                     if (err) return next(err);
-                    const { id, first_name, last_name, email, isadmin } = req.user;
-                    const oldUser = changePassAdminCheck(user.id)
-                    if (oldUser.blocked!==false) {
+                    const { id, first_name, last_name, email, isadmin, blocked } = req.user;
+                    if (user.blocked!==false) {
                         return res.status(422).json({
                             error: { status: 422, data: "Ошибка! У вас нет доступа к системе"}
                         });
