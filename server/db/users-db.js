@@ -29,14 +29,50 @@ const forgotPass1Db = async (id) =>{
   
 }
 
-const forgotPass2Db = async (password,id,token) =>{
+const changePassAdminCheckDB = async (id) =>{
+    try {
+      const res = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+  
+}
+
+const forgotPass2Db = async ({password,id}) =>{
     try {
       const res = await db.query(`update users set pwd_hash = $1 where id = $2`, [password,id]);
       return res.rows[0];
     } catch (e) {
         throw new Error(error.message);
     }
-  
+}
+
+const changePassAdminDB = async (password,id) =>{
+    try {
+      const res = await db.query(`update users set pwd_hash = $1 where id = $2`, [password,id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+}
+
+const blockUserDB = async ({id, blocked}) =>{
+    try {
+      const res = await db.query(`update users set blocked = $1 where id = $2`, [blocked,id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+}
+
+const deleteCardFromUserDB = async (id) =>{
+    try {
+      const res = await db.query(`delete from user_card where user_id = $1`, [id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
 }
 
 const fetchDocumentByUserDb = async (user_id) => {
@@ -82,7 +118,7 @@ const adminStage1 = async (id_smeny) => {
 
 const getUsersDb = async () => {
     try {
-        const res = await db.query(`select u.email as email, concat(u.first_name,' ',u.last_name) as name, case when u.isadmin=1 then 'Администратор' else 'Пользователь' end as isadmin
+        const res = await db.query(`select u.id as id,u.email as email, concat(u.first_name,' ',u.last_name) as name, case when u.isadmin=1 then 'Администратор' else 'Пользователь' end as isadmin, u.blocked as blocked
         from users u ORDER BY id DESC`,[]);
         return res.rows;
     } catch(e) {
@@ -187,6 +223,9 @@ module.exports = {
                     getUsersDb,
                     forgotPassDb,
                     forgotPass1Db,
-                    forgotPass2Db
-                    // adminStage3
+                    forgotPass2Db,
+                    blockUserDB,
+                    deleteCardFromUserDB,
+                    changePassAdminDB,
+                    changePassAdminCheckDB,
                 }

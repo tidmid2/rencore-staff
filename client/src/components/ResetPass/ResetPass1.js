@@ -12,7 +12,6 @@ import { useNavigate,useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showSnackbar } from '../../features/ui/uiSlice';
 import { useUpdatePassMutation } from '../../services/api';
-import { CircularProgress } from '@mui/material';
 import Loading from '../UserTables/Loading';
 
 export default function ResetPass({showAlert}) {

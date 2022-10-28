@@ -11,7 +11,11 @@ const { fetchUserByEmail,
     getUsers,
     forgotPass,
     forgot1Pass,
-    forgot2Pass
+    forgot2Pass,
+    blockUser,
+    deleteCardFromUser,
+    changePassAdmin,
+    changePassAdminCheck,
 } = require('../services/users-service');
 const jwt = require("jsonwebtoken");
 const passport = require('passport');
@@ -336,27 +340,68 @@ try {
     const verify = jwt.verify(token, secret);
     const encryptedPassword = await bcrypt.hash(password, 10);
     const newPass = await forgot2Pass(encryptedPassword,id)
+    console.log(newPass);
     res.status(200).json("Пароль успешно обновлен")
 } catch(err) {
     return next(err);
 }
 }
 
+const changePassAdminController = async (req, res, next) => {
+    const { password,id } = req.body;
+    try {
+        const oldUser = await changePassAdminCheck(id)
+        if (!oldUser) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const newPass = await changePassAdmin(encryptedPassword,id)
+        return res.status(201).json();
+    } catch(err) {
+        return next(err);
+    }
+}
+
+const blockedUser = async (req, res, next) => {
+    const {id, blocked} = req.body;
+    try {
+        const Document = { id, blocked }
+        const newDocument = await blockUser(Document);
+        res.status(200).send();
+    } catch(err) {
+        return next(err);
+    }
+}
+
+const deleteCardUser = async (req, res, next) => {
+    const {id} = req.body;
+    try {
+        const newDocument = await deleteCardFromUser(id)
+        res.status(200).send();
+    } catch(err) {
+        return next(err);
+    }
+}
 
 module.exports = {
-signUpUser, 
-loginUser, 
-logoutUser, 
-documentData,
-createDocumentByUser,
-fetchDocument,
-fetchDocuments,
-adminStag1,
-adminStag2,
-fetchAdminDocument,
-fetchAdminUDocument,
-fetchUsers,
-fetchPass,
-fetch1Pass,
-fetch2Pass
+    signUpUser, 
+    loginUser, 
+    logoutUser, 
+    documentData,
+    createDocumentByUser,
+    fetchDocument,
+    fetchDocuments,
+    adminStag1,
+    adminStag2,
+    fetchAdminDocument,
+    fetchAdminUDocument,
+    fetchUsers,    
+    fetchPass,
+    fetch1Pass,
+    fetch2Pass,
+    changePassAdminController,
+    blockedUser,
+    deleteCardUser
 }

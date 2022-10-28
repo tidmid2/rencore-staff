@@ -23,17 +23,18 @@ import logo from './favicon.ico';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AdminWeb from './adminWeb'
-import AdminWeb2 from './adminWeb2'
+// import AdminWeb2 from './adminWeb2'
 import GroupsIcon from '@mui/icons-material/Groups';
+
 function RequireAdmin() {
   const { user } = useAuth();
   
-  return (<div>{user.isAdmin===1 ? <MenuItem component={Link} to="/users" color="inherit">
+  return (<>{user.isAdmin===1 ? <MenuItem component={Link} to="/users" color="inherit">
   <ListItemIcon>
     <GroupsIcon fontSize="small"/> 
   </ListItemIcon>
   Пользователи
-</MenuItem>:<></>}</div>) ;
+</MenuItem>:<></>}</>) ;
 };
 
 
@@ -163,7 +164,7 @@ export default function Nav({showAlert}) {
                 { user && <MenuItem component={Link} to="/document" color="inherit" onClick={handleClose2}>Успеваемость</MenuItem>}
                 { user && <Divider/> }
                 { user && <MenuItem onClick={handleClose2}><AdminWeb/></MenuItem>}
-                { user && <MenuItem onClick={handleClose2}><AdminWeb2/></MenuItem>}
+                {/* { user && <MenuItem onClick={handleClose2}><AdminWeb2/></MenuItem>} */}
               </Menu>
             </Box>
            }

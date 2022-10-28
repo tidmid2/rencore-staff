@@ -14,6 +14,9 @@ const {
         fetchPass,
         fetch1Pass,
         fetch2Pass,
+        changePassAdminController,
+        blockedUser,
+        deleteCardUser
     } = require('../controllers/auth-controller.js')
 const { 
         validateSignUpUser,
@@ -22,6 +25,8 @@ const {
         validatePostDocument,
         validateResetPass,
         validateResetPassHandler,
+        validateChangePass,
+        validateId,
         verifyToken
     } = require('./validation')
 const express = require('express');
@@ -51,6 +56,9 @@ router.get('/data/secret', checkAuth, getSecretAnswer)
 
 //get all users for admin
 router.get('/admin/users', fetchUsers)
+router.post('/admin/blockuser', validateId, blockedUser)
+router.post('/admin/deletecard', validateId, deleteCardUser)
+router.post('/admin/updatepasswordadmin', validateChangePass, changePassAdminController)
 
 //reset password
 router.post('/auth/forgot-pass',validateResetPassHandler, fetchPass)

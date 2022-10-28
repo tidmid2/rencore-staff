@@ -52,6 +52,27 @@ export const api = createApi({
           body: credentials,
         }),
       }),
+      updatePassAdmin: builder.mutation({
+        query: (credentials) => ({
+          url: `/admin/updatepasswordadmin`,
+          method: 'POST',
+          body: credentials,
+        }),
+      }),
+      blockUser: builder.mutation({
+        query: (credentials) => ({
+          url: '/admin/blockuser',
+          method: 'POST',
+          body: credentials,
+        }),
+      }),
+      deleteCard: builder.mutation({
+        query: (credentials) => ({
+          url: '/admin/deletecard',
+          method: 'POST',
+          body: credentials,
+        }),
+      }),
       reset: builder.mutation({
         query: (email) => ({
           url: '/auth/forgot-pass',
@@ -83,8 +104,11 @@ export const {
       useAuthMutation,
       useSignupMutation, 
       useUpdatePassMutation,
+      useUpdatePassAdminMutation,
       useResetMutation,
       useLogoutMutation,
+      useBlockUserMutation,
+      useDeleteCardMutation,
       useGetSecretMsgQuery,
       useDocumentMutation,
 } = api;

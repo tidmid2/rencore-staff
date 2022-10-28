@@ -21,7 +21,7 @@ import { useAuth } from './hooks/useAuth';
 import { useAuthMutation } from './services/api';
 import { showSnackbar } from './features/ui/uiSlice';
 import { setCredentials } from './features/auth/authSlice';
-import UsersTable from "./components/UserTables/UsersTable";
+import Users from "./components/Admin/Users";
 import ResetPassword from "./components/ResetPass/ResetPass";
 import ResetPass from "./components/ResetPass/ResetPass1";
 const theme = createTheme();
@@ -149,7 +149,7 @@ function App() {
                           <Route
                           path="/users"
                           element={ <RequireAuth redirectTo="/">
-                                        <UsersTable />
+                                        <Users />
                                     </RequireAuth>
                           }/>
                   </Routes>

@@ -37,6 +37,7 @@ export default function AdminButton() {
           >
             <MenuItem component={Link} to="/admin" onClick={handleClos}>Ежедневный отчет</MenuItem>
             <MenuItem component={Link} to="/journal" onClick={handleClos}>Сводный отчет</MenuItem>
+            <MenuItem component={Link} to="/users" onClick={handleClos}>Пользователи</MenuItem>
           </Menu>
   </Box>
   );

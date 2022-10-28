@@ -12,7 +12,11 @@ const {
         getUsersDb,
         forgotPassDb,
         forgotPass1Db,
-        forgotPass2Db
+        forgotPass2Db,
+        blockUserDB,
+        deleteCardFromUserDB,
+        changePassAdminDB,
+        changePassAdminCheckDB,
     }
     = require('../db/users-db');
 
@@ -32,6 +36,22 @@ const forgotPass = async (email) => {
     }
 }
 
+const blockUser = async (id) => {
+    try {
+        return await blockUserDB(id);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const deleteCardFromUser = async (id) => {
+    try {
+        return await deleteCardFromUserDB(id);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
 const forgot1Pass = async (id) => {
     try {
         return await forgotPass1Db(id);
@@ -40,9 +60,25 @@ const forgot1Pass = async (id) => {
     }
 }
 
+const changePassAdminCheck = async (id) => {
+    try {
+        return await changePassAdminCheckDB(id);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
 const forgot2Pass = async (password) => {
     try {
         return await forgotPass2Db(password);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const changePassAdmin = async (password,id) => {
+    try {
+        return await changePassAdminDB(password,id);
     } catch(e) {
         throw new Error(e.message);
     }
@@ -142,5 +178,9 @@ module.exports = {
                     getUsers,
                     forgotPass,
                     forgot1Pass,
-                    forgot2Pass
+                    forgot2Pass,
+                    blockUser,
+                    deleteCardFromUser,
+                    changePassAdmin,
+                    changePassAdminCheck,
                 }
