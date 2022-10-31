@@ -1,49 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import { useAuth } from "../../hooks/useAuth";
-import AdminButton from './Adminbutton';
 import { useDispatch } from 'react-redux';
+
+import { AppBar, Box, Toolbar, Button, Menu, MenuItem, Avatar, ListItemIcon, Divider, IconButton, Tooltip, Grid } from '@mui/material';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
+import Logout from '@mui/icons-material/Logout';
+
 import { logOut } from '../../features/auth/authSlice';
 import { useLogoutMutation } from '../../services/api';
 import { showSnackbar } from '../../features/ui/uiSlice';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Avatar from '@mui/material/Avatar';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import logo from './favicon.ico';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AdminWeb from './adminWeb'
-// import AdminWeb2 from './adminWeb2'
-import GroupsIcon from '@mui/icons-material/Groups';
+import { useAuth } from "../../hooks/useAuth";
 
-function RequireAdmin() {
-  const { user } = useAuth();
-  
-  return (<>{user.isAdmin===1 ? <MenuItem component={Link} to="/users" color="inherit">
-  <ListItemIcon>
-    <GroupsIcon fontSize="small"/> 
-  </ListItemIcon>
-  Пользователи
-</MenuItem>:<></>}</>) ;
-};
-
+import logo from '../../images/favicon.ico';
 
 export default function Nav({showAlert}) {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  
   const { user } = useAuth();
-
   const [logoutOfApi] = useLogoutMutation();
+
+  const matches = useMediaQuery("(max-width: 600px)");
+  const matches2 = useMediaQuery("(min-width: 600px)");
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [anchorEl3, setAnchorEl3] = React.useState(null);
+
+  const open = Boolean(anchorEl);
+  const open2 = Boolean(anchorEl2);
+  const open3 = Boolean(anchorEl3);
 
   async function logout() {
     try {
@@ -63,29 +51,31 @@ export default function Nav({showAlert}) {
     }
   }
 
-  //burgermenu
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorEl2, setAnchorEl2] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const open2 = Boolean(anchorEl2);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
+  const handleClick3 = (event) => {
+    setAnchorEl3(event.currentTarget);
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
   };
-  const matches = useMediaQuery("(max-width: 600px)");
-  const matches2 = useMediaQuery("(min-width: 600px)");
+  const handleClose3 = () => {
+    setAnchorEl3(null);
+  };
+
   return (
     <Box>
       <AppBar>
         <Toolbar>
+
           {/* Logo */} 
           <Tooltip title="RenCore">
             <Toolbar>
@@ -100,7 +90,7 @@ export default function Nav({showAlert}) {
           </Tooltip>
 
 
-          {/* Главная */}
+          {/* Main Buttons */}
           {matches2 && 
             <Box 
               display="flex"
@@ -108,12 +98,43 @@ export default function Nav({showAlert}) {
               alignItems="center"
               spacing={2}>
               <Button component={Link} to="/" color="inherit">Главная</Button>
-              { user && <Button component={Link} to="/document" color="inherit" >Успеваемость</Button>}
-              { user && <AdminButton/>}
+              { user && <>
+                <Button component={Link} to="/document" color="inherit" >
+                  Успеваемость
+                </Button>
+
+                <Box>
+                  { user.isadmin!==1 ? <></> :
+                    <Button id="basic-button"
+                      aria-controls={open3 ? 'basic-menu' : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open3 ? 'true' : undefined}
+                      onClick={handleClick3}
+                      color="inherit"
+                    >
+                      Admin
+                    </Button>
+                  }
+
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl3}
+                    open={open3}
+                    onClose={handleClose3}
+                    MenuListProps={{
+                      'aria-labelledby': 'basic-button',
+                    }}
+                  >
+                    <MenuItem component={Link} to="/admin" onClick={handleClose3}>Ежедневный отчет</MenuItem>
+                    <MenuItem component={Link} to="/journal" onClick={handleClose3}>Сводный отчет</MenuItem>
+                    <MenuItem component={Link} to="/users" onClick={handleClose3}>Пользователи</MenuItem>
+                  </Menu>
+                </Box>
+              </>}
             </Box>
-           }
+          }
           
-          {matches && 
+          { matches && 
             <Box color="white">
               <IconButton
                 onClick={handleClick2}
@@ -125,6 +146,7 @@ export default function Nav({showAlert}) {
               >
                 <MoreVertIcon color="white" />
               </IconButton>
+
               <Menu
                 anchorEl={anchorEl2}
                 id="account-menu"
@@ -161,13 +183,31 @@ export default function Nav({showAlert}) {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
               >
                 <MenuItem component={Link} to="/" color="inherit" onClick={handleClose2}>Главная</MenuItem>
-                { user && <MenuItem component={Link} to="/document" color="inherit" onClick={handleClose2}>Успеваемость</MenuItem>}
-                { user && <Divider/> }
-                { user && <MenuItem onClick={handleClose2}><AdminWeb/></MenuItem>}
-                {/* { user && <MenuItem onClick={handleClose2}><AdminWeb2/></MenuItem>} */}
+                {/* { user && <></>} */}
+                { user && <>
+                  <MenuItem component={Link} to="/document" color="inherit" onClick={handleClose2}>
+                    Успеваемость
+                  </MenuItem> 
+                  <Divider/> 
+                  { user.isadmin!==1 ? <></> : 
+                    <MenuItem>
+                      <Grid 
+                        container
+                        direction="column"
+                        justifyContent="center"
+                        alignItems="flex-start"
+                        spacing={3}
+                      >
+                        <Grid item><Box component={Link} to="/admin" color="inherit" sx={{textDecoration: "none"}} onClick={handleClose2}>Ежедневный отчет</Box></Grid>
+                        <Grid item><Box component={Link} to="/journal" color="inherit" sx={{textDecoration: "none"}} onClick={handleClose2}>Сводный отчет</Box></Grid>
+                        <Grid item><Box component={Link} to="/users" color="inherit" sx={{textDecoration: "none"}} onClick={handleClose2}>Пользователи</Box></Grid>
+                      </Grid>
+                    </MenuItem>
+                  }
+                </>}
               </Menu>
             </Box>
-           }
+          }
           
           
           {/* Профиль */}
@@ -221,35 +261,30 @@ export default function Nav({showAlert}) {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-              { user &&<MenuItem component={Link} to="/account" color="inherit">
-                <Avatar /> Профиль
-              </MenuItem> }
+              { !user ? 
+                <>
+                  <MenuItem component={Link} to="/signin" color="inherit">
+                    <Avatar /> Войти
+                  </MenuItem> 
 
-              { user && <Divider/> }
+                  <MenuItem component={Link} to="/signup" color="inherit">
+                    <Avatar /> Зарегестрироваться
+                  </MenuItem> 
+                </> : <>
+                  <MenuItem component={Link} to="/account" color="inherit">
+                    <Avatar /> Профиль
+                  </MenuItem> 
 
-              { !user &&<MenuItem component={Link} to="/signin" color="inherit">
-                <Avatar /> Войти
-              </MenuItem> }
+                  <Divider/>
 
-              { !user &&<MenuItem component={Link} to="/signup" color="inherit">
-                <Avatar /> Зарегестрироваться
-              </MenuItem> }
-
-              { user && <MenuItem component={Link} to="/private" color="inherit">
-                <ListItemIcon>
-                  <Settings fontSize="small" />
-                </ListItemIcon>
-                Приватный вход 
-              </MenuItem>}
-               
-               { user && <RequireAdmin/>}
-              
-              {user && <MenuItem color="inherit" onClick={logout}>
-                <ListItemIcon>
-                  <Logout fontSize="small"/>
-                </ListItemIcon>
-                Выход 
-              </MenuItem>}
+                  <MenuItem color="inherit" onClick={logout}>
+                    <ListItemIcon>
+                      <Logout fontSize="small"/>
+                    </ListItemIcon>
+                    Выход 
+                  </MenuItem>
+                </>
+              }
               </Menu>
             </Box>    
         </Toolbar>

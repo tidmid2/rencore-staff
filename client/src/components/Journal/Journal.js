@@ -1,6 +1,6 @@
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import UserTable from '../UserTables/userTable';
+import { Typography, Box } from '@mui/material';
+
+import UserTable from './userTable';
 
 function Journal() {
 

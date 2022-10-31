@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 import { Box,Table,TableBody,TableCell,TableContainer,TableHead,TableRow,Typography,Paper,Tooltip,Modal,TextField,Grid,Button } from '@mui/material'
 import { makeStyles } from '@material-ui/core/styles';
+
 import CreateIcon from '@mui/icons-material/Create';
 import CreditCardOffIcon from '@mui/icons-material/CreditCardOff';
 import BlockIcon from '@mui/icons-material/Block';
@@ -24,6 +25,7 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
+
 const useStyles = makeStyles((theme) => ({
   status:{
       fontWeight: 'bold',
@@ -41,16 +43,21 @@ const useStyles = makeStyles((theme) => ({
 function Row(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [typeBeat, setTypeBeat] = useState(0);
-  const [userId, setUserId] = useState();
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const { row } = props;
+  const classes = useStyles();
+
   const [document] = useUpdatePassAdminMutation();
   const [document1] = useBlockUserMutation();
   const [document2] = useDeleteCardMutation();
-  const { row } = props;
-  const classes = useStyles();
+
+  const [open, setOpen] = useState(false);
+  const [typeBeat, setTypeBeat] = useState(0);
+  const [userId, setUserId] = useState();
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const handleSubmit = async(e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
@@ -143,31 +150,33 @@ return (
   <React.Fragment>
     <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
       <TableCell>
-        <Typography 
-        className={classes.status}  
-        style={{
-          backgroundColor:
-            ((row.blocked===false && '#00FFB2') ||
-            (row.blocked===true && '#E55151'))
-        }}
+        <Typography className={classes.status}  
+          style={{
+            backgroundColor:
+              ((row.blocked===false && '#00FFB2') ||
+              (row.blocked===true && '#E55151'))
+          }}
         >
           { row.blocked===true ? "Заблокирован" : "Активен"}
         </Typography>
       </TableCell>
+
       <TableCell component="th" scope="row">{row.email}</TableCell>
+
       <TableCell>{row.name}</TableCell>
+
       <TableCell>
-        <Typography 
-        className={classes.status}  
-        style={{
-          backgroundColor:
-            ((row.isadmin==='Администратор' && '#00FFB2') ||
-            (row.isadmin==='Пользователь' && '#E55151'))
-        }}
+        <Typography className={classes.status}  
+          style={{
+            backgroundColor:
+              ((row.isadmin==='Администратор' && '#00FFB2') ||
+              (row.isadmin==='Пользователь' && '#E55151'))
+          }}
         >
           {row.isadmin}
         </Typography>
       </TableCell>
+
       <TableCell align="right">
         <Grid 
           container
@@ -180,13 +189,13 @@ return (
           <Grid item><Tooltip title="Удалить карточку"><CreditCardOffIcon onClick={()=>{setUserId((row.id)); setTypeBeat(2); handleOpen();}}/></Tooltip></Grid>
           <Grid item>{ row.blocked!==true ? <><Tooltip title="Заблокировать"><BlockIcon onClick={()=>{setUserId((row.id)); setTypeBeat(3); handleOpen();}}/></Tooltip></> : <><Tooltip title="Разблокировать"><CheckIcon onClick={()=>{setUserId((row.id)); setTypeBeat(4); handleOpen();}}/></Tooltip></>}</Grid>
         </Grid>
+
         <Modal
           open={open}
           onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          {/* {typeBeat!==3 ? <>{typeBeat!==2 ? <>1</> : <>2</>}</> : <>3</>} */}
           <Box sx={style}>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
               { typeBeat!==3 ? <>{
@@ -262,36 +271,40 @@ row: PropTypes.shape({
   blocked: PropTypes.bool.isRequired,
 }).isRequired,
 };
+
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
- useEffect(() => {
-  fetch('/api/admin/users')
-     .then((response) => response.json())
-     .then((json) => setUsers(json))
-     .catch((error) => error)
-}, []);
+
+  useEffect(() => {
+    fetch('/api/admin/users')
+      .then((response) => response.json())
+      .then((json) => setUsers(json))
+      .catch((error) => error)
+  }, []);
+
 return (
   <Box sx={{ marginTop: "45px" }}>
-  <Typography variant="h6" gutterBottom component="div">Пользователи</Typography>
-  <TableContainer component={Paper} sx={{ marginTop: "45px" }}>
-    <Table aria-label="collapsible table" >
-      <TableHead>
-        <TableRow>
-          <TableCell>Статус</TableCell>
-          <TableCell>Email</TableCell>
-          <TableCell>Сотрудник</TableCell>
-          <TableCell>Уровень доступа</TableCell>
-          <TableCell align="right"></TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {users.map((row) => (
-          <Row key={row.id} row={row} 
-          />
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
+    <Typography variant="h6" gutterBottom component="div">Пользователи</Typography>
+    <TableContainer component={Paper} sx={{ marginTop: "45px" }}>
+      <Table aria-label="collapsible table" >
+        <TableHead>
+          <TableRow>
+            <TableCell>Статус</TableCell>
+            <TableCell>Email</TableCell>
+            <TableCell>Сотрудник</TableCell>
+            <TableCell>Уровень доступа</TableCell>
+            <TableCell align="right"></TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {users.map((row) => (
+            <Row key={row.id} row={row} 
+            />
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   </Box>
 );
 }

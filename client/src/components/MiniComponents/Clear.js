@@ -1,6 +1,5 @@
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { Typography } from '@material-ui/core';
+import { Typography, Box, Container } from '@material-ui/core';
+
 import {makeStyles} from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,14 +16,15 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export default function Clear() {
-    const classes = useStyles();
+  const classes = useStyles();
+
   return (
     <Container align="center" >
-        <Box>
-            <Typography  className={classes.status}  >
-                К сожалению пусто
-            </Typography>
-        </Box>
+      <Box>
+        <Typography  className={classes.status}  >
+            К сожалению пусто
+        </Typography>
+      </Box>
     </Container>
   );
 }

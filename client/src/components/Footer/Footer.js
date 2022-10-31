@@ -1,7 +1,4 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
+import { Box, Typography, Container, Link } from '@mui/material';
 
 function Copyright() {
   return (
@@ -18,24 +15,24 @@ function Copyright() {
 
 export default function StickyFooter() {
   return (
-      <Box
-        component="footer"
-        sx={{
-          py: 3,
-          px: 2,
-          mt: 'auto',
-          backgroundColor: (theme) =>
-            theme.palette.mode === 'light'
-              ? theme.palette.grey[200]
-              : theme.palette.grey[800],
-        }}
-      >
-        <Container maxWidth="sm" align="center">
-          <Typography variant="body1">
-            Разработано силами усилия и терпения
-          </Typography>
-          <Copyright />
-        </Container>
-      </Box>
+    <Box
+      component="footer"
+      sx={{
+        py: 3,
+        px: 2,
+        mt: 'auto',
+        backgroundColor: (theme) =>
+          theme.palette.mode === 'light'
+            ? theme.palette.grey[200]
+            : theme.palette.grey[800],
+      }}
+    >
+      <Container maxWidth="sm" align="center">
+        <Typography variant="body1">
+          Разработано силами усилия и терпения
+        </Typography>
+        <Copyright />
+      </Container>
+    </Box>
   );
 }
