@@ -1,8 +1,7 @@
 const { check, validationResult } = require('express-validator')
-const jwt = require("jsonwebtoken");
 const jwt_decode = require('jwt-decode');
 const config = process.env;
-// Function that validates and sends back response
+
 const validationHandler = (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

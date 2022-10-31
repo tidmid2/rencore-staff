@@ -1,25 +1,30 @@
 const { 
-        fetchUserByEmailDb,
-        createUserDb, 
-        fetchDocumentByUserDb,
-        createDocumentByUserDb,
-        fetchAllDocumentByUserDb,
-        fetchDocumentOPByUserDb,
-        adminStage1,
-        adminStage2,
-        fetchAdminDocumentByUserDb,
-        fetchAdminUDocumentByUserDb,
-        getUsersDb,
-        forgotPassDb,
-        forgotPass1Db,
-        forgotPass2Db,
-        blockUserDB,
-        deleteCardFromUserDB,
-        changePassAdminDB,
-        changePassAdminCheckDB,
-    }
-    = require('../db/users-db');
+    fetchUserByEmailDb,
+    createUserDb, 
 
+    forgotPassLinkDb,
+    forgotPassVerifyDb,
+    ResetPassDb,
+
+    fetchDocumentByUserDb,
+    createDocumentByUserDb,
+    fetchDocumentInsideByUserDb,
+
+    dailyReportDb,
+    dailyReport2Db,
+
+    dateForConsolidatedReportDb,
+    consolidatedReportDb,
+    consolidatedReportInsideDb,
+
+    getUsersDb,
+    blockUserDB,
+    deleteCardFromUserDB,
+    changePassAdminDB,
+    changePassAdminCheckDB,
+} = require('../db/users-db');
+
+//Auth
 const fetchUserByEmail = async (email) => {
     try {
         return await fetchUserByEmailDb(email);
@@ -28,9 +33,53 @@ const fetchUserByEmail = async (email) => {
     }
 }
 
-const forgotPass = async (email) => {
+const createUser = async (user) => {
     try {
-        return await forgotPassDb(email);
+        return await createUserDb(user);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+//End
+
+//Reset password from user
+const forgotPassLink = async (email) => {
+    try {
+        return await forgotPassLinkDb(email);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const forgotPassVerify = async (id) => {
+    try {
+        return await forgotPassVerifyDb(id);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const ResetPass = async (password) => {
+    try {
+        return await ResetPassDb(password);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+//End
+
+//admin privelegies on Users link
+const changePassAdminCheck = async (id) => {
+    try {
+        return await changePassAdminCheckDB(id);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const changePassAdmin = async (password,id) => {
+    try {
+        return await changePassAdminDB(password,id);
     } catch(e) {
         throw new Error(e.message);
     }
@@ -52,38 +101,6 @@ const deleteCardFromUser = async (id) => {
     }
 }
 
-const forgot1Pass = async (id) => {
-    try {
-        return await forgotPass1Db(id);
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
-const changePassAdminCheck = async (id) => {
-    try {
-        return await changePassAdminCheckDB(id);
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
-const forgot2Pass = async (password) => {
-    try {
-        return await forgotPass2Db(password);
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
-const changePassAdmin = async (password,id) => {
-    try {
-        return await changePassAdminDB(password,id);
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
 const getUsers = async () => {
     try {
         return await getUsersDb();
@@ -91,7 +108,9 @@ const getUsers = async () => {
         throw new Error(e.message);
     }
 }
+//End
 
+//Users tools
 const fetchDocumentByUser = async (user_id) => {
     try {
         return await fetchDocumentByUserDb(user_id);
@@ -100,87 +119,92 @@ const fetchDocumentByUser = async (user_id) => {
     }
 }
 
-const fetchDocumentOPByUser = async (user_id,id_smeny) => {
+const fetchDocumentInsideByUser = async (user_id,id_smeny) => {
     try {
-        return await fetchDocumentOPByUserDb(user_id,id_smeny);
+        return await fetchDocumentInsideByUserDb(user_id,id_smeny);
     } catch (e) {
         throw new Error(e.message);
     }
 }
 
-const adminStageS1 = async (id_smeny) => {
-    try {
-        return await adminStage1(id_smeny);
-    } catch (e) {
-        throw new Error(e.message);
-    }
-}
-
-const adminStageS2 = async (user_id,id_smeny) => {
-    try {
-        return await adminStage2(user_id,id_smeny);
-    } catch (e) {
-        throw new Error(e.message);
-    }
-}
-
-const createDocument = async (uid) => {
+const createDocumentByUser = async (uid) => {
     try {
         return await createDocumentByUserDb(uid);
     } catch (e) {
         throw new Error(e.message);
     }
 }
+//End
 
-const fetchAllDocumentByUser = async (dt1,dt2) => {
+//Daily report for Admin
+const dailyReport = async (id_smeny) => {
     try {
-        return await fetchAllDocumentByUserDb(dt1,dt2);
+        return await dailyReportDb(id_smeny);
     } catch (e) {
         throw new Error(e.message);
     }
 }
 
-const fetchAdminDocumentByUser = async (dt1,dt2,user) => {
+const dailyReport2 = async (user_id,id_smeny) => {
     try {
-        return await fetchAdminDocumentByUserDb(dt1,dt2,user);
+        return await dailyReport2Db(user_id,id_smeny);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
+//End
+
+
+//Consolidated Report for Admin
+const dateForConsolidatedReport = async (dt1,dt2) => {
+    try {
+        return await dateForConsolidatedReportDb(dt1,dt2);
     } catch (e) {
         throw new Error(e.message);
     }
 }
 
-const fetchAdminUDocumentByUser = async (dt1,dt2) => {
+const consolidatedReport = async (dt1,dt2,user) => {
     try {
-        return await fetchAdminUDocumentByUserDb(dt1,dt2);
+        return await consolidatedReportDb(dt1,dt2,user);
     } catch (e) {
         throw new Error(e.message);
     }
 }
 
-const createUser = async (user) => {
+const consolidatedReportInside = async (dt1,dt2) => {
     try {
-        return await createUserDb(user);
+        return await consolidatedReportInsideDb(dt1,dt2);
     } catch (e) {
         throw new Error(e.message);
     }
 }
+//End
+
+
 
 module.exports = {  
-                    fetchUserByEmail,
-                    createUser, 
-                    fetchDocumentByUser,
-                    createDocument,
-                    fetchAllDocumentByUser,
-                    fetchDocumentOPByUser,
-                    adminStageS1,
-                    adminStageS2,
-                    fetchAdminDocumentByUser,
-                    fetchAdminUDocumentByUser,
-                    getUsers,
-                    forgotPass,
-                    forgot1Pass,
-                    forgot2Pass,
-                    blockUser,
-                    deleteCardFromUser,
-                    changePassAdmin,
-                    changePassAdminCheck,
-                }
+    fetchUserByEmail,
+    createUser, 
+
+    fetchDocumentByUser,
+    createDocumentByUser,
+    fetchDocumentInsideByUser,
+
+    dailyReport,
+    dailyReport2,
+
+    dateForConsolidatedReport,
+    consolidatedReport,
+    consolidatedReportInside,
+
+    forgotPassLink,
+    forgotPassVerify,
+    ResetPass,
+
+    getUsers,
+    blockUser,
+    deleteCardFromUser,
+    changePassAdmin,
+    changePassAdminCheck,
+}

@@ -1,17 +1,23 @@
-const { fetchUserByEmail, 
+const { 
+    fetchUserByEmail,
     createUser, 
+
     fetchDocumentByUser,
-    createDocument,
-    fetchAllDocumentByUser ,
-    fetchDocumentOPByUser,
-    adminStageS1,
-    adminStageS2,
-    fetchAdminDocumentByUser,
-    fetchAdminUDocumentByUser,
+    createDocumentByUser,
+    fetchDocumentInsideByUser,
+
+    dailyReport,
+    dailyReport2,
+
+    dateForConsolidatedReport,
+    consolidatedReport,
+    consolidatedReportInside,
+
+    forgotPassLink,
+    forgotPassVerify,
+    ResetPass,
+
     getUsers,
-    forgotPass,
-    forgot1Pass,
-    forgot2Pass,
     blockUser,
     deleteCardFromUser,
     changePassAdmin,
@@ -22,6 +28,8 @@ const passport = require('passport');
 const bcrypt = require('bcrypt');
 const nodemailer = require("nodemailer");
 
+
+//Auth
 //регистрация
 const signUpUser = async (req, res, next) => {
 const { email, first_name, last_name, password } = req.body;
@@ -47,219 +55,192 @@ try {
     return next(err);
 }
 }
-
-//Создание отметки в documents
-const createDocumentByUser = async (req, res, next) => {
-const { user_id,comment } = req.body;
-try {
-    const document = {
-        user_id, 
-        comment
-    }
-    const newDocument = await createDocument(document);
-    return res.status(201).json(newDocument);
-} catch(err) {
-    return next(err);
-}
-}
-
-//вывод Admin документов
-const fetchDocument = async (req, res, next) => {
-try {
-    const {dt1,dt2} = req.params
-    const newDocument = await fetchAllDocumentByUser(dt1,dt2)
-    if (!newDocument) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-    return res.json(newDocument)
-} catch(err) {
-    return next(err);
-}
-}
-
-//вывод пользователей
-const fetchUsers = async (req, res, next) => {
-try {
-    const newDocument = await getUsers()
-    if (!newDocument) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-    return res.json(newDocument)
-} catch(err) {
-    return next(err);
-}
-}
-
-const fetchAdminDocument = async (req, res, next) => {
-try {
-    const {dt1,dt2,user} = req.params
-    const newDocument = await fetchAdminDocumentByUser(dt1,dt2,user)
-    if (!newDocument) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-    return res.json(newDocument)
-} catch(err) {
-    return next(err);
-}
-}
-
-const fetchAdminUDocument = async (req, res, next) => {
-try {
-    const {dt1,dt2} = req.params
-    const newDocument = await fetchAdminUDocumentByUser(dt1,dt2)
-    if (!newDocument) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-    return res.json(newDocument)
-} catch(err) {
-    return next(err);
-}
-}
 //вход в учетку
 const loginUser = (req, res, next) => {
     passport.authenticate(
         'login', (err, user, info) => {
-                if (err) return res.status(500).send();
-                if (!user) {
-                    return res.status(401)
-                            .json({ error: { status: 401,
-                                            data: info.message }
-                                        })
-                    }
-                req.login(user, (err) => {
-                    if (err) return next(err);
-                    const { id, first_name, last_name, email, isadmin, blocked } = req.user;
-                    if (user.blocked!==false) {
-                        return res.status(422).json({
-                            error: { status: 422, data: "Ошибка! У вас нет доступа к системе"}
-                        });
-                    }
-                    const token = jwt.sign({id: user.id, email: user.email,first_name: first_name,last_name: last_name,isadmin: isadmin}, process.env.SESSION_SECRET, {expiresIn: "24h"})
-                    // const userinfo = {
-                    //     id, first_name, last_name, email, isAdmin
-                    // }
-                    // return res.json({
-                    //     token,
-                    //     userinfo: {
-                    //         id: userinfo.id,
-                    //         first_name: userinfo.first_name,
-                    //         last_name: userinfo.last_name,
-                    //         email: userinfo.email,
-                    //         isAdmin: userinfo.isAdmin
-                    //     }
-                    // })
-                    let options = {
-                        maxAge: 7 * 24 * 60 * 60 * 1000, // would expire after 15 minutes
-                        httpOnly: true, // The cookie only accessible by the web server
-                        signed: true // Indicates if the cookie should be signed
-                    }
-                    return res.cookie('x-access-token', 'token', options), res.header('x-access-token', [token]),res.json({token,id, first_name, last_name, email, isadmin});
-                    
-                })
+            if (err) return res.status(500).send();
+            if (!user) {
+                return res.status(401)
+                .json({ error: { status: 401,data: info.message }})
+            }
+            req.login(user, (err) => {
+                if (err) return next(err);
+                const { id, first_name, last_name, email, isadmin, blocked } = req.user;
+                if (user.blocked!==false) {
+                    return res.status(422).json({
+                        error: { status: 422, data: "Ошибка! У вас нет доступа к системе"}
+                    });
+                }
+                const token = jwt.sign({id: user.id, email: user.email,first_name: first_name,last_name: last_name,isadmin: isadmin}, process.env.SESSION_SECRET, {expiresIn: "24h"})
+                let options = {
+                    maxAge: 7 * 24 * 60 * 60 * 1000, // would expire after 15 minutes
+                    httpOnly: true, // The cookie only accessible by the web server
+                    signed: true // Indicates if the cookie should be signed
+                }
+                return res.cookie('x-access-token', 'token', options), res.header('x-access-token', [token]),res.json({token,id, first_name, last_name, email, isadmin});
+            })
         }
-)(req, res, next);
+    )(req, res, next);
 }
-
-//вывод информации с таблицы с условием
-const documentData = async (req, res, next) => {
-try {
-    
-    const {user_id} = req.params
-    const document = await fetchDocumentByUser(user_id)
-    if (!document) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-
-    //возвращает все документы
-    res.status(200).json(document)
-
-    //возвращает только 1 документ
-    // return res.json(document)
-    // next()
-} catch(err) {
-    return next(err);
-}
-}
-
-const adminStag1 = async (req, res, next) => {
-try {
-    const {id_smeny} = req.params
-    const document = await adminStageS1(id_smeny)
-    if (!document) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-    //возвращает все документы
-    res.status(200).json(document)
-} catch(err) {
-    return next(err);
-}
-}
-
-const adminStag2 = async (req, res, next) => {
-try {
-    const {user_id,id_smeny} = req.params
-    const document = await adminStageS2(user_id,id_smeny)
-    if (!document) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-    //возвращает все документы
-    res.status(200).json(document)
-} catch(err) {
-    return next(err);
-}
-}
-
-//вывод информации с таблицы с условием
-const fetchDocuments = async (req, res, next) => {
-try {
-    
-    const {user_id,id_smeny} = req.params
-    const document = await fetchDocumentOPByUser(user_id,id_smeny)
-    if (!document) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
-    }
-
-    // //возвращает все документы
-    return res.json(document)
-
-    //возвращает только 1 документ
-    // return res.json(document)
-    next()
-} catch(err) {
-    return next(err);
-}
-}
-
 //выход с учетки
 const logoutUser = (req, res, next) => {
-req.logout();
-res.clearCookie('connect.sid');
-res.clearCookie('x-access-token');
-req.session.destroy(function (err) {
-    res.status(200).send();
-});
-}
+    req.logout();
+    res.clearCookie('connect.sid');
+    res.clearCookie('x-access-token');
+    req.session.destroy(function (err) {
+        res.status(200).send();
+    });
+    }
+//END
 
-const fetchPass = async (req, res, next) => {
+
+//User actions
+//Создание отметки в documents
+const createDocumentByUserController = async (req, res, next) => {
+    const { user_id,comment } = req.body;
+    try {
+        const document = {
+            user_id, 
+            comment
+        }
+        const newDocument = await createDocumentByUser(document);
+        return res.status(201).json(newDocument);
+    } catch(err) {
+        return next(err);
+    }
+}
+//вывод информации с таблицы с условием
+const fetchDocumentByUserController = async (req, res, next) => {
+    try {
+        const {user_id} = req.params
+        const document = await fetchDocumentByUser(user_id)
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+    
+        //возвращает все документы
+        res.status(200).json(document)
+    
+        //возвращает только 1 документ
+        // return res.json(document)
+        // next()
+    } catch(err) {
+        return next(err);
+    }
+}
+//вывод информации с таблицы с условием
+const fetchDocumentInsideByUserController = async (req, res, next) => {
+    try {
+        
+        const {user_id,id_smeny} = req.params
+        const document = await fetchDocumentInsideByUser(user_id,id_smeny)
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+    
+        // //возвращает все документы
+        return res.json(document)
+    
+        //возвращает только 1 документ
+        // return res.json(document)
+        next()
+    } catch(err) {
+        return next(err);
+    }
+    }
+//END
+
+
+//Consolidated Report for Admin
+//вывод Admin документов
+const dateForConsolidatedReportController = async (req, res, next) => {
+    try {
+        const {dt1,dt2} = req.params
+        const newDocument = await dateForConsolidatedReport(dt1,dt2)
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
+const consolidatedReportController = async (req, res, next) => {
+    try {
+        const {dt1,dt2,user} = req.params
+        const newDocument = await consolidatedReport(dt1,dt2,user)
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
+const consolidatedReportInsideController = async (req, res, next) => {
+    try {
+        const {dt1,dt2} = req.params
+        const newDocument = await consolidatedReportInside(dt1,dt2)
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
+//END
+
+
+//Daily report for Admin
+const dailyReportController = async (req, res, next) => {
+    try {
+        const {id_smeny} = req.params
+        const document = await dailyReport(id_smeny)
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        //возвращает все документы
+        res.status(200).json(document)
+    } catch(err) {
+        return next(err);
+    }
+}
+const dailyReportController2 = async (req, res, next) => {
+    try {
+        const {user_id,id_smeny} = req.params
+        const document = await dailyReport2(user_id,id_smeny)
+        if (!document) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        //возвращает все документы
+        res.status(200).json(document)
+    } catch(err) {
+        return next(err);
+    }
+}
+//End
+
+//Reset password from user
+const forgotPassLinkController = async (req, res, next) => {
 const {email} = req.body;
 try {
-    const newDocument = await forgotPass(email)
+    const newDocument = await forgotPassLink(email)
     if (!newDocument) {
         return res.status(422).json({
             error: { status: 422, data: "Нет данных."}
@@ -313,29 +294,27 @@ try {
     return next(err);
 }
 }
-
-const fetch1Pass = async (req, res, next) => {
-const {id,token} = req.params;
-try {
-    const oldUser = await forgot1Pass(id)
-    if (!oldUser) {
-        return res.status(422).json({
-            error: { status: 422, data: "Нет данных."}
-        });
+const forgotPassVerifyController = async (req, res, next) => {
+    const {id,token} = req.params;
+    try {
+        const oldUser = await forgotPassVerify(id)
+        if (!oldUser) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        const secret =  process.env.SESSION_SECRET  + oldUser.password;
+        const verify = jwt.verify(token, secret);
+        res.send({status: true});
+    } catch (error) {
+        console.log(error);
+        res.send({status: false});
     }
-    const secret =  process.env.SESSION_SECRET  + oldUser.password;
-    const verify = jwt.verify(token, secret);
-    res.send({status: true});
-} catch (error) {
-    console.log(error);
-    res.send({status: false});
 }
-}
-
-const fetch2Pass = async (req, res, next) => {
+const ResetPassController = async (req, res, next) => {
 const { password,id, token } = req.body;
 try {
-    const oldUser = await forgot1Pass(id)
+    const oldUser = await ResetPass(id)
     if (!oldUser) {
         return res.status(422).json({
             error: { status: 422, data: "Нет данных."}
@@ -351,7 +330,10 @@ try {
     return next(err);
 }
 }
+//END
 
+
+//admin privelegies on Users link
 const changePassAdminController = async (req, res, next) => {
     const { password,id } = req.body;
     try {
@@ -368,8 +350,7 @@ const changePassAdminController = async (req, res, next) => {
         return next(err);
     }
 }
-
-const blockedUser = async (req, res, next) => {
+const blockUserController = async (req, res, next) => {
     const {id, blocked} = req.body;
     try {
         const Document = { id, blocked }
@@ -379,8 +360,7 @@ const blockedUser = async (req, res, next) => {
         return next(err);
     }
 }
-
-const deleteCardUser = async (req, res, next) => {
+const deleteCardFromUserController = async (req, res, next) => {
     const {id} = req.body;
     try {
         const newDocument = await deleteCardFromUser(id)
@@ -390,23 +370,44 @@ const deleteCardUser = async (req, res, next) => {
     }
 }
 
+//вывод пользователей
+const getUsersController = async (req, res, next) => {
+    try {
+        const newDocument = await getUsers()
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+    }
+//End
+
 module.exports = {
     signUpUser, 
     loginUser, 
-    logoutUser, 
-    documentData,
-    createDocumentByUser,
-    fetchDocument,
-    fetchDocuments,
-    adminStag1,
-    adminStag2,
-    fetchAdminDocument,
-    fetchAdminUDocument,
-    fetchUsers,    
-    fetchPass,
-    fetch1Pass,
-    fetch2Pass,
+    logoutUser,
+
+    fetchDocumentInsideByUserController,
+    fetchDocumentByUserController,
+    createDocumentByUserController,
+
+    dailyReportController,
+    dailyReportController2,
+
+    dateForConsolidatedReportController,
+    consolidatedReportController,
+    consolidatedReportInsideController,
+
+    forgotPassLinkController,
+    forgotPassVerifyController,
+    ResetPassController,
+    
+    getUsersController,
+    blockUserController,
+    deleteCardFromUserController,
     changePassAdminController,
-    blockedUser,
-    deleteCardUser
 }

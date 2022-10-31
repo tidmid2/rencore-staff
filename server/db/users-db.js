@@ -1,5 +1,6 @@
 const db = require('../config/db.js');
 
+//Auth
 const fetchUserByEmailDb = async (email) => {
     try {
         const res = await db.query(`SELECT * FROM users WHERE email = $1`, [email]);
@@ -9,7 +10,21 @@ const fetchUserByEmailDb = async (email) => {
     }
 }
 
-const forgotPassDb = async (email) =>{
+const createUserDb = async ({email, first_name, last_name, pwd_hash}) => {
+    const text = `INSERT INTO users(email, first_name, last_name, pwd_hash)
+                  VALUES($1, $2, $3, $4) RETURNING id`;
+    const values = [email, first_name, last_name, pwd_hash];
+    try {
+        const res = await db.query(text, values);
+        return res.rows[0];
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+//End
+
+//Reset password from user
+const forgotPassLinkDb = async (email) =>{
     try {
       const res = await db.query(`SELECT * FROM users WHERE email = $1`, [email]);
       return res.rows[0];
@@ -19,7 +34,7 @@ const forgotPassDb = async (email) =>{
   
 }
 
-const forgotPass1Db = async (id) =>{
+const forgotPassVerifyDb = async (id) =>{
     try {
       const res = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
       return res.rows[0];
@@ -29,19 +44,20 @@ const forgotPass1Db = async (id) =>{
   
 }
 
+const ResetPassDb = async ({password,id}) =>{
+    try {
+      const res = await db.query(`update users set pwd_hash = $1 where id = $2`, [password,id]);
+      return res.rows[0];
+    } catch (e) {
+        throw new Error(error.message);
+    }
+}
+//End
+
+//admin privelegies on Users link
 const changePassAdminCheckDB = async (id) =>{
     try {
       const res = await db.query(`SELECT * FROM users WHERE id = $1`, [id]);
-      return res.rows[0];
-    } catch (e) {
-        throw new Error(error.message);
-    }
-  
-}
-
-const forgotPass2Db = async ({password,id}) =>{
-    try {
-      const res = await db.query(`update users set pwd_hash = $1 where id = $2`, [password,id]);
       return res.rows[0];
     } catch (e) {
         throw new Error(error.message);
@@ -75,6 +91,18 @@ const deleteCardFromUserDB = async (id) =>{
     }
 }
 
+const getUsersDb = async () => {
+    try {
+        const res = await db.query(`select u.id as id,u.email as email, concat(u.first_name,' ',u.last_name) as name, case when u.isadmin=1 then 'Администратор' else 'Пользователь' end as isadmin, u.blocked as blocked
+        from users u ORDER BY id DESC`,[]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+//End
+
+//Users tools
 const fetchDocumentByUserDb = async (user_id) => {
     try {
         const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt as dt, d.time as "time", d.comment as "comment",d.status as status,o.name as id_op,d.id_smeny as id_smeny 
@@ -86,51 +114,11 @@ const fetchDocumentByUserDb = async (user_id) => {
     }
 }
 
-const fetchDocumentOPByUserDb = async (user_id,id_smeny) => {
+const fetchDocumentInsideByUserDb = async (user_id,id_smeny) => {
     try {
         const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
         from documents d inner join operacii_type o on d.id_op=o.id 
         WHERE d.user_id = $1 and d.id_smeny = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`, [user_id,id_smeny]);
-        return res.rows;
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
-const adminStage1 = async (id_smeny) => {
-    try {
-        const res = await db.query(`select d.user_id as user,d.uid as uid,concat(u.first_name,' ',u.last_name) as user_id,d.dt as dt,d.time as time,d.comment as comment,(
-            select case when id_op=5 then time
-                    else null 
-            end from documents where user_id=d.user_id and dt = $1 ORDER BY uid DESC limit 1) as time2, (
-            select case when id_op=5 then comment
-                    else null 
-            end from documents where user_id=d.user_id and dt = $1 ORDER BY uid DESC limit 1
-        ) as comment2
-        from documents d inner join users u on d.user_id = u.id inner join operacii_type o on d.id_op=o.id
-        where d.dt = $1 and (d.id_op=1 or d.id_op=2)
-        ORDER BY d.uid DESC`,[id_smeny]);
-        return res.rows;
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
-const getUsersDb = async () => {
-    try {
-        const res = await db.query(`select u.id as id,u.email as email, concat(u.first_name,' ',u.last_name) as name, case when u.isadmin=1 then 'Администратор' else 'Пользователь' end as isadmin, u.blocked as blocked
-        from users u ORDER BY id DESC`,[]);
-        return res.rows;
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
-
-const adminStage2 = async (user_id,id_smeny) => {
-    try {
-        const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt::Date as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
-        from documents d inner join operacii_type o on d.id_op=o.id 
-        WHERE d.user_id = $1 and TO_CHAR(d.dt, 'dd.MM.yyyy') = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,[user_id,id_smeny]);
         return res.rows;
     } catch(e) {
         throw new Error(e.message);
@@ -148,8 +136,42 @@ const createDocumentByUserDb = async ({user_id, comment}) => {
         throw new Error(e.message);
     }
 }
+//End
 
-const fetchAllDocumentByUserDb = async (dt1,dt2) => {
+//Daily report for Admin
+const dailyReportDb = async (id_smeny) => {
+    try {
+        const res = await db.query(`select d.user_id as user,d.uid as uid,concat(u.first_name,' ',u.last_name) as user_id,d.dt as dt,d.time as time,d.comment as comment,(
+            select case when id_op=5 then time
+                    else null 
+            end from documents where user_id=d.user_id and dt = $1 ORDER BY uid DESC limit 1) as time2, (
+            select case when id_op=5 then comment
+                    else null 
+            end from documents where user_id=d.user_id and dt = $1 ORDER BY uid DESC limit 1
+        ) as comment2
+        from documents d inner join users u on d.user_id = u.id inner join operacii_type o on d.id_op=o.id
+        where d.dt = $1 and (d.id_op=1 or d.id_op=2)
+        ORDER BY d.uid DESC`,[id_smeny]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+const dailyReport2Db = async (user_id,id_smeny) => {
+    try {
+        const res = await db.query(`select d.uid as uid, d.user_id as user_id, d.dt::Date as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+        from documents d inner join operacii_type o on d.id_op=o.id 
+        WHERE d.user_id = $1 and TO_CHAR(d.dt, 'dd.MM.yyyy') = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,[user_id,id_smeny]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+//End
+
+
+//Consolidated Report for Admin
+const dateForConsolidatedReportDb = async (dt1,dt2) => {
     try {
         const res = await db.query(`select u.id as user_id,concat(u.first_name,' ',u.last_name) as user,sum(l.late_day) as Ydays,count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
         from tblate l
@@ -163,7 +185,7 @@ const fetchAllDocumentByUserDb = async (dt1,dt2) => {
     }
 }
 
-const fetchAdminDocumentByUserDb = async (dt1,dt2,user) => {
+const consolidatedReportDb = async (dt1,dt2,user) => {
     try {
         const res = await db.query(`select ROW_NUMBER () OVER (
             ORDER BY u.id
@@ -180,7 +202,7 @@ const fetchAdminDocumentByUserDb = async (dt1,dt2,user) => {
     }
 }
 
-const fetchAdminUDocumentByUserDb = async (dt1,dt2) => {
+const consolidatedReportInsideDb = async (dt1,dt2) => {
     try {
         const res = await db.query(`select ROW_NUMBER () OVER (
             ORDER BY u.id
@@ -195,37 +217,33 @@ const fetchAdminUDocumentByUserDb = async (dt1,dt2) => {
         throw new Error(e.message);
     }
 }
+//End
 
 
-const createUserDb = async ({email, first_name, last_name, pwd_hash}) => {
-    const text = `INSERT INTO users(email, first_name, last_name, pwd_hash)
-                  VALUES($1, $2, $3, $4) RETURNING id`;
-    const values = [email, first_name, last_name, pwd_hash];
-    try {
-        const res = await db.query(text, values);
-        return res.rows[0];
-    } catch(e) {
-        throw new Error(e.message);
-    }
-}
+
 
 module.exports = {  
-                    fetchUserByEmailDb,
-                    createUserDb, 
-                    fetchDocumentByUserDb,
-                    createDocumentByUserDb,
-                    fetchAllDocumentByUserDb,
-                    fetchDocumentOPByUserDb,
-                    adminStage1,
-                    adminStage2,
-                    fetchAdminDocumentByUserDb,
-                    fetchAdminUDocumentByUserDb,
-                    getUsersDb,
-                    forgotPassDb,
-                    forgotPass1Db,
-                    forgotPass2Db,
-                    blockUserDB,
-                    deleteCardFromUserDB,
-                    changePassAdminDB,
-                    changePassAdminCheckDB,
-                }
+    fetchUserByEmailDb,
+    createUserDb, 
+
+    forgotPassLinkDb,
+    forgotPassVerifyDb,
+    ResetPassDb,
+
+    fetchDocumentByUserDb,
+    createDocumentByUserDb,
+    fetchDocumentInsideByUserDb,
+
+    dailyReportDb,
+    dailyReport2Db,
+
+    dateForConsolidatedReportDb,
+    consolidatedReportDb,
+    consolidatedReportInsideDb,
+
+    getUsersDb,
+    blockUserDB,
+    deleteCardFromUserDB,
+    changePassAdminDB,
+    changePassAdminCheckDB,
+}
