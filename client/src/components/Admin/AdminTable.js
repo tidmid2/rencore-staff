@@ -97,7 +97,7 @@ function Row(props) {
             { open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">{row.user_id}</TableCell>
+        <TableCell component="tr" scope="row">{row.user_id}</TableCell>
         <TableCell>{(new Date(row.dt)).toLocaleDateString()}</TableCell>
         <TableCell>
           <Typography className={classes.status}  style={{
@@ -145,7 +145,7 @@ function Row(props) {
                   <TableBody>
                     { userinfo.map((row2) => (
                       <TableRow key={row2.uid}>
-                        <TableCell component="th" scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
+                        <TableCell component="tr" scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
                         <TableCell>{row2.time}</TableCell>
                         <TableCell>{row2.comment}</TableCell>
                         <TableCell align="right">
