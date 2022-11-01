@@ -66,7 +66,8 @@ function App() {
           severity: 'error'
         }));
     }}
- 
+    
+    
     useEffect( () => {
       hasJWT();
       if (!authed && !hasJWT()){

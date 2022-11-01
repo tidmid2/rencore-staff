@@ -161,7 +161,7 @@ return (
         </Typography>
       </TableCell>
 
-      <TableCell component="th" scope="row">{row.email}</TableCell>
+      <TableCell scope="row">{row.email}</TableCell>
 
       <TableCell>{row.name}</TableCell>
 
@@ -274,12 +274,24 @@ row: PropTypes.shape({
 
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
+  const [isVisible, setIsVisible] = useState(true);
+
 
   useEffect(() => {
+    let cancel = false;
+
     fetch('/api/admin/users')
       .then((response) => response.json())
       .then((json) => setUsers(json))
+      .then(() => {
+        if (cancel) return;
+        setIsVisible(false);
+      })
       .catch((error) => error)
+
+    return () => { 
+      cancel = true;
+    }
   }, []);
 
 return (

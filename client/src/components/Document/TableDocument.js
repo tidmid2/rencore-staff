@@ -108,7 +108,7 @@ function Row(props) {
                     <TableBody>
                       { userinfo.map((row2) => (
                         <TableRow key={row2.uid}>
-                          <TableCell component="th" scope="row">{row2.time}</TableCell>
+                          <TableCell scope="row">{row2.time}</TableCell>
                           <TableCell>{row2.comment}</TableCell>
                           <TableCell align="right">
                             <Typography className={classes.status}  style={{
@@ -156,13 +156,25 @@ export default function CollapsibleTable() {
     
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);  
+  const [isVisible, setIsVisible] = useState(true);
+
 
   useEffect(() => {
+    let cancel = false;
+    
     setIsLoading(true);
     fetch('/api/document/id/' + user.id)
       .then((response) => response.json())
       .then((json) => setUsers(json), setIsLoading(false))
+      .then(() => {
+        if (cancel) return;
+        setIsVisible(false);
+      })
       .catch((error) => error)
+
+      return () => { 
+        cancel = true;
+      }
   }, [user]);
 
   return (

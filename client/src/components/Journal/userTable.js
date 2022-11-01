@@ -71,7 +71,8 @@ export default function UserTable() {
 
   const [value, setValue] = useState(DT);
   const [value2, setValue2] = useState(dt);
-
+  const [isVisible, setIsVisible] = useState(true);
+  
   const fetchData = async (value, value2) => {
     setIsLoading(true);
     try {
@@ -90,8 +91,21 @@ export default function UserTable() {
     }
   };
 
+  
+
+ 
+
   useEffect(() => {
-    fetchData(value, value2);
+    let cancel = false;
+
+    fetchData(value, value2).then(() => {
+      if (cancel) return;
+      setIsVisible(false);
+    });
+
+    return () => { 
+      cancel = true;
+    }
   }, [value, value2]);
 
   return (
@@ -174,7 +188,7 @@ export default function UserTable() {
             <TableBody>
               {users.map((row) => (
                 <TableRow key={row.user_id}>
-                  <TableCell component="r" scope="row">
+                  <TableCell scope="row">
                     <Button
                       component={Link}
                       to={

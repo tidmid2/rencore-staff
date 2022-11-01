@@ -97,7 +97,7 @@ function Row(props) {
             { open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="tr" scope="row">{row.user_id}</TableCell>
+        <TableCell scope="row">{row.user_id}</TableCell>
         <TableCell>{(new Date(row.dt)).toLocaleDateString()}</TableCell>
         <TableCell>
           <Typography className={classes.status}  style={{
@@ -145,7 +145,7 @@ function Row(props) {
                   <TableBody>
                     { userinfo.map((row2) => (
                       <TableRow key={row2.uid}>
-                        <TableCell component="tr" scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
+                        <TableCell scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
                         <TableCell>{row2.time}</TableCell>
                         <TableCell>{row2.comment}</TableCell>
                         <TableCell align="right">
@@ -195,7 +195,8 @@ Row.propTypes = {
 
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
-
+  const [isVisible, setIsVisible] = useState(true);
+  
   const handleClick = () => {
     var wb = XLSX.utils.book_new(),
     ws = XLSX.utils.json_to_sheet(users);
@@ -211,11 +212,26 @@ export default function AdminTable() {
     );
   const[value, setValue] = useState(DT);
 
+  
+  let cancel = false;
+
+
+  
   useEffect(() => {
+    let cancel = false;
+
     fetch('/api/admin/'+value)
       .then((response) => response.json())
       .then((json) => setUsers(json))
+      .then(() => {
+        if (cancel) return;
+        setIsVisible(false);
+      })
       .catch((error) => error)
+
+      return () => { 
+        cancel = true;
+      }
   }, [value]);
 
 return (

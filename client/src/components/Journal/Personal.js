@@ -53,6 +53,7 @@ const Personal = () => {
   const [value, setValue] = useState(dt2);
   const [value2, setValue2] = useState(dt1);
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   const classes = useStyles();
 
@@ -74,15 +75,36 @@ const Personal = () => {
     }
   };
 
-  useEffect(() => {
-    fetchData(iduser, value, value2);
+  useEffect(() => { 
+    let cancel = false;
+
+    fetchData(iduser, value, value2).then(() => {
+      if (cancel) return;
+      setIsVisible(false);
+    });
+
+    return () => { 
+      cancel = true;
+    }
   }, [iduser, value, value2]);
 
+  const [isVisible2, setIsVisible2] = useState(true);
+
   useEffect(() => {
+    let cancel = false;
+
     fetch("/api/admin/admin/dt1/" + value2 + "/dt2/" + value)
       .then((response) => response.json())
       .then((json) => setUserss(json))
+      .then(() => {
+        if (cancel) return;
+        setIsVisible2(false);
+      })
       .catch((error) => error);
+      
+      return () => { 
+        cancel = true;
+      }
   }, [value, value2]);
 
   const handleChange = (event) => setIduser(event.target.value);
@@ -192,11 +214,11 @@ const Personal = () => {
             <TableBody>
               {users.map((row) => (
                 <TableRow key={row.row}>
-                  <TableCell component="tr" scope="row">
+                  <TableCell  scope="row">
                     {new Date(row.dt).toLocaleDateString()}
                   </TableCell>
 
-                  <TableCell component="tr" scope="row">
+                  <TableCell  scope="row">
                     <Typography>{row.user}</Typography>
                   </TableCell>
 

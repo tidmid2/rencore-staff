@@ -20,6 +20,7 @@ export default function ResetPass({showAlert}) {
 
     const [tokenstatus, setTokenstatus] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
 
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -57,10 +58,21 @@ export default function ResetPass({showAlert}) {
         } finally {
           setIsLoading(false);
       }};
-  
+      
+      
+
     useEffect(() => {
-        setTokenstatus(null);
-        fetchData(id,token);
+      let cancel = false;
+
+      setTokenstatus(null);
+      fetchData(id,token).then(() => {
+        if (cancel) return;
+        setIsVisible(false);
+      })
+
+      return () => { 
+        cancel = true;
+      }
    }, [id,token]);
 
     if(tokenstatus===true){
