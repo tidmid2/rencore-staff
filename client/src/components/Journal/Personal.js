@@ -103,7 +103,7 @@ const Personal = () => {
             <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>
             <Select
               fullWidth
-              value={iduser}
+              value={iduser ? iduser : ''}
               id="demo-simple-select-label"
               label="Сотрудник"
               onChange={handleChange}
@@ -126,7 +126,7 @@ const Personal = () => {
         <TextField
           id="date"
           mt={2}
-          value={value2}
+          value={value2 ? value2 : ''}
           inputFormat="YYYY-MM-DD"
           label="Дата"
           type="date"
@@ -144,7 +144,7 @@ const Personal = () => {
         <TextField
           id="date"
           mt={2}
-          value={value}
+          value={value ? value : ''}
           inputFormat="YYYY-MM-DD"
           label="Дата"
           type="date"
