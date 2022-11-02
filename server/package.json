@@ -6,8 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "react-start": "nodemon ./server.js",
+    "server-start": "nodemon ./server.js",
     "start": "concurrently \"nodemon ./server.js\" \"cd ../client && npm start\"",
-    "dev": "concurrently \"nodemon ./server.js\" \"cd ../client && serve -s build\""
+    "build": "SET NODE_ENV='production' && webpack",
+    "dev": "webpack-dev-server"
   },
   "author": "",
   "license": "ISC",
@@ -34,7 +36,12 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "babel-loader": "^9.0.1",
     "concurrently": "^7.0.0",
-    "nodemon": "^2.0.15"
+    "dotenv-webpack": "^8.0.1",
+    "nodemon": "^2.0.15",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.11.1",
+    "webpack-node-externals": "^3.0.0"
   }
 }

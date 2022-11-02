@@ -228,7 +228,7 @@ const Personal = () => {
                       style={{
                         backgroundColor:
                           (row.statred > "09:00:00" && "#E55151") ||
-                          (row.statred <= "09:00:00" && "E55151"),
+                          (row.statred <= "09:00:00" && "#56C114"),
                       }}
                     >
                       {row.statred}

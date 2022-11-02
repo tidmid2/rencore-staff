@@ -5,9 +5,10 @@ import { Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer,
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
 import {makeStyles} from '@material-ui/core/styles';
 import * as XLSX from 'xlsx';
+
+import Clear from '../MiniComponents/Clear';
 
 function addZero(num) {
   if (num >= 0 && num <= 9) {
@@ -126,47 +127,50 @@ function Row(props) {
 
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                История отметок
-              </Typography>
-
-              <Table size="small" aria-label="purchases">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Дата</TableCell>
-                    <TableCell>Время</TableCell>
-                    <TableCell>Комментарии</TableCell>
-                    <TableCell align="right">Статус</TableCell>
-                  </TableRow>
-                </TableHead>
-                { isLoading ? <CircularProgress color="secondary" /> : 
-                  <TableBody>
-                    { userinfo.map((row2) => (
-                      <TableRow key={row2.uid}>
-                        <TableCell scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
-                        <TableCell>{row2.time}</TableCell>
-                        <TableCell>{row2.comment}</TableCell>
-                        <TableCell align="right">
-                          <Typography className={classes.status}  style={{
-                            backgroundColor:
-                              ((row2.id_op==='Опоздал' && '#E55151') ||
-                              (row2.id_op==='Ушел' && '#303F9F') ||
-                              (row2.id_op==='Вернулся' && '#2FB18A') ||
-                              (row2.id_op==='Пришел' && '#56C114'))
-                            }}
-                          >
-                            {row2.id_op}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>}
-              </Table>
-              <Button onClick={handleClick}>Export</Button>
-            </Box>
-          </Collapse>
+           
+            <Collapse in={open} timeout="auto" unmountOnExit>
+            { userinfo.length!==0 ?
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  История отметок
+                </Typography>
+                
+                <Table size="small" aria-label="purchases">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Дата</TableCell>
+                      <TableCell>Время</TableCell>
+                      <TableCell>Комментарии</TableCell>
+                      <TableCell align="right">Статус</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  { isLoading ? <CircularProgress color="secondary" /> : 
+                    <TableBody>
+                      { userinfo.map((row2) => (
+                        <TableRow key={row2.uid}>
+                          <TableCell scope="row">{ (new Date(row2.dt)).toLocaleDateString() }</TableCell>
+                          <TableCell>{row2.time}</TableCell>
+                          <TableCell>{row2.comment}</TableCell>
+                          <TableCell align="right">
+                            <Typography className={classes.status}  style={{
+                              backgroundColor:
+                                ((row2.id_op==='Опоздал' && '#E55151') ||
+                                (row2.id_op==='Ушел' && '#303F9F') ||
+                                (row2.id_op==='Вернулся' && '#2FB18A') ||
+                                (row2.id_op==='Пришел' && '#56C114'))
+                              }}
+                            >
+                              {row2.id_op}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>}
+                </Table>
+                <Button onClick={handleClick}>Export</Button>
+              </Box> : <Clear/>  } 
+            </Collapse> 
+          
         </TableCell>
       </TableRow>
     </React.Fragment>

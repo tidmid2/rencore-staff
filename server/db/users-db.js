@@ -189,12 +189,16 @@ const consolidatedReportDb = async (dt1,dt2,user) => {
     try {
         const res = await db.query(`select ROW_NUMBER () OVER (
             ORDER BY u.id
-         ) as row,s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) as  user,(l.later+'09:00:00') as statred, l.later as late,l.work as work
+         ) as row,s.dtstart::Date as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) as  user,(
+			 select time 
+			 from documents  
+			 where user_id=u.id and id_smeny = s.id and (id_op=1 or id_op=2)) as statred, 
+			 l.later as late,l.work as work
         from tblate l
         left join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
         where (s.dtstart::Date > $1 and  s.dtstart::Date <= $2) and u.id=$3
-        group by s.dtstart,u.id,u.first_name,u.last_name, l.work , l.later,l.id
+        group by s.dtstart,u.id,u.first_name,u.last_name, l.work , l.later,l.id,s.id
         order by s.dtstart desc`,[dt1,dt2,user]);
         return res.rows;
     } catch(e) {
