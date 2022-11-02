@@ -30,10 +30,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "SET NODE_ENV='production' && webpack",
+    "build": "react-scripts build",
+    "build-webpack": "SET NODE_ENV='production' && webpack",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://10.10.2.102:3001",
   "eslintConfig": {
     "extends": [
       "react-app",
