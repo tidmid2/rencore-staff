@@ -67,7 +67,6 @@ function App() {
         }));
     }}
     
-    
     useEffect( () => {
       hasJWT();
       if (!authed && !hasJWT()){
@@ -76,8 +75,9 @@ function App() {
       else{
         setAuthed(true);
         checkauth();
-        
+        return;
       };
+      // eslint-disable-next-line 
     },[]);
     
 

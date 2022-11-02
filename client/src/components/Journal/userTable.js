@@ -71,7 +71,6 @@ export default function UserTable() {
 
   const [value, setValue] = useState(DT);
   const [value2, setValue2] = useState(dt);
-  const [isVisible, setIsVisible] = useState(true);
   
   const fetchData = async (value, value2) => {
     setIsLoading(true);
@@ -96,16 +95,9 @@ export default function UserTable() {
  
 
   useEffect(() => {
-    let cancel = false;
+    fetchData(value, value2)
 
-    fetchData(value, value2).then(() => {
-      if (cancel) return;
-      setIsVisible(false);
-    });
-
-    return () => { 
-      cancel = true;
-    }
+    return;
   }, [value, value2]);
 
   return (

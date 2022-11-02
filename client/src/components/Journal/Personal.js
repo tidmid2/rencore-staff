@@ -53,7 +53,6 @@ const Personal = () => {
   const [value, setValue] = useState(dt2);
   const [value2, setValue2] = useState(dt1);
   const [isLoading, setIsLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
 
   const classes = useStyles();
 
@@ -76,35 +75,20 @@ const Personal = () => {
   };
 
   useEffect(() => { 
-    let cancel = false;
+    fetchData(iduser, value, value2)
 
-    fetchData(iduser, value, value2).then(() => {
-      if (cancel) return;
-      setIsVisible(false);
-    });
-
-    return () => { 
-      cancel = true;
-    }
+    return;
   }, [iduser, value, value2]);
 
-  const [isVisible2, setIsVisible2] = useState(true);
 
   useEffect(() => {
-    let cancel = false;
 
     fetch("/api/admin/admin/dt1/" + value2 + "/dt2/" + value)
       .then((response) => response.json())
       .then((json) => setUserss(json))
-      .then(() => {
-        if (cancel) return;
-        setIsVisible2(false);
-      })
       .catch((error) => error);
       
-      return () => { 
-        cancel = true;
-      }
+      return;
   }, [value, value2]);
 
   const handleChange = (event) => setIduser(event.target.value);
@@ -206,9 +190,11 @@ const Personal = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
+                width: "100%"
               }}
             >
-              <CircularProgress />
+              <CircularProgress justifyContent="center" 
+                alignItems="center"/>
             </Box>
           ) : (
             <TableBody>

@@ -20,14 +20,14 @@ export default function ResetPass({showAlert}) {
 
     const [tokenstatus, setTokenstatus] = useState();
     const [isLoading, setIsLoading] = useState(false);
-    const [isVisible, setIsVisible] = useState(true);
 
     const handleSubmit = async(e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         try {
           // setIsLoading(true);
-          const idd = await reset({password: data.get('password'), id: id, token: token}).unwrap();
+          // eslint-disable-next-line 
+          const  idd = await reset({password: data.get('password'), id: id, token: token}).unwrap();
           dispatch(showSnackbar({
             message: 'Пароль успешно обновлён',
             severity: 'success'
@@ -62,17 +62,11 @@ export default function ResetPass({showAlert}) {
       
 
     useEffect(() => {
-      let cancel = false;
 
       setTokenstatus(null);
-      fetchData(id,token).then(() => {
-        if (cancel) return;
-        setIsVisible(false);
-      })
+      fetchData(id,token)
 
-      return () => { 
-        cancel = true;
-      }
+      return;
    }, [id,token]);
 
     if(tokenstatus===true){

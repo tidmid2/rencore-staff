@@ -66,6 +66,7 @@ function Row(props) {
         if(typeBeat!==4){
            //change PASSWORD
           try {
+            // eslint-disable-next-line 
             const idd = await document({
               password: data.get("password"),
               id: userId,
@@ -88,6 +89,7 @@ function Row(props) {
         else {
           //Разблокировать
           try {
+            // eslint-disable-next-line 
             const idd = await document1({id: userId, blocked: false}).unwrap();
             dispatch(showSnackbar({
               message: 'Пользователь успешно разблокирован',
@@ -108,6 +110,7 @@ function Row(props) {
       else{
         //Delete carad from user
         try {
+          // eslint-disable-next-line 
           const idd = await document2({id: userId}).unwrap();
           dispatch(showSnackbar({
             message: 'Карточка успешно удалена',
@@ -128,6 +131,7 @@ function Row(props) {
     else{ 
       //block user
       try {
+        // eslint-disable-next-line 
         const idd = await document1({id: userId, blocked: true}).unwrap();
         dispatch(showSnackbar({
           message: 'Пользователь успешно заблокирован',
@@ -274,24 +278,15 @@ row: PropTypes.shape({
 
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
-  const [isVisible, setIsVisible] = useState(true);
 
 
   useEffect(() => {
-    let cancel = false;
-
     fetch('/api/admin/users')
       .then((response) => response.json())
       .then((json) => setUsers(json))
-      .then(() => {
-        if (cancel) return;
-        setIsVisible(false);
-      })
       .catch((error) => error)
 
-    return () => { 
-      cancel = true;
-    }
+    return;
   }, []);
 
 return (

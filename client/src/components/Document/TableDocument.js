@@ -156,25 +156,15 @@ export default function CollapsibleTable() {
     
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);  
-  const [isVisible, setIsVisible] = useState(true);
 
 
   useEffect(() => {
-    let cancel = false;
-    
-    setIsLoading(true);
     fetch('/api/document/id/' + user.id)
       .then((response) => response.json())
       .then((json) => setUsers(json), setIsLoading(false))
-      .then(() => {
-        if (cancel) return;
-        setIsVisible(false);
-      })
       .catch((error) => error)
 
-      return () => { 
-        cancel = true;
-      }
+      return ;
   }, [user]);
 
   return (

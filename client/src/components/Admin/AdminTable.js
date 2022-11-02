@@ -199,7 +199,6 @@ Row.propTypes = {
 
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
-  const [isVisible, setIsVisible] = useState(true);
   
   const handleClick = () => {
     var wb = XLSX.utils.book_new(),
@@ -217,25 +216,17 @@ export default function AdminTable() {
   const[value, setValue] = useState(DT);
 
   
-  let cancel = false;
 
 
   
   useEffect(() => {
-    let cancel = false;
 
     fetch('/api/admin/'+value)
       .then((response) => response.json())
       .then((json) => setUsers(json))
-      .then(() => {
-        if (cancel) return;
-        setIsVisible(false);
-      })
       .catch((error) => error)
 
-      return () => { 
-        cancel = true;
-      }
+      return;
   }, [value]);
 
 return (
