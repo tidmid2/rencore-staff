@@ -197,7 +197,7 @@ export default function UserTable() {
                         className={classes.workdays}
                         style={{
                           backgroundColor:
-                            (row.ydays > 0 && "#E55151") ||
+                            (row.ydays > 0 && "#56C114") ||
                             (row.ydays <= 0 && "white"),
                         }}
                       >
@@ -207,10 +207,11 @@ export default function UserTable() {
 
                     <Tooltip title="Опоздал дней" sx={{ marginLeft: "auto" }}>
                       <Typography
+                        
                         className={classes.workdays}
                         style={{
                           backgroundColor:
-                            (row.zdays > 0 && "#56C114") ||
+                            (row.zdays > 0 && "#E55151") ||
                             (row.zdays <= 0 && "white"),
                         }}
                       >
