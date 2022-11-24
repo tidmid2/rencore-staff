@@ -5,9 +5,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "react-start": "concurrently \"nodemon ./server.js\" \"cd ../client && npm start\"",
+    "react-start": "concurrently \"nodemon ./server.js\" \"cd ../client && serve -s build\"",
     "server-start": "nodemon ./server.js",
-    "start": "concurrently \"nodemon ./server.js\" \"cd ../client && serve -s build\"",
+    "start": "concurrently \"nodemon ./server.js\" \"cd ../client && npm start\"",
     "build": "SET NODE_ENV='production' && webpack",
     "dev": "webpack-dev-server"
   },
