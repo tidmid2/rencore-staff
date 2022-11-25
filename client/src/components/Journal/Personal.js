@@ -94,7 +94,7 @@ const Personal = () => {
   const handleChange = (event) => setIduser(event.target.value);
 
   return (
-    <Box sx={{ marginTop: "45px" }}>
+    <Box>
       <Typography variant="h6" gutterBottom component="div">
         Сводный отчет по Сотруднику
       </Typography>

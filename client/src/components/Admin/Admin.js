@@ -4,7 +4,7 @@ import AdminTable from './AdminTable';
 
 function Admin() {
   return (
-  <Typography component="div" sx={{ marginTop: "45px" }}>
+  <Typography component="div">
     <Box sx={{ minHeight: "500px", width: "100%"  }}>
       <AdminTable/>
     </Box>

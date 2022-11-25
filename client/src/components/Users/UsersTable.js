@@ -290,7 +290,7 @@ export default function UsersTable() {
   }, []);
 
 return (
-  <Box sx={{ marginTop: "45px" }}>
+  <Box>
     <Typography variant="h6" gutterBottom component="div">Пользователи</Typography>
     <TableContainer component={Paper} sx={{ marginTop: "45px" }}>
       <Table aria-label="collapsible table" >

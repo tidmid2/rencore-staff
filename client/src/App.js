@@ -94,7 +94,7 @@ function App() {
         <MsgSnackBar />
         <BrowserRouter>
           <Header />
-          <Container component="main" sx={{ mt: 8, mb: 2}} maxWidth="lg">
+          <Container component="main" sx={{ mt: 15, mb: 2}} maxWidth="lg">
             <Routes>
               <Route path="/" element={<Main/>} />
               <Route path="/signin" element={<SignIn/>} />

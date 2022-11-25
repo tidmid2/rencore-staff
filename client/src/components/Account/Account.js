@@ -6,7 +6,7 @@ function Account() {
   const { user } = useAuth();
   
   return (
-    <Typography component="div" sx={{ marginTop: "45px" }}>
+    <Typography component="div">
       <Typography component="h1" variant="h4" align="center">
         Профиль
       </Typography>
