@@ -251,7 +251,7 @@ return (
         onChange={(e) => {setValue(e.target.value)}}
       />
     </Stack>
-    <TableContainer component={Paper} sx={{ marginTop: "45px" }}>
+    <TableContainer component={Paper}>
       <Table aria-label="collapsible table" >
         <TableHead>
           <TableRow>
