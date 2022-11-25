@@ -74,22 +74,43 @@ const Personal = () => {
     }
   };
 
-  useEffect(() => { 
-    fetchData(iduser, value, value2)
-
+  useEffect(() => {
+    fetchData(iduser, value, value2);
     return;
   }, [iduser, value, value2]);
 
-
+  //new fetchdata
   useEffect(() => {
+    const fetchdata = async () => {
+      try {
+        const res = await fetch(
+          "/api/admin/admin/dt1/" + value2 + "/dt2/" + value
+        );
+        if (res.status === 200) {
+          let data = await res.json();
+          setUserss(data);
+        } else {
+          console.log("Ошибка получения данных");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    fetch("/api/admin/admin/dt1/" + value2 + "/dt2/" + value)
-      .then((response) => response.json())
-      .then((json) => setUserss(json))
-      .catch((error) => error);
-      
-      return;
+    
+    return fetchdata();
   }, [value, value2]);
+
+  //old fetchdata
+  // useEffect(() => {
+
+  //   fetch("/api/admin/admin/dt1/" + value2 + "/dt2/" + value)
+  //     .then((response) => response.json())
+  //     .then((json) => setUserss(json))
+  //     .catch((error) => error);
+
+  //     return;
+  // }, [value, value2]);
 
   const handleChange = (event) => setIduser(event.target.value);
 
@@ -109,7 +130,7 @@ const Personal = () => {
             <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>
             <Select
               fullWidth
-              value={iduser ? iduser : ''}
+              value={iduser ? iduser : ""}
               id="demo-simple-select-label"
               label="Сотрудник"
               onChange={handleChange}
@@ -132,7 +153,7 @@ const Personal = () => {
         <TextField
           id="date"
           mt={2}
-          value={value2 ? value2 : ''}
+          value={value2 ? value2 : ""}
           inputFormat="YYYY-MM-DD"
           label="Дата"
           type="date"
@@ -150,7 +171,7 @@ const Personal = () => {
         <TextField
           id="date"
           mt={2}
-          value={value ? value : ''}
+          value={value ? value : ""}
           inputFormat="YYYY-MM-DD"
           label="Дата"
           type="date"
@@ -190,21 +211,20 @@ const Personal = () => {
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                width: "100%"
+                width: "100%",
               }}
             >
-              <CircularProgress justifyContent="center" 
-                alignItems="center"/>
+              <CircularProgress justifyContent="center" alignItems="center" />
             </Box>
           ) : (
             <TableBody>
               {users.map((row) => (
                 <TableRow key={row.row}>
-                  <TableCell  scope="row">
+                  <TableCell scope="row">
                     {new Date(row.dt).toLocaleDateString()}
                   </TableCell>
 
-                  <TableCell  scope="row">
+                  <TableCell scope="row">
                     <Typography>{row.user}</Typography>
                   </TableCell>
 

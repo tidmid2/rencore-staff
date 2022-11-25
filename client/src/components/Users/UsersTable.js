@@ -279,15 +279,33 @@ row: PropTypes.shape({
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
 
-
+    //new fetchdata
   useEffect(() => {
-    fetch('/api/admin/users')
-      .then((response) => response.json())
-      .then((json) => setUsers(json))
-      .catch((error) => error)
-
-    return;
+    const fetchdata = async () => {
+      try {
+        const res = await fetch('/api/admin/users');
+        if (res.status === 200) {
+          let data = await res.json();
+          setUsers(data);
+        } else {
+          console.log("Ошибка получения данных");
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    return fetchdata();
   }, []);
+
+  //old fetch
+  // useEffect(() => {
+  //   fetch('/api/admin/users')
+  //     .then((response) => response.json())
+  //     .then((json) => setUsers(json))
+  //     .catch((error) => error)
+
+  //   return;
+  // }, []);
 
 return (
   <Box>

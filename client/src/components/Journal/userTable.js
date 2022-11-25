@@ -95,9 +95,7 @@ export default function UserTable() {
  
 
   useEffect(() => {
-    fetchData(value, value2)
-
-    return;
+    return fetchData(value, value2);
   }, [value, value2]);
 
   return (

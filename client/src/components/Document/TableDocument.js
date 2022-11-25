@@ -157,15 +157,33 @@ export default function CollapsibleTable() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);  
 
-
+  //new fetchdata
   useEffect(() => {
-    fetch('/api/document/id/' + user.id)
-      .then((response) => response.json())
-      .then((json) => setUsers(json), setIsLoading(false))
-      .catch((error) => error)
+    const fetchdata = async() => {
+      try {
+        const res = await fetch('/api/document/id/' + user.id);
+        if (res.status === 200) {
+          let data = await res.json();
+          setUsers(data);
+          setIsLoading(false);
+        } else {
+          console.log("Ошибка получения данных");
+        }
+      } catch(error){console.log(error)}
+    }
 
-      return ;
+    return fetchdata();
   }, [user]);
+  
+  // old fetchdata
+  // useEffect(() => {
+  //   fetch('/api/document/id/' + user.id)
+  //     .then((response) => response.json())
+  //     .then((json) => setUsers(json), setIsLoading(false))
+  //     .catch((error) => error)
+
+  //     return ;
+  // }, [user]);
 
   return (
     <TableContainer component={Paper}>

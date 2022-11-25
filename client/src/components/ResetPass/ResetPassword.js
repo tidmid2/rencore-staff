@@ -62,11 +62,10 @@ export default function ResetPass({showAlert}) {
       
 
     useEffect(() => {
-
-      setTokenstatus(null);
-      fetchData(id,token)
-
-      return;
+      return () => {
+        setTokenstatus(null);
+        fetchData(id,token);
+      };
    }, [id,token]);
 
     if(tokenstatus===true){

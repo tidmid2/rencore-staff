@@ -216,17 +216,31 @@ export default function AdminTable() {
   const[value, setValue] = useState(DT);
 
   
+    //old fetchdata
+  // useEffect(() => {
 
+  //   fetch('/api/admin/'+value)
+  //     .then((response) => response.json())
+  //     .then((json) => setUsers(json))
+  //     .catch((error) => error)
 
-  
+  //     return;
+  // }, [value]);
+  //new fetch data
   useEffect(() => {
+    const fetchdata = async() => {
+      try {
+        const res = await fetch('/api/admin/'+value);
+        if (res.status === 200) {
+          let data = await res.json();
+          setUsers(data);
+        } else {
+          console.log("Ошибка получения данных");
+        }
+      } catch(error){console.log(error)}
+    }
 
-    fetch('/api/admin/'+value)
-      .then((response) => response.json())
-      .then((json) => setUsers(json))
-      .catch((error) => error)
-
-      return;
+    return fetchdata();
   }, [value]);
 
 return (
