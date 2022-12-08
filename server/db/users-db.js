@@ -224,7 +224,7 @@ const consolidatedReportInsideDb = async (dt1,dt2) => {
 
 const consolidatedReportForXlsDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select ROW_NUMBER () over () as "№", s.dtstart::Date as "Дата", d.time as "Время прихода",d.user_id as user, concat(u.first_name,' ',u.last_name) as "Сотрудник",
+        const res = await db.query(`select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
         (select case when id_op=5 then time
             else null end 
              from documents 

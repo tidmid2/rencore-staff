@@ -57,7 +57,7 @@ export default function UserTable() {
   const [users, setUsers] = useState([]);
   const [uxls, setUxls] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingXls, setIsLoadingXls] = useState(false);
+  const [isLoadingXls, setIsLoadingXls] = useState(true);
   let date = new Date();
   let DT =
     addZero(date.getFullYear()) +
@@ -95,33 +95,31 @@ export default function UserTable() {
 
   const fetchDataXls = async (value, value2) => {
     try {
-      setIsLoadingXls(true);
       const response = await fetch("/api/admin/xls/dt1/" + value2 + "/dt2/" + value);
       if (!response.ok) {
         throw new Error(`Error! status: ${response.status}`);
       }
       const result = await response.json();
-      setUxls(result);
+      // setUxls(result);
+      xlsDownload(result);
     } catch (err) {
       return err;
-    } finally {
-      setIsLoadingXls(false);
-    }
+    } 
+    // finally {
+    //   return xlsDownload(uxls);
+    // }
   };
 
+  const xlsDownload = (uxls) => {
+    var wb = XLSX.utils.book_new(),
+    ws = XLSX.utils.json_to_sheet(uxls);
+    XLSX.utils.book_append_sheet(wb,ws,"Сводный отчет по сотрудникам");
+    XLSX.writeFile(wb,"Сводный отчет по сотрудникам.xlsx");
+    return setUxls();
+  }
+
   const handleClick = () => {
-    
     fetchDataXls(value, value2);
-    if(isLoadingXls){
-      return "zero";
-    }
-    else{
-      var wb = XLSX.utils.book_new(),
-      ws = XLSX.utils.json_to_sheet(uxls);
-      XLSX.utils.book_append_sheet(wb,ws,"Сводный отчет по сотрудникам");
-      XLSX.writeFile(wb,"Сводный отчет по сотрудникам.xlsx");
-      return setUxls();
-    }
   };
 
   useEffect(() => {
