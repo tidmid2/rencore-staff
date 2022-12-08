@@ -55,9 +55,9 @@ export default function UserTable() {
   const classes = useStyles();
 
   const [users, setUsers] = useState([]);
-  const [uxls, setUxls] = useState([]);
+  // const [uxls, setUxls] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingXls, setIsLoadingXls] = useState(true);
+  // const [isLoadingXls, setIsLoadingXls] = useState(true);
   let date = new Date();
   let DT =
     addZero(date.getFullYear()) +
@@ -110,12 +110,12 @@ export default function UserTable() {
     // }
   };
 
-  const xlsDownload = (uxls) => {
+  const xlsDownload = (result) => {
     var wb = XLSX.utils.book_new(),
-    ws = XLSX.utils.json_to_sheet(uxls);
+    ws = XLSX.utils.json_to_sheet(result);
     XLSX.utils.book_append_sheet(wb,ws,"Сводный отчет по сотрудникам");
     XLSX.writeFile(wb,"Сводный отчет по сотрудникам.xlsx");
-    return setUxls();
+    return;
   }
 
   const handleClick = () => {
