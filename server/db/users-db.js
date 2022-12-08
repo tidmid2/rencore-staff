@@ -233,7 +233,7 @@ const consolidatedReportForXlsDb = async (dt1,dt2) => {
         ((select case when id_op=5 then time
             else null end 
              from documents 
-             where user_id=d.user_id and (dt::Date >= $1 and  dt::Date <= $2) 
+             where user_id=d.user_id and (to_char(dt , 'YYYY-MM-DD') >= $1 and  to_char(dt , 'YYYY-MM-DD') <= $2) 
             ORDER BY uid DESC limit 1)-d.time) as "Отработано",
         (d.time-'09:00:00') as "Опоздание",
         d.comment as "Комментарии"
