@@ -235,7 +235,8 @@ const consolidatedReportForXlsDb = async (dt1,dt2) => {
              from documents 
              where user_id=d.user_id and (to_char(dt , 'YYYY-MM-DD') >= $1 and  to_char(dt , 'YYYY-MM-DD') <= $2) 
             ORDER BY uid DESC limit 1)-d.time) as "Отработано",
-        (d.time-'09:00:00') as "Опоздание",
+        sum(case when (d.time-'09:00:00') <= '00:00:00' then null
+			else (d.time-'09:00:00') end) as "Опоздание",
         d.comment as "Комментарии"
         from documents d
         inner join tbsmeny s ON s.id = d.id_smeny
