@@ -13,6 +13,7 @@ const {
     dateForConsolidatedReportController,
     consolidatedReportController,
     consolidatedReportInsideController,
+    consolidatedReportForXlsController,
 
     forgotPassLinkController,
     forgotPassVerifyController,
@@ -74,7 +75,8 @@ router.get('/document/id/:user_id/id_smeny/:id_smeny', fetchDocumentInsideByUser
 //consolidated reports
 router.get('/admin/dt1/:dt1/dt2/:dt2',  dateForConsolidatedReportController )
 router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  consolidatedReportController )
-router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  consolidatedReportInsideController )
+router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  consolidatedReportInsideController ) 
+router.get('/admin/xls/dt1/:dt1/dt2/:dt2',  consolidatedReportForXlsController )
 
 //daily report
 router.get('/admin/:id_smeny',  dailyReportController )

@@ -16,6 +16,7 @@ const {
     dateForConsolidatedReportDb,
     consolidatedReportDb,
     consolidatedReportInsideDb,
+    consolidatedReportForXlsDb,
 
     getUsersDb,
     blockUserDB,
@@ -179,6 +180,14 @@ const consolidatedReportInside = async (dt1,dt2) => {
         throw new Error(e.message);
     }
 }
+
+const consolidatedReportForXls = async (dt1,dt2) => {
+    try {
+        return await consolidatedReportForXlsDb(dt1,dt2);
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}
 //End
 
 
@@ -197,6 +206,7 @@ module.exports = {
     dateForConsolidatedReport,
     consolidatedReport,
     consolidatedReportInside,
+    consolidatedReportForXls,
 
     forgotPassLink,
     forgotPassVerify,

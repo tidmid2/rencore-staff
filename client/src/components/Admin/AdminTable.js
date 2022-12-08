@@ -199,13 +199,16 @@ Row.propTypes = {
 
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
-  
+
   const handleClick = () => {
     var wb = XLSX.utils.book_new(),
     ws = XLSX.utils.json_to_sheet(users);
+    XLSX.utils.sheet_add_aoa(ws,[["User", "UID", "Сотрудник", "Дата", "Время прихода", "Комментарии", "Время ухода", "Комментарии"]], { origin: "A1" });
     XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
     XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
   };
+
+  
 
   let date = new Date();
   let DT = (

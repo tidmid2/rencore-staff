@@ -23,6 +23,8 @@ import {
   FormControl,
 } from "@mui/material";
 
+// import * as XLSX from 'xlsx';
+
 const useStyles = makeStyles((theme) => ({
   status: {
     fontWeight: "bold",
@@ -49,6 +51,7 @@ const Personal = () => {
 
   const [users, setUsers] = useState([]);
   const [userss, setUserss] = useState([]);
+  // const [uxls, setUxls] = useState([]);
   const [iduser, setIduser] = useState(user);
   const [value, setValue] = useState(dt2);
   const [value2, setValue2] = useState(dt1);
@@ -100,6 +103,26 @@ const Personal = () => {
     
     return fetchdata();
   }, [value, value2]);
+
+  // const handleClick = () => {
+  //   const fetchDataXls = async (value, value2) => {
+  //     try {
+  //       const response = await fetch("/api/admin/xls/dt1/" + value2 + "/dt2/" + value);
+  //       if (!response.ok) {
+  //         throw new Error(`Error! status: ${response.status}`);
+  //       }
+  //       const result = await response.json();
+  //       setUxls(result);
+  //     } catch (err) {
+  //       return err;
+  //     }
+  //   };
+  //   fetchDataXls();
+  //   var wb = XLSX.utils.book_new(),ws = XLSX.utils.json_to_sheet(uxls);
+  //   XLSX.utils.book_append_sheet(wb,ws,"Сводный отчет по сотрудникам");
+  //   XLSX.writeFile(wb,"Сводный отчет по сотрудникам.xlsx");
+  //   setUxls();
+  // };
 
   //old fetchdata
   // useEffect(() => {
@@ -248,7 +271,9 @@ const Personal = () => {
             </TableBody>
           )}
         </Table>
+        
       </TableContainer>
+      {/* <Button onClick={handleClick}>Export</Button> */}
     </Box>
   );
 };

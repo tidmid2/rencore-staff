@@ -221,6 +221,33 @@ const consolidatedReportInsideDb = async (dt1,dt2) => {
         throw new Error(e.message);
     }
 }
+
+const consolidatedReportForXlsDb = async (dt1,dt2) => {
+    try {
+        const res = await db.query(`select ROW_NUMBER () over () as "№", s.dtstart::Date as "Дата", d.time as "Время прихода",d.user_id as user, concat(u.first_name,' ',u.last_name) as "Сотрудник",
+        (select case when id_op=5 then time
+            else null end 
+             from documents 
+             where user_id=d.user_id and (dt::Date >= '2022-11-01' and  dt::Date <= '2022-11-30') 
+            ORDER BY uid DESC limit 1) as "Время ухода", 
+        ((select case when id_op=5 then time
+            else null end 
+             from documents 
+             where user_id=d.user_id and (dt::Date >= $1 and  dt::Date <= $2) 
+            ORDER BY uid DESC limit 1)-d.time) as "Отработано",
+        (d.time-'09:00:00') as "Опоздание",
+        d.comment as "Комментарии"
+        from documents d
+        inner join tbsmeny s ON s.id = d.id_smeny
+        inner join users u ON u.id = d.user_id
+        where (d.id_op=2 or d.id_op=1) and (s.dtstart::Date >= $1 and  s.dtstart::Date <= $2)
+        group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id
+        order by "Сотрудник",s.dtstart asc`,[dt1,dt2]);
+        return res.rows;
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
 //End
 
 
@@ -244,6 +271,7 @@ module.exports = {
     dateForConsolidatedReportDb,
     consolidatedReportDb,
     consolidatedReportInsideDb,
+    consolidatedReportForXlsDb,
 
     getUsersDb,
     blockUserDB,

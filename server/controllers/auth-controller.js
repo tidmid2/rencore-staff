@@ -12,6 +12,7 @@ const {
     dateForConsolidatedReport,
     consolidatedReport,
     consolidatedReportInside,
+    consolidatedReportForXls,
 
     forgotPassLink,
     forgotPassVerify,
@@ -190,6 +191,21 @@ const consolidatedReportInsideController = async (req, res, next) => {
     try {
         const {dt1,dt2} = req.params
         const newDocument = await consolidatedReportInside(dt1,dt2)
+        if (!newDocument) {
+            return res.status(422).json({
+                error: { status: 422, data: "Нет данных."}
+            });
+        }
+        return res.json(newDocument)
+    } catch(err) {
+        return next(err);
+    }
+}
+
+const consolidatedReportForXlsController = async (req, res, next) => {
+    try {
+        const {dt1,dt2} = req.params
+        const newDocument = await consolidatedReportForXls(dt1,dt2)
         if (!newDocument) {
             return res.status(422).json({
                 error: { status: 422, data: "Нет данных."}
@@ -401,6 +417,7 @@ module.exports = {
     dateForConsolidatedReportController,
     consolidatedReportController,
     consolidatedReportInsideController,
+    consolidatedReportForXlsController,
 
     forgotPassLinkController,
     forgotPassVerifyController,
