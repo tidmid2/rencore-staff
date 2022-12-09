@@ -173,11 +173,12 @@ const dailyReport2Db = async (user_id,id_smeny) => {
 //Consolidated Report for Admin
 const dateForConsolidatedReportDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select u.id as user_id,concat(u.first_name,' ',u.last_name) as user,sum(l.late_day) as Ydays,count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
+        const res = await db.query(`
+        select u.id as user_id, concat(u.first_name,' ',u.last_name) as user, sum(l.late_day) as Ydays, count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
         from tblate l
-        left join users u ON u.id = l.iduser
+        inner join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
-        where s.dtstart::Date > $1 and  s.dtstart::Date <= $2
+        where (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
         group by u.id,u.first_name,u.last_name`,[dt1,dt2]);
         return res.rows;
     } catch(e) {
@@ -187,17 +188,15 @@ const dateForConsolidatedReportDb = async (dt1,dt2) => {
 
 const consolidatedReportDb = async (dt1,dt2,user) => {
     try {
-        const res = await db.query(`select ROW_NUMBER () OVER (
-            ORDER BY u.id
-         ) as row,to_char(s.dtstart , 'YYYY-MM-DD') as dt,u.id as user_id,concat(u.first_name,' ',u.last_name) as  user,(
-			 select time 
-			 from documents  
-			 where user_id=u.id and id_smeny = s.id and (id_op=1 or id_op=2)) as statred, 
-			 l.later as late,l.work as work
+        const res = await db.query(`select ROW_NUMBER () OVER (ORDER BY u.id) as row, to_char(s.dtstart , 'YYYY-MM-DD') as dt, u.id as user_id, concat(u.first_name,' ',u.last_name) as user,
+            (select time 
+                from documents  
+                where user_id=u.id and id_smeny = s.id and (id_op=1 or id_op=2)) as statred, 
+            l.later as late, l.work as work
         from tblate l
-        left join users u ON u.id = l.iduser
+        inner join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
-        where (to_char(s.dtstart , 'YYYY-MM-DD') > $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2) and u.id=$3
+        where u.id=$3 and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
         group by s.dtstart,u.id,u.first_name,u.last_name, l.work , l.later,l.id,s.id
         order by s.dtstart desc`,[dt1,dt2,user]);
         return res.rows;
@@ -208,13 +207,11 @@ const consolidatedReportDb = async (dt1,dt2,user) => {
 
 const consolidatedReportInsideDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select ROW_NUMBER () OVER (
-            ORDER BY u.id
-         ) as row,u.id as user_id,concat(u.first_name,' ',u.last_name) as user --,sum(l.later) as lated, sum(l.work) as worked, 
+        const res = await db.query(`select ROW_NUMBER () OVER (ORDER BY u.id) as row, u.id as user_id, concat(u.first_name,' ',u.last_name) as user --,sum(l.later) as lated, sum(l.work) as worked, 
         from tblate l
-        left join users u ON u.id = l.iduser
+        inner join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
-        where (to_char(s.dtstart , 'YYYY-MM-DD') > $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
+        where (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
         group by u.id,u.first_name,u.last_name`,[dt1,dt2]);
         return res.rows;
     } catch(e) {
@@ -226,24 +223,26 @@ const consolidatedReportForXlsDb = async (dt1,dt2) => {
     try {
         const res = await db.query(`select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
         (select case when id_op=5 then time
-            else null end 
-             from documents 
-             where user_id=d.user_id and (to_char(dt , 'YYYY-MM-DD') >= $1 and to_char(dt , 'YYYY-MM-DD') <= $2) 
-            ORDER BY uid DESC limit 1) as "Время ухода", 
+                     else '18:00:00' end 
+        from documents 
+        where user_id=d.user_id and dt::Date=s.dtstart::Date
+        ORDER BY uid DESC limit 1) as "Время ухода", 
+        
         ((select case when id_op=5 then time
-            else null end 
-             from documents 
-             where user_id=d.user_id and (to_char(dt , 'YYYY-MM-DD') >= $1 and  to_char(dt , 'YYYY-MM-DD') <= $2) 
-            ORDER BY uid DESC limit 1)-d.time) as "Отработано",
-        sum(case when (d.time-'09:00:00') <= '00:00:00' then null
-			else (d.time-'09:00:00') end) as "Опоздание",
-        d.comment as "Комментарии"
-        from documents d
-        inner join tbsmeny s ON s.id = d.id_smeny
-        inner join users u ON u.id = d.user_id
-        where (d.id_op=2 or d.id_op=1) and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
-        group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id
-        order by "Сотрудник",s.dtstart asc`,[dt1,dt2]);
+                     else '18:00:00' end 
+        from documents 
+        where user_id=d.user_id and dt::Date=s.dtstart::Date
+        ORDER BY uid DESC limit 1)-d.time)::Time as "Отработано",
+      
+        (case when d.time>='09:00:00' then (d.time-'09:00:00')
+              else null end)::Time as "Опоздание",
+    d.comment as "Комментарии"
+    from documents d
+    inner join tbsmeny s ON s.id = d.id_smeny
+    inner join users u ON u.id = d.user_id
+    where (d.id_op=2 or d.id_op=1) and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
+    group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id
+    order by "Сотрудник",s.dtstart ASC`,[dt1,dt2]);
         return res.rows;
     } catch(e) {
         throw new Error(e.message);
