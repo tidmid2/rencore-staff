@@ -221,28 +221,30 @@ const consolidatedReportInsideDb = async (dt1,dt2) => {
 
 const consolidatedReportForXlsDb = async (dt1,dt2) => {
     try {
-        const res = await db.query(`select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
-        (select case when id_op=5 then time
-                     else '18:00:00' end 
-        from documents 
-        where user_id=d.user_id and dt::Date=s.dtstart::Date
-        ORDER BY uid DESC limit 1) as "Время ухода", 
+        const res = await db.query(`
+        select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
+            (select case when id_op=5 then time
+                        else '18:00:00' end 
+            from documents 
+            where user_id=d.user_id and dt::Date=s.dtstart::Date
+            ORDER BY uid DESC limit 1) as "Время ухода", 
+            
+            ((select case when id_op=5 then time
+                        else '18:00:00' end 
+            from documents 
+            where user_id=d.user_id and dt::Date=s.dtstart::Date
+            ORDER BY uid DESC limit 1)-d.time)::Time as "Отработано",
         
-        ((select case when id_op=5 then time
-                     else '18:00:00' end 
-        from documents 
-        where user_id=d.user_id and dt::Date=s.dtstart::Date
-        ORDER BY uid DESC limit 1)-d.time)::Time as "Отработано",
-      
-        (case when d.time>='09:00:00' then (d.time-'09:00:00')
-              else null end)::Time as "Опоздание",
-    d.comment as "Комментарии"
-    from documents d
-    inner join tbsmeny s ON s.id = d.id_smeny
-    inner join users u ON u.id = d.user_id
-    where (d.id_op=2 or d.id_op=1) and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
-    group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id
-    order by "Сотрудник",s.dtstart ASC`,[dt1,dt2]);
+            (case when d.time>='18:00:00' then null
+                when d.time>='09:00:00' then (d.time-'09:00:00')
+                else null end)::Time as "Опоздание",
+        d.comment as "Комментарии"
+        from documents d
+        inner join tbsmeny s ON s.id = d.id_smeny
+        inner join users u ON u.id = d.user_id
+        where (d.id_op=2 or d.id_op=1) and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
+        group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id
+        order by "Сотрудник",s.dtstart ASC`,[dt1,dt2]);
         return res.rows;
     } catch(e) {
         throw new Error(e.message);
