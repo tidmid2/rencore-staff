@@ -6,7 +6,7 @@ import { Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer,
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import {makeStyles} from '@material-ui/core/styles';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx';
 
 import Clear from '../MiniComponents/Clear';
 
@@ -76,12 +76,12 @@ function Row(props) {
     }
   };
 
-  const handleClick = () => {
-    var wb = XLSX.utils.book_new(),
-    ws = XLSX.utils.json_to_sheet(userinfo);
-    XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
-    XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
-  };
+  // const handleClick = () => {
+  //   var wb = XLSX.utils.book_new(),
+  //   ws = XLSX.utils.json_to_sheet(userinfo);
+  //   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
+  //   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
+  // };
 
   const handleClick2 = () => {
     setOpen(!open);
@@ -103,8 +103,8 @@ function Row(props) {
         <TableCell>
           <Typography className={classes.status}  style={{
             backgroundColor:
-              ((row.time>'09:00:00' && '#E55151') ||
-              (row.time<='09:00:00' && '#56C114'))
+              ((row.time>=row.tmstart && '#E55151') ||
+              (row.time<row.tmstart  && '#56C114'))
             }}
           >
             {row.time}
@@ -114,9 +114,9 @@ function Row(props) {
         <TableCell>
           <Typography className={classes.status}  style={{
               backgroundColor:
-                ((row.time2<'18:00:00' && '#303F9F')||
+                ((row.time2<row.tmend && '#303F9F')||
                 // (row2.time2===null && '#E55151') ||
-                (row.time2>'18:00:00' && '#56C114'))
+                (row.time2>=row.tmend && '#56C114'))
             }}
           >
             {row.time2}
@@ -167,7 +167,7 @@ function Row(props) {
                       ))}
                     </TableBody>}
                 </Table>
-                <Button onClick={handleClick}>Export</Button>
+                {/* <Button onClick={handleClick}>Export</Button> */}
               </Box> : <Clear/>  } 
             </Collapse> 
           
@@ -200,13 +200,13 @@ Row.propTypes = {
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
 
-  const handleClick = () => {
-    var wb = XLSX.utils.book_new(),
-    ws = XLSX.utils.json_to_sheet(users);
-    XLSX.utils.sheet_add_aoa(ws,[["User", "UID", "Сотрудник", "Дата", "Время прихода", "Комментарии", "Время ухода", "Комментарии"]], { origin: "A1" });
-    XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
-    XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
-  };
+  // const handleClick = () => {
+  //   var wb = XLSX.utils.book_new(),
+  //   ws = XLSX.utils.json_to_sheet(users);
+  //   XLSX.utils.sheet_add_aoa(ws,[["User", "UID", "Сотрудник", "Дата", "Время прихода", "Комментарии", "Время ухода", "Комментарии"]], { origin: "A1" });
+  //   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
+  //   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
+  // };
 
   
 
@@ -288,7 +288,7 @@ return (
         </TableBody>
       </Table>
     </TableContainer>
-    <Button onClick={handleClick}>Export</Button>
+    {/* <Button onClick={handleClick}>Export</Button> */}
   </Box>
 );
 }

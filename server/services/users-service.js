@@ -23,6 +23,9 @@ const {
     deleteCardFromUserDB,
     changePassAdminDB,
     changePassAdminCheckDB,
+    changeTimeStartAdminDB,
+    changeTimeEndAdminDB,
+
 } = require('../db/users-db');
 
 //Auth
@@ -109,6 +112,23 @@ const getUsers = async () => {
         throw new Error(e.message);
     }
 }
+
+const changeTimeStartAdmin = async (id, tmst) => {
+    try {
+        return await changeTimeStartAdminDB(id, tmst);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
+const changeTimeEndAdmin = async (id, tmst) => {
+    try {
+        return await changeTimeEndAdminDB(id, tmst);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
+
 //End
 
 //Users tools
@@ -217,4 +237,6 @@ module.exports = {
     deleteCardFromUser,
     changePassAdmin,
     changePassAdminCheck,
+    changeTimeEndAdmin,
+    changeTimeStartAdmin,
 }

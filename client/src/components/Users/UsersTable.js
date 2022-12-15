@@ -11,7 +11,7 @@ import CreditCardOffIcon from '@mui/icons-material/CreditCardOff';
 import BlockIcon from '@mui/icons-material/Block';
 import CheckIcon from '@mui/icons-material/Check';
 
-import { useUpdatePassAdminMutation, useBlockUserMutation, useDeleteCardMutation, } from '../../services/api';
+import { useUpdatePassAdminMutation, useBlockUserMutation, useDeleteCardMutation,useChangeTmendMutation,useChangeTmstartMutation, } from '../../services/api';
 import { showSnackbar } from '../../features/ui/uiSlice';
 
 const style = {
@@ -50,77 +50,101 @@ function Row(props) {
   const [document] = useUpdatePassAdminMutation();
   const [document1] = useBlockUserMutation();
   const [document2] = useDeleteCardMutation();
+  const [document3] = useChangeTmstartMutation(); //change start time
+  const [document4] = useChangeTmendMutation(); //change end time
 
   const [open, setOpen] = useState(false);
   const [typeBeat, setTypeBeat] = useState(0);
   const [userId, setUserId] = useState();
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {setOpen(true)};
   const handleClose = () => setOpen(false);
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if(typeBeat!==3){
-      if(typeBeat!==2){
-        if(typeBeat!==4){
-           //change PASSWORD
-          try {
-            // eslint-disable-next-line 
-            const idd = await document({
-              password: data.get("password"),
-              id: userId,
-          }).unwrap();
-          dispatch(showSnackbar({
-            message: 'Вы успешно сменили пароль',
-            severity: 'success'
-          }));
-          navigate('/');
-          navigate('/users');
-          } catch (err) {
-            console.log(err);
-            const errMsg = err?.data?.error?.data || 'Произошла ошибка при смене пароля.'
+    if(typeBeat!==4){
+      if(typeBeat!==3){
+        if(typeBeat!==2){
+          if(typeBeat!==4){
+            //change PASSWORD
+            try {
+              // eslint-disable-next-line 
+              const idd = await document({
+                password: data.get("password"),
+                id: userId,
+            }).unwrap();
             dispatch(showSnackbar({
-              message: errMsg,
-              severity: 'error'
+              message: 'Вы успешно сменили пароль',
+              severity: 'success'
             }));
+            navigate('/');
+            navigate('/users');
+            } catch (err) {
+              console.log(err);
+              const errMsg = err?.data?.error?.data || 'Произошла ошибка при смене пароля.'
+              dispatch(showSnackbar({
+                message: errMsg,
+                severity: 'error'
+              }));
+            }
+          }
+          else {
+            //Разблокировать
+            try {
+              // eslint-disable-next-line 
+              const idd = await document1({id: userId, blocked: false}).unwrap();
+              dispatch(showSnackbar({
+                message: 'Пользователь успешно разблокирован',
+                severity: 'success'
+              }));
+            navigate('/');
+            navigate('/users');
+            } catch (err) {
+              console.log(err);
+              const errMsg = err?.data?.error?.data || 'Произошла ошибка при разблокировке пользователя.'
+              dispatch(showSnackbar({
+                message: errMsg,
+                severity: 'error'
+              }));
+            }
           }
         }
-        else {
-          //Разблокировать
+        else{
+          //Delete carad from user
           try {
             // eslint-disable-next-line 
-            const idd = await document1({id: userId, blocked: false}).unwrap();
+            const idd = await document2({id: userId}).unwrap();
             dispatch(showSnackbar({
-              message: 'Пользователь успешно разблокирован',
+              message: 'Карточка успешно удалена',
               severity: 'success'
             }));
           navigate('/');
           navigate('/users');
           } catch (err) {
             console.log(err);
-            const errMsg = err?.data?.error?.data || 'Произошла ошибка при разблокировке пользователя.'
+            const errMsg = err?.data?.error?.data || 'Произошла ошибка при удалении карточки.'
             dispatch(showSnackbar({
               message: errMsg,
               severity: 'error'
             }));
           }
-        }
+        };
       }
       else{
-        //Delete carad from user
+        //block user
         try {
           // eslint-disable-next-line 
           const idd = await document2({id: userId}).unwrap();
           dispatch(showSnackbar({
-            message: 'Карточка успешно удалена',
+            message: 'Пользователь успешно заблокирован',
             severity: 'success'
           }));
         navigate('/');
         navigate('/users');
         } catch (err) {
           console.log(err);
-          const errMsg = err?.data?.error?.data || 'Произошла ошибка при удалении карточки.'
+          const errMsg = err?.data?.error?.data || 'Произошла ошибка при блокировке пользователя.'
           dispatch(showSnackbar({
             message: errMsg,
             severity: 'error'
@@ -129,26 +153,105 @@ function Row(props) {
       };
     } 
     else{ 
-      //block user
-      try {
-        // eslint-disable-next-line 
-        const idd = await document1({id: userId, blocked: true}).unwrap();
+      //change time
+      if ((data.get("tmstart")==='') && (data.get("tmend")==='')){
         dispatch(showSnackbar({
-          message: 'Пользователь успешно заблокирован',
-          severity: 'success'
-        }));
-      navigate('/');
-      navigate('/users');
-      } catch (err) {
-        console.log(err);
-        const errMsg = err?.data?.error?.data || 'Произошла ошибка при блокировке пользователя.'
-        dispatch(showSnackbar({
-          message: errMsg,
+          message: 'Укажите время',
           severity: 'error'
         }));
       }
-  
-    }
+      else{
+        if((data.get("tmstart")==='') && (data.get("tmend")!=='')){
+          //change end time
+          try {
+            const idd = await document4({
+              id: userId, 
+              tmst: data.get("tmend")
+            }).unwrap();
+            dispatch(showSnackbar({
+              message: 'Время конца работы успешно сменен',
+              severity: 'success'
+            }));
+          navigate('/');
+          navigate('/users');
+          } catch (err) {
+            console.log(err);
+            const errMsg = err?.data?.error?.data || 'Произошла ошибка при смене времени.'
+            dispatch(showSnackbar({
+              message: errMsg,
+              severity: 'error'
+            }));
+          };
+        }
+        else if((data.get("tmstart")!=='') && (data.get("tmend")==='')){
+          //change start time
+          try {
+            // eslint-disable-next-line 
+            const idd = await document3({
+              id: userId, 
+              tmst: data.get("tmstart")
+            }).unwrap();
+            dispatch(showSnackbar({
+              message: 'Время начала работы успешно сменен',
+              severity: 'success'
+            }));
+          navigate('/');
+          navigate('/users');
+          } catch (err) {
+            console.log(err);
+            const errMsg = err?.data?.error?.data || 'Произошла ошибка при смене времени.'
+            dispatch(showSnackbar({
+              message: errMsg,
+              severity: 'error'
+            }));
+          }
+        }
+        else{
+          //change both time
+          try {
+            const idd = await document3({
+              id: userId, 
+              tmst: data.get("tmstart")
+            }).unwrap();
+            dispatch(showSnackbar({
+              message: 'Время начала работы успешно сменен',
+              severity: 'success'
+            }));
+          navigate('/');
+          navigate('/users');
+          } catch (err) {
+            console.log(err);
+            const errMsg = err?.data?.error?.data || 'Произошла ошибка при смене времени.'
+            dispatch(showSnackbar({
+              message: errMsg,
+              severity: 'error'
+            }));
+          };
+
+          try {
+            const idd = await document4({
+              id: userId, 
+              tmst: data.get("tmend")
+            }).unwrap();
+            dispatch(showSnackbar({
+              message: 'Время конца работы успешно сменен',
+              severity: 'success'
+            }));
+          navigate('/');
+          navigate('/users');
+          } catch (err) {
+            console.log(err);
+            const errMsg = err?.data?.error?.data || 'Произошла ошибка при смене времени.'
+            dispatch(showSnackbar({
+              message: errMsg,
+              severity: 'error'
+            }));
+          };
+        }
+        
+        
+      }
+    };
   }
 return (
   <React.Fragment>
@@ -168,6 +271,10 @@ return (
       <TableCell scope="row">{row.email}</TableCell>
 
       <TableCell>{row.name}</TableCell>
+
+      <TableCell>{row.tmstart}</TableCell>
+
+      <TableCell>{row.tmend}</TableCell>
 
       <TableCell>
         <Typography className={classes.status}  
@@ -192,6 +299,7 @@ return (
           <Grid item><Tooltip title="Изменить"><CreateIcon onClick={()=>{setUserId((row.id)); setTypeBeat(1); handleOpen();}}/></Tooltip></Grid>
           <Grid item><Tooltip title="Удалить карточку"><CreditCardOffIcon onClick={()=>{setUserId((row.id)); setTypeBeat(2); handleOpen();}}/></Tooltip></Grid>
           <Grid item>{ row.blocked!==true ? <><Tooltip title="Заблокировать"><BlockIcon onClick={()=>{setUserId((row.id)); setTypeBeat(3); handleOpen();}}/></Tooltip></> : <><Tooltip title="Разблокировать"><CheckIcon onClick={()=>{setUserId((row.id)); setTypeBeat(4); handleOpen();}}/></Tooltip></>}</Grid>
+          <Grid item><Tooltip title="Сменить время"><AccessTimeIcon onClick={()=>{setUserId((row.id)); setTypeBeat(4); handleOpen();}}/></Tooltip></Grid>
         </Grid>
 
         <Modal
@@ -202,61 +310,91 @@ return (
         >
           <Box sx={style}>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-              { typeBeat!==3 ? <>{
-                typeBeat!==2 ? <>
-                  { typeBeat!==1 ? <>
-                      <Typography display="flex" justifyContent="center" variant="h6">Разблокировать пользователя?</Typography>
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                      >
-                        Разблокировать
-                      </Button>
-                    </> : <>
-                      <TextField
-                        inputProps= {{minLength:0, maxLength: 100}}
-                        fullWidth
-                        name="password"
-                        label="Пароль"
-                        type="password"
-                        id="password"
-                        autoFocus
-                      />
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{ mt: 3, mb: 2 }}
-                      >
-                        Сменить пароль
-                      </Button>
-                    </>
-                  }
+              { typeBeat!==4 ? <> { 
+                  typeBeat!==3 ? <>{
+                  typeBeat!==2 ? <>
+                    { typeBeat!==1 ? <>
+                        <Typography display="flex" justifyContent="center" variant="h6">Разблокировать пользователя?</Typography>
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          sx={{ mt: 3, mb: 2 }}
+                        >
+                          Разблокировать
+                        </Button>
+                      </> : <>
+                        <TextField
+                          inputProps= {{minLength:0, maxLength: 100}}
+                          fullWidth
+                          name="password"
+                          label="Пароль"
+                          type="password"
+                          id="password"
+                          autoFocus
+                        />
+                        <Button
+                          type="submit"
+                          fullWidth
+                          variant="contained"
+                          sx={{ mt: 3, mb: 2 }}
+                        >
+                          Сменить пароль
+                        </Button>
+                      </>
+                    }
+                  </> : <>
+                    <Typography display="flex" justifyContent="center" variant="h6">Удаление карточки пользователя</Typography>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{ mt: 3, mb: 2 }}
+                    >
+                      Удалить
+                    </Button>
+                  </>}
+                  </> : <>
+                    <Typography display="flex" justifyContent="center" variant="h6">Заблокировать пользователя?</Typography>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{ mt: 3, mb: 2 }}
+                    >
+                      Заблокировать
+                    </Button>
+                  </> }
                 </> : <>
-                  <Typography display="flex" justifyContent="center" variant="h6">Удаление карточки пользователя</Typography>
-                  <Button
-                    type="submit"
+                { <>
+                  <Typography display="flex" justifyContent="center" variant="h6">Время начала</Typography>
+                  <TextField
+                    inputProps= {{minLength:0, maxLength: 100}}
                     fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
+                    name="tmstart"
+                    type="time"
+                    id="tmstart"
+                    autoFocus
+                  />
+                  <Typography display="flex" justifyContent="center" variant="h6">Время конца</Typography>
+                  <TextField
+                   inputProps= {{minLength:0, maxLength: 100}}
+                   fullWidth
+                   name="tmend"
+                   type="time"
+                   id="tmend"
+                   autoFocus
+                  />
+                  <Button
+                   type="submit"
+                   fullWidth
+                   variant="contained"
+                   sx={{ mt: 3, mb: 2 }}
                   >
-                    Удалить
+                    Смемнить Рабочее время
                   </Button>
                 </>}
-                </> : <>
-                  <Typography display="flex" justifyContent="center" variant="h6">Заблокировать пользователя?</Typography>
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Заблокировать
-                  </Button>
-                </> 
-              }
+              </>}
             </Box>
           </Box>
         </Modal>
@@ -317,6 +455,8 @@ return (
             <TableCell>Статус</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Сотрудник</TableCell>
+            <TableCell>Время начала</TableCell>
+            <TableCell>Время конца</TableCell>
             <TableCell>Уровень доступа</TableCell>
             <TableCell align="right"></TableCell>
           </TableRow>

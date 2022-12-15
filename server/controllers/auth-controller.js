@@ -23,6 +23,8 @@ const {
     deleteCardFromUser,
     changePassAdmin,
     changePassAdminCheck,
+    changeTimeEndAdmin,
+    changeTimeStartAdmin,
 } = require('../services/users-service');
 const jwt = require("jsonwebtoken");
 const passport = require('passport');
@@ -400,6 +402,28 @@ const getUsersController = async (req, res, next) => {
         return next(err);
     }
     }
+
+const changeTimeStartAdminController = async (req, res, next) => {
+    const { id, tmst } = req.body;
+    try {
+        // const document = { id, tmst }
+        const newDocument = await changeTimeStartAdmin(id, tmst);
+        return res.status(200).json(newDocument);
+    } catch(err) {
+        return next(err);
+    }
+}
+
+const changeTimeEndAdminController = async (req, res, next) => {
+    const { id, tmst } = req.body;
+    try {
+        // const Document = { id, tmend }
+        const newDocument = await changeTimeEndAdmin(id, tmst);
+        return res.status(200).json(newDocument);
+    } catch(err) {
+        return next(err);
+    }
+}
 //End
 
 module.exports = {
@@ -427,4 +451,6 @@ module.exports = {
     blockUserController,
     deleteCardFromUserController,
     changePassAdminController,
+    changeTimeStartAdminController,
+    changeTimeEndAdminController,
 }

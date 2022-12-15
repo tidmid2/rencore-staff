@@ -84,5 +84,5 @@ module.exports = {
     validationHandler,
     validateId,
     validateResetPassHandler,
-    validateResetPass
+    validateResetPass,
 }

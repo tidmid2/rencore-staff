@@ -23,6 +23,8 @@ const {
     blockUserController,
     deleteCardFromUserController,
     changePassAdminController,
+    changeTimeStartAdminController,
+    changeTimeEndAdminController,
 } = require('../controllers/auth-controller.js')
 const { 
     validateSignUpUser,
@@ -60,6 +62,8 @@ router.post('/auth/logout', logoutUser)
 router.get('/admin/users', getUsersController)
 router.post('/admin/blockuser', validateId, blockUserController)
 router.post('/admin/deletecard', validateId, deleteCardFromUserController)
+router.post('/admin/tmstart', validateId, changeTimeStartAdminController)
+router.post('/admin/tmend', validateId,changeTimeEndAdminController)
 router.post('/admin/updatepasswordadmin', validateChangePass, changePassAdminController)
 
 //reset password
