@@ -1,7 +1,6 @@
 import { Typography, Box } from '@mui/material';
 
 import UserTable from './userTable';
-
 function Journal() {
 
     return (

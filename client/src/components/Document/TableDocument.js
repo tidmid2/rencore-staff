@@ -71,7 +71,18 @@ function Row(props) {
           </IconButton>
         </TableCell>
         <TableCell >{(new Date(row.dt)).toLocaleDateString()}</TableCell>
-        <TableCell>{row.time}</TableCell>
+        <TableCell>
+          {row.time}
+          <> </>
+          <Typography className={classes.status} style={{
+              backgroundColor:
+                ((row.office===true && '#56C114') ||
+                (row.office===false && '#E55151'))
+              }}
+          >
+            {row.office ? 'Офис' : 'УД'}
+          </Typography>
+        </TableCell>
         <TableCell>{row.comment}</TableCell>
         <TableCell align="right">
           <Typography className={classes.status} style={{
@@ -108,7 +119,18 @@ function Row(props) {
                     <TableBody>
                       { userinfo.map((row2) => (
                         <TableRow key={row2.uid}>
-                          <TableCell scope="row">{row2.time}</TableCell>
+                          <TableCell scope="row">
+                            {row2.time}
+                            <> </>
+                            <Typography className={classes.status} style={{
+                                backgroundColor:
+                                  ((row.office===true && '#56C114') ||
+                                  (row.office===false && '#E55151'))
+                                }}
+                            >
+                              {row.office ? 'Офис' : 'УД'}
+                            </Typography>
+                          </TableCell>
                           <TableCell>{row2.comment}</TableCell>
                           <TableCell align="right">
                             <Typography className={classes.status}  style={{
@@ -140,6 +162,7 @@ Row.propTypes = {
   row: PropTypes.shape({
     dt: PropTypes.string.isRequired,
     time: PropTypes.string.isRequired,
+    office: PropTypes.bool.isRequired,
     comment: PropTypes.string,
     id_op: PropTypes.string.isRequired,
   }).isRequired,

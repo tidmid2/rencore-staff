@@ -101,11 +101,12 @@ const logoutUser = (req, res, next) => {
 //User actions
 //Создание отметки в documents
 const createDocumentByUserController = async (req, res, next) => {
-    const { user_id,comment } = req.body;
+    const { user_id,comment, office } = req.body;
     try {
         const document = {
             user_id, 
-            comment
+            comment,
+            office
         }
         const newDocument = await createDocumentByUser(document);
         return res.status(201).json(newDocument);

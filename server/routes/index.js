@@ -51,12 +51,37 @@ function checkAuth(req,res,next){
     }
 }
 
+// var request = require("request");
+
+
+//     request(
+//         {
+//           url: "https://geolocation-db.com/json/a5f3c240-7310-11ed-8abc-5520d31fdee7",
+//           json: true
+//         }, function (error, response, body) {
+//           if (!error && response.statusCode === 200) {
+//             return body;
+//           }
+//         }
+//       );
+
+// function getIP(req,res,next){
+//     try {
+//         res.status(200).json(request)
+//     } catch(err) {
+//         return next(err);
+//     }
+// }
+
+
+
 const router = express.Router();
 //auth and authorize
 router.post('/auth', verifyToken)
 router.post('/auth/signup', validateSignUpUser, signUpUser)
 router.post('/auth/login', validateLoginUser, loginUser)
 router.post('/auth/logout', logoutUser)
+// router.get('/ip', getIP)
 
 //get all users for admin
 router.get('/admin/users', getUsersController)

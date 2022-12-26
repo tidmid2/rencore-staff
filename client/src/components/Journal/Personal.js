@@ -262,8 +262,16 @@ const Personal = () => {
                     >
                       {row.statred}
                     </Typography>
+                    <> </>
+                    <Typography className={classes.status} style={{
+                                backgroundColor:
+                                  ((row.office===true && '#56C114') ||
+                                  (row.office===false && '#E55151'))
+                                }}
+                            >
+                              {row.office ? 'Офис' : 'УД'}
+                            </Typography>
                   </TableCell>
-
                   <TableCell>{row.late}</TableCell>
                   <TableCell>{row.work}</TableCell>
                 </TableRow>

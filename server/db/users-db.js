@@ -139,7 +139,7 @@ const getUsersDb = async () => {
 const fetchDocumentByUserDb = async (user_id) => {
   try {
     const res = await db.query(
-      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.comment as "comment",d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as "comment",d.status as status,o.name as id_op,d.id_smeny as id_smeny 
         from documents d
         inner join operacii_type o on d.id_op=o.id WHERE d.user_id = $1 and (d.id_op=2 or d.id_op=1) ORDER BY d.uid DESC`,
       [user_id]
@@ -153,7 +153,7 @@ const fetchDocumentByUserDb = async (user_id) => {
 const fetchDocumentInsideByUserDb = async (user_id, id_smeny) => {
   try {
     const res = await db.query(
-      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
         from documents d inner join operacii_type o on d.id_op=o.id 
         WHERE d.user_id = $1 and d.id_smeny = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,
       [user_id, id_smeny]
@@ -164,10 +164,10 @@ const fetchDocumentInsideByUserDb = async (user_id, id_smeny) => {
   }
 };
 
-const createDocumentByUserDb = async ({ user_id, comment }) => {
-  const text = `INSERT INTO documents(user_id, comment)
-                  VALUES($1, $2) RETURNING *`;
-  const values = [user_id, comment];
+const createDocumentByUserDb = async ({ user_id, comment, office }) => {
+  const text = `INSERT INTO documents(user_id, comment,office)
+                  VALUES($1, $2, $3) RETURNING *`;
+  const values = [user_id, comment,office];
   try {
     const res = await db.query(text, values);
     return res.rows[0];
@@ -181,16 +181,18 @@ const createDocumentByUserDb = async ({ user_id, comment }) => {
 const dailyReportDb = async (id_smeny) => {
   try {
     const res = await db.query(
-      `
-        select d.user_id as user,d.uid as uid,concat(u.first_name,' ',u.last_name) as user_id,
-        to_char(d.dt , 'YYYY-MM-DD') as dt,d.time as time,d.comment as comment,(
-            select case when id_op=5 then time
-                    else null 
-            end from documents where user_id=d.user_id and dt = d.dt ORDER BY uid DESC limit 1) as time2, (
-            select case when id_op=5 then comment
-                    else null 
-            end from documents where user_id=d.user_id and dt = d.dt ORDER BY uid DESC limit 1
-        ) as comment2, u.tmstart as tmstart,u.tmend as tmend
+      `select d.user_id as user,d.uid as uid,concat(u.first_name,' ',u.last_name) as user_id,
+      to_char(d.dt , 'YYYY-MM-DD') as dt,d.time as time, d.office as office, d.comment as comment,(
+          select case when id_op=5 then time
+                  else null 
+          end from documents where user_id=d.user_id and dt = d.dt ORDER BY uid DESC limit 1) as time2, (
+          select case when id_op=5 then office
+                  else null 
+          end from documents where user_id=d.user_id and dt = d.dt ORDER BY uid DESC limit 1) as office2, (
+          select case when id_op=5 then comment
+                  else null 
+          end from documents where user_id=d.user_id and dt = d.dt ORDER BY uid DESC limit 1
+      ) as comment2, u.tmstart as tmstart,u.tmend as tmend
         from documents d 
         inner join users u on d.user_id = u.id 
         inner join operacii_type o on d.id_op=o.id
@@ -206,7 +208,7 @@ const dailyReportDb = async (id_smeny) => {
 const dailyReport2Db = async (user_id, id_smeny) => {
   try {
     const res = await db.query(
-      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
         from documents d inner join operacii_type o on d.id_op=o.id 
         WHERE d.user_id = $1 and TO_CHAR(d.dt, 'dd.MM.yyyy') = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,
       [user_id, id_smeny]
@@ -222,8 +224,7 @@ const dailyReport2Db = async (user_id, id_smeny) => {
 const dateForConsolidatedReportDb = async (dt1, dt2) => {
   try {
     const res = await db.query(
-      `
-        select u.id as user_id, concat(u.first_name,' ',u.last_name) as user, sum(l.late_day) as Ydays, count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
+      `select u.id as user_id, concat(u.first_name,' ',u.last_name) as user, sum(l.late_day) as Ydays, count(l.id)-sum(l.late_day) as Zdays, sum(l.later)::time as late,sum(l.work)::time as work
         from tblate l
         inner join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
@@ -240,12 +241,14 @@ const dateForConsolidatedReportDb = async (dt1, dt2) => {
 const consolidatedReportDb = async (dt1, dt2, user) => {
   try {
     const res = await db.query(
-      `
-        select ROW_NUMBER () OVER (ORDER BY u.id) as row, to_char(s.dtstart , 'YYYY-MM-DD') as dt, u.id as user_id, concat(u.first_name,' ',u.last_name) as user,
-            (select time 
-                from documents  
-                where user_id=u.id and id_smeny = s.id and (id_op=1 or id_op=2)) as statred, 
-            l.later as late, l.work as work, u.tmstart as tmstart
+      `select ROW_NUMBER () OVER (ORDER BY u.id) as row, to_char(s.dtstart , 'YYYY-MM-DD') as dt, u.id as user_id, concat(u.first_name,' ',u.last_name) as user,
+          (select time 
+              from documents  
+              where user_id=u.id and id_smeny = s.id and (id_op=1 or id_op=2)) as statred, (
+          select office 
+              from documents  
+              where user_id=u.id and id_smeny = s.id and (id_op=1 or id_op=2)) as office,
+          l.later as late, l.work as work, u.tmstart as tmstart
         from tblate l
         inner join users u ON u.id = l.iduser
         inner join tbsmeny s ON s.id = l.smena
@@ -280,8 +283,7 @@ const consolidatedReportInsideDb = async (dt1, dt2) => {
 const consolidatedReportForXlsDb = async (dt1, dt2) => {
   try {
     const res = await db.query(
-      `
-        select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
+      `select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
             (select case when id_op=5 then time
                         else '18:00:00' end 
             from documents 

@@ -218,7 +218,7 @@ export default function UserTable() {
                   </TableCell>
 
                   <TableCell>
-                    <Tooltip title="Пришел" sx={{ marginLeft: "auto" }}>
+                  {row.zdays>0 ? <Tooltip title="Пришел" sx={{ marginLeft: "auto" }}>
                       <Typography
                         className={classes.workdays}
                         style={{
@@ -229,9 +229,10 @@ export default function UserTable() {
                       >
                         {row.zdays}
                       </Typography>
-                    </Tooltip>
+                    </Tooltip> : <></>
+                  }
 
-                    <Tooltip title="Опоздал дней" sx={{ marginLeft: "auto" }}>
+                  {row.ydays>0  ? <Tooltip title="Опоздал дней" sx={{ marginLeft: "auto" }}>
                       <Typography
                         
                         className={classes.workdays}
@@ -241,9 +242,10 @@ export default function UserTable() {
                             (row.ydays <= 0 && "white"),
                         }}
                       >
-                        {row.ydays}
+                        {row.ydays} 
                       </Typography>
-                    </Tooltip>
+                    </Tooltip> : <></>
+                  }
                   </TableCell>
 
                   <TableCell>{row.late}</TableCell>

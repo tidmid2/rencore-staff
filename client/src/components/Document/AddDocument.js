@@ -37,12 +37,15 @@ export default function AddDocument({ showAlert }) {
     if (clicked) {
       return navigate("/document");
     } else {
+      var urlcode;
+      if(window.location.href==='http://staff.rencore.test/document'){urlcode=true;} else{urlcode=false;}
       e.preventDefault();
       const data = new FormData(e.currentTarget);
       try {
         const id = await document({
           user_id: user.id,
           comment: data.get("comment"),
+          office: urlcode,
         }).unwrap();
         dispatch(
           showSnackbar({
