@@ -56,7 +56,21 @@ export const api = createApi({
     }),
     updatePassAdmin: builder.mutation({
       query: (credentials) => ({
-        url: `/admin/updatepasswordadmin`,
+        url: `/document/change`,
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    updateAdminComment: builder.mutation({
+      query: (credentials) => ({
+        url: `/admin/change`,
+        method: "POST",
+        body: credentials,
+      }),
+    }),
+    updateComment: builder.mutation({
+      query: (credentials) => ({
+        url: `/document/changes`,
         method: "POST",
         body: credentials,
       }),
@@ -125,4 +139,6 @@ export const {
   useDocumentMutation,
   useChangeTmendMutation,
   useChangeTmstartMutation,
+  useUpdateCommentMutation,
+  useUpdateAdminCommentMutation,
 } = api;

@@ -9,9 +9,11 @@ const {
     fetchDocumentByUserDb,
     createDocumentByUserDb,
     fetchDocumentInsideByUserDb,
+    changeCommentDB,
 
     dailyReportDb,
     dailyReport2Db,
+    changeAdminCommentDB,
 
     dateForConsolidatedReportDb,
     consolidatedReportDb,
@@ -89,6 +91,8 @@ const changePassAdmin = async (password,id) => {
     }
 }
 
+
+
 const blockUser = async (id) => {
     try {
         return await blockUserDB(id);
@@ -155,6 +159,14 @@ const createDocumentByUser = async (uid) => {
         throw new Error(e.message);
     }
 }
+
+const changeComment = async (uid, comment) => {
+    try {
+        return await changeCommentDB(uid, comment);
+    } catch(e) {
+        throw new Error(e.message);
+    }
+}
 //End
 
 //Daily report for Admin
@@ -170,6 +182,13 @@ const dailyReport2 = async (user_id,id_smeny) => {
     try {
         return await dailyReport2Db(user_id,id_smeny);
     } catch (e) {
+        throw new Error(e.message);
+    }
+}
+const changeAdminComment = async (uid, comment) => {
+    try {
+        return await changeAdminCommentDB(uid, comment);
+    } catch(e) {
         throw new Error(e.message);
     }
 }
@@ -219,9 +238,11 @@ module.exports = {
     fetchDocumentByUser,
     createDocumentByUser,
     fetchDocumentInsideByUser,
+    changeComment,
 
     dailyReport,
     dailyReport2,
+    changeAdminComment,
 
     dateForConsolidatedReport,
     consolidatedReport,

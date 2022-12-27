@@ -6,9 +6,11 @@ const {
     fetchDocumentInsideByUserController,
     fetchDocumentByUserController,
     createDocumentByUserController,
+    changeCommentController,
 
     dailyReportController,
     dailyReportController2,
+    changeAdminCommentController,
 
     dateForConsolidatedReportController,
     consolidatedReportController,
@@ -35,6 +37,7 @@ const {
     validateResetPassHandler,
     validateChangePass,
     validateId,
+    validateComment,
     verifyToken
 } = require('./validation')
 const express = require('express');
@@ -97,9 +100,10 @@ router.get("/auth/reset-password/:id/:token",forgotPassVerifyController)
 router.post("/auth/reset-password",validateResetPass, ResetPassController)
 
 //user create or fetch documents
-router.get('/document/id/:user_id', validateGetDocument, fetchDocumentByUserController )
+router.get('/document/id/:user_id', validateGetDocument, fetchDocumentByUserController ) 
 router.post('/document/add', validatePostDocument, createDocumentByUserController )
 router.get('/document/id/:user_id/id_smeny/:id_smeny', fetchDocumentInsideByUserController  )
+router.post('/document/changes', validateComment, changeCommentController )
 
 //consolidated reports
 router.get('/admin/dt1/:dt1/dt2/:dt2',  dateForConsolidatedReportController )
@@ -110,5 +114,6 @@ router.get('/admin/xls/dt1/:dt1/dt2/:dt2',  consolidatedReportForXlsController )
 //daily report
 router.get('/admin/:id_smeny',  dailyReportController )
 router.get('/admin/:user_id/:id_smeny',  dailyReportController2 )
+router.post('/admin/change', validateComment, changeAdminCommentController )
 
 module.exports = router;

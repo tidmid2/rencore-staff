@@ -139,7 +139,7 @@ const getUsersDb = async () => {
 const fetchDocumentByUserDb = async (user_id) => {
   try {
     const res = await db.query(
-      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as "comment",d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as "comment",d.status as status,o.name as id_op,d.id_smeny as id_smeny,d.ad_comment as ad_comment
         from documents d
         inner join operacii_type o on d.id_op=o.id WHERE d.user_id = $1 and (d.id_op=2 or d.id_op=1) ORDER BY d.uid DESC`,
       [user_id]
@@ -153,7 +153,7 @@ const fetchDocumentByUserDb = async (user_id) => {
 const fetchDocumentInsideByUserDb = async (user_id, id_smeny) => {
   try {
     const res = await db.query(
-      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny 
+      `select d.uid as uid, d.user_id as user_id, to_char(d.dt , 'YYYY-MM-DD') as dt, d.time as "time", d.office as office, d.comment as comment,d.status as status,o.name as id_op,d.id_smeny as id_smeny,d.ad_comment as ad_comment
         from documents d inner join operacii_type o on d.id_op=o.id 
         WHERE d.user_id = $1 and d.id_smeny = $2 and (d.id_op<>2 and d.id_op<>1) ORDER BY d.uid ASC`,
       [user_id, id_smeny]
@@ -173,6 +173,15 @@ const createDocumentByUserDb = async ({ user_id, comment, office }) => {
     return res.rows[0];
   } catch (e) {
     throw new Error(e.message);
+  }
+};
+
+const changeCommentDB = async (uid,comment) => {
+  try {
+    const res = await db.query(`update documents set comment = $1 where uid = $2`, [comment,uid]);
+    return res.rows[0];
+  } catch (e) {
+    throw new Error(error.message);
   }
 };
 //End
@@ -216,6 +225,15 @@ const dailyReport2Db = async (user_id, id_smeny) => {
     return res.rows;
   } catch (e) {
     throw new Error(e.message);
+  }
+};
+
+const changeAdminCommentDB = async (uid,comment) => {
+  try {
+    const res = await db.query(`update documents set ad_comment = $1 where uid = $2`, [comment,uid]);
+    return res.rows[0];
+  } catch (e) {
+    throw new Error(error.message);
   }
 };
 //End
@@ -284,28 +302,28 @@ const consolidatedReportForXlsDb = async (dt1, dt2) => {
   try {
     const res = await db.query(
       `select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
-            (select case when id_op=5 then time
-                        else '18:00:00' end 
-            from documents 
-            where user_id=d.user_id and dt::Date=s.dtstart::Date
-            ORDER BY uid DESC limit 1) as "Время ухода", 
-            
-            ((select case when id_op=5 then time
-                        else '18:00:00' end 
-            from documents 
-            where user_id=d.user_id and dt::Date=s.dtstart::Date
-            ORDER BY uid DESC limit 1)-d.time)::Time as "Отработано",
+        (select case when id_op=5 then time
+                    else u.tmend end 
+        from documents 
+        where user_id=d.user_id and dt::Date=s.dtstart::Date
+        ORDER BY uid DESC limit 1) as "Время ухода", 
         
-            (case when d.time>='18:00:00' then null
-                when d.time>='09:00:00' then (d.time-'09:00:00')
-                else null end)::Time as "Опоздание",
-        d.comment as "Комментарии"
-        from documents d
-        inner join tbsmeny s ON s.id = d.id_smeny
-        inner join users u ON u.id = d.user_id
-        where (d.id_op=2 or d.id_op=1) and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
-        group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id
-        order by "Сотрудник",s.dtstart ASC`,
+        ((select case when id_op=5 then time
+                    else u.tmend end 
+        from documents 
+        where user_id=d.user_id and dt::Date=s.dtstart::Date
+        ORDER BY uid DESC limit 1)-d.time)::Time as "Отработано",
+    
+        (case when d.time>=u.tmend then null
+            when d.time>=u.tmstart then (d.time-u.tmstart)
+            else null end)::Time as "Опоздание",
+      d.comment as "Комментарии",d.ad_comment as "Комментарий Администратора"
+      from documents d
+      inner join tbsmeny s ON s.id = d.id_smeny
+      inner join users u ON u.id = d.user_id
+      where (d.id_op=2 or d.id_op=1) and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
+      group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id,u.tmend,u.tmstart,d.ad_comment
+      order by "Сотрудник",s.dtstart ASC`,
       [dt1, dt2]
     );
     return res.rows;
@@ -326,9 +344,11 @@ module.exports = {
   fetchDocumentByUserDb,
   createDocumentByUserDb,
   fetchDocumentInsideByUserDb,
+  changeCommentDB,
 
   dailyReportDb,
   dailyReport2Db,
+  changeAdminCommentDB,
 
   dateForConsolidatedReportDb,
   consolidatedReportDb,

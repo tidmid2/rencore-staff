@@ -5,9 +5,11 @@ const {
     fetchDocumentByUser,
     createDocumentByUser,
     fetchDocumentInsideByUser,
+    changeComment,
 
     dailyReport,
     dailyReport2,
+    changeAdminComment,
 
     dateForConsolidatedReport,
     consolidatedReport,
@@ -156,7 +158,18 @@ const fetchDocumentInsideByUserController = async (req, res, next) => {
     } catch(err) {
         return next(err);
     }
+}
+
+const changeCommentController = async (req, res, next) => {
+    const { uid, comment } = req.body;
+    try {
+        const newDocument = await changeComment(uid, comment);
+        return res.status(200).json(newDocument);
+    } catch(err) {
+        return next(err);
     }
+}    
+    
 //END
 
 
@@ -221,7 +234,6 @@ const consolidatedReportForXlsController = async (req, res, next) => {
 }
 //END
 
-
 //Daily report for Admin
 const dailyReportController = async (req, res, next) => {
     try {
@@ -253,6 +265,15 @@ const dailyReportController2 = async (req, res, next) => {
         return next(err);
     }
 }
+const changeAdminCommentController = async (req, res, next) => {
+    const { uid, comment } = req.body;
+    try {
+        const newDocument = await changeAdminComment(uid, comment);
+        return res.status(200).json(newDocument);
+    } catch(err) {
+        return next(err);
+    }
+}   
 //End
 
 //Reset password from user
@@ -435,9 +456,11 @@ module.exports = {
     fetchDocumentInsideByUserController,
     fetchDocumentByUserController,
     createDocumentByUserController,
+    changeCommentController,
 
     dailyReportController,
     dailyReportController2,
+    changeAdminCommentController,
 
     dateForConsolidatedReportController,
     consolidatedReportController,
