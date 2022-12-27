@@ -1,24 +1,46 @@
 const { 
-        signUpUser, 
-        loginUser, 
-        logoutUser, 
-        documentData,
-        createDocumentByUser ,
-        fetchDocument,
-        fetchDocuments,
-        adminStag1,
-        adminStag2,
-        fetchAdminDocument,fetchAdminUDocument
-    } = require('../controllers/auth-controller.js')
+    signUpUser, 
+    loginUser, 
+    logoutUser,
+
+    fetchDocumentInsideByUserController,
+    fetchDocumentByUserController,
+    createDocumentByUserController,
+    changeCommentController,
+
+    dailyReportController,
+    dailyReportController2,
+    changeAdminCommentController,
+
+    dateForConsolidatedReportController,
+    consolidatedReportController,
+    consolidatedReportInsideController,
+    consolidatedReportForXlsController,
+
+    forgotPassLinkController,
+    forgotPassVerifyController,
+    ResetPassController,
+    
+    getUsersController,
+    blockUserController,
+    deleteCardFromUserController,
+    changePassAdminController,
+    changeTimeStartAdminController,
+    changeTimeEndAdminController,
+} = require('../controllers/auth-controller.js')
 const { 
-        validateSignUpUser,
-        validateLoginUser,
-        validateGetDocument,
-        validatePostDocument,
-        verifyToken
-    } = require('./validation')
+    validateSignUpUser,
+    validateLoginUser,
+    validateGetDocument,
+    validatePostDocument,
+    validateResetPass,
+    validateResetPassHandler,
+    validateChangePass,
+    validateId,
+    validateComment,
+    verifyToken
+} = require('./validation')
 const express = require('express');
-const { getSecretAnswer } = require('../controllers/data-controller.js');
 
 // Add this function as a middleware to routes requiring authentication
 // req.user will contain the current user in the routes
@@ -32,21 +54,66 @@ function checkAuth(req,res,next){
     }
 }
 
+// var request = require("request");
+
+
+//     request(
+//         {
+//           url: "https://geolocation-db.com/json/a5f3c240-7310-11ed-8abc-5520d31fdee7",
+//           json: true
+//         }, function (error, response, body) {
+//           if (!error && response.statusCode === 200) {
+//             return body;
+//           }
+//         }
+//       );
+
+// function getIP(req,res,next){
+//     try {
+//         res.status(200).json(request)
+//     } catch(err) {
+//         return next(err);
+//     }
+// }
+
+
+
 const router = express.Router();
+//auth and authorize
 router.post('/auth', verifyToken)
 router.post('/auth/signup', validateSignUpUser, signUpUser)
 router.post('/auth/login', validateLoginUser, loginUser)
 router.post('/auth/logout', logoutUser)
-router.get('/data/secret', checkAuth, getSecretAnswer)
-    
-router.get('/document/id/:user_id', validateGetDocument, documentData )
-router.post('/document/add', validatePostDocument, createDocumentByUser )
-router.get('/document/id/:user_id/id_smeny/:id_smeny',fetchDocuments  )
-router.get('/admin/dt1/:dt1/dt2/:dt2',  fetchDocument )
-router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  fetchAdminDocument )
-router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  fetchAdminUDocument )
-router.get('/admin/:id_smeny',  adminStag1 )
-router.get('/admin/:user_id/:id_smeny',  adminStag2 )
-// router.get('/admin/all',  fetchDocument )
+// router.get('/ip', getIP)
+
+//get all users for admin
+router.get('/admin/users', getUsersController)
+router.post('/admin/blockuser', validateId, blockUserController)
+router.post('/admin/deletecard', validateId, deleteCardFromUserController)
+router.post('/admin/tmstart', validateId, changeTimeStartAdminController)
+router.post('/admin/tmend', validateId,changeTimeEndAdminController)
+router.post('/admin/updatepasswordadmin', validateChangePass, changePassAdminController)
+
+//reset password
+router.post('/auth/forgot-pass',validateResetPassHandler, forgotPassLinkController)
+router.get("/auth/reset-password/:id/:token",forgotPassVerifyController)
+router.post("/auth/reset-password",validateResetPass, ResetPassController)
+
+//user create or fetch documents
+router.get('/document/id/:user_id', validateGetDocument, fetchDocumentByUserController ) 
+router.post('/document/add', validatePostDocument, createDocumentByUserController )
+router.get('/document/id/:user_id/id_smeny/:id_smeny', fetchDocumentInsideByUserController  )
+router.post('/document/changes', validateComment, changeCommentController )
+
+//consolidated reports
+router.get('/admin/dt1/:dt1/dt2/:dt2',  dateForConsolidatedReportController )
+router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  consolidatedReportController )
+router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  consolidatedReportInsideController ) 
+router.get('/admin/xls/dt1/:dt1/dt2/:dt2',  consolidatedReportForXlsController )
+
+//daily report
+router.get('/admin/:id_smeny',  dailyReportController )
+router.get('/admin/:user_id/:id_smeny',  dailyReportController2 )
+router.post('/admin/change', validateComment, changeAdminCommentController )
 
 module.exports = router;

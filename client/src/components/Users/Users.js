@@ -1,15 +1,15 @@
 import { Typography, Box } from '@mui/material';
 
-import AdminTable from './AdminTable';
+import UsersTable from './UsersTable';
 
 function Admin() {
   return (
   <Typography component="div">
     <Box sx={{ minHeight: "500px", width: "100%"  }}>
-      <AdminTable/>
+      <UsersTable/>
     </Box>
   </Typography>
-  );
+);
 }
 
 export default Admin;
