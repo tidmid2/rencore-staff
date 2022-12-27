@@ -264,11 +264,11 @@ function Row(props) {
                               className={classes.status}
                               style={{
                                 backgroundColor:
-                                  (row.office === true && "#56C114") ||
-                                  (row.office === false && "#E55151"),
+                                  (row2.office === true && "#56C114") ||
+                                  (row2.office === false && "#E55151"),
                               }}
                             >
-                              {row.office ? "Офис" : "УД"}
+                              {row2.office ? "Офис" : "УД"}
                             </Typography>
                           </TableCell>
                           <TableCell>{row2.comment}</TableCell>
