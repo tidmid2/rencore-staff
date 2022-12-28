@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import {
@@ -14,6 +14,7 @@ import {
   Divider,
   IconButton,
   Tooltip,
+  Stack,
 } from "@mui/material";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -36,10 +37,11 @@ export default function Nav({ showAlert }) {
 
   const matches = useMediaQuery("(max-width: 600px)");
   const matches2 = useMediaQuery("(min-width: 600px)");
+  const [urlcode, setUrlcode] = useState();
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorEl2, setAnchorEl2] = React.useState(null);
-  const [anchorEl3, setAnchorEl3] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const [anchorEl3, setAnchorEl3] = useState(null);
 
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorEl2);
@@ -66,6 +68,15 @@ export default function Nav({ showAlert }) {
       );
     }
   }
+
+  useEffect(() => {
+    if (window.location.host !== "staff.rencore.test") {
+      setUrlcode("Удаленно");
+    } else {
+      setUrlcode("Офис");
+    }
+    return;
+  }, [urlcode]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -124,52 +135,52 @@ export default function Nav({ showAlert }) {
                   <Box>
                     {user.isadmin !== 1 ? (
                       <></>
-                    ) : (<>
-                      <Button
-                        id="basic-button3"
-                        aria-controls={open3 ? "basic-menu3" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open3 ? "true" : undefined}
-                        onClick={handleClick3}
-                        color="inherit"
-                      >
-                        Admin
-                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          id="basic-button3"
+                          aria-controls={open3 ? "basic-menu3" : undefined}
+                          aria-haspopup="true"
+                          aria-expanded={open3 ? "true" : undefined}
+                          onClick={handleClick3}
+                          color="inherit"
+                        >
+                          Admin
+                        </Button>
 
-                      <Menu
-                        id="basic-menu3"
-                        anchorEl={anchorEl3}
-                        open={open3}
-                        onClose={handleClose3}
-                        MenuListProps={{
-                          "aria-labelledby": "basic-button3",
-                        }}
-                      >
-                        <MenuItem
-                          component={Link}
-                          to="/admin"
-                          onClick={handleClose3}
+                        <Menu
+                          id="basic-menu3"
+                          anchorEl={anchorEl3}
+                          open={open3}
+                          onClose={handleClose3}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button3",
+                          }}
                         >
-                          Ежедневный отчет
-                        </MenuItem>
-                        <MenuItem
-                          component={Link}
-                          to="/journal"
-                          onClick={handleClose3}
-                        >
-                          Сводный отчет
-                        </MenuItem>
-                        <MenuItem
-                          component={Link}
-                          to="/users"
-                          onClick={handleClose3}
-                        >
-                          Пользователи
-                        </MenuItem>
-                      </Menu>
-                    </>)}
-
-                    
+                          <MenuItem
+                            component={Link}
+                            to="/admin"
+                            onClick={handleClose3}
+                          >
+                            Ежедневный отчет
+                          </MenuItem>
+                          <MenuItem
+                            component={Link}
+                            to="/journal"
+                            onClick={handleClose3}
+                          >
+                            Сводный отчет
+                          </MenuItem>
+                          <MenuItem
+                            component={Link}
+                            to="/users"
+                            onClick={handleClose3}
+                          >
+                            Пользователи
+                          </MenuItem>
+                        </Menu>
+                      </>
+                    )}
                   </Box>
                 </>
               )}
@@ -246,34 +257,36 @@ export default function Nav({ showAlert }) {
                     <Divider />
                     {user.isadmin !== 1 ? (
                       <></>
-                    ) : (<>
-                      <MenuItem
-                        component={Link}
-                        to="/admin"
-                        color="inherit"
-                        sx={{ textDecoration: "none" }}
-                        onClick={handleClose2}
-                      >
-                        Ежедневный отчет
-                      </MenuItem>
-                      <MenuItem
-                        component={Link}
-                        to="/journal"
-                        color="inherit"
-                        sx={{ textDecoration: "none" }}
-                        onClick={handleClose2}
-                      >
-                        Сводный отчет
-                      </MenuItem>
-                      <MenuItem
-                        component={Link}
-                        to="/users"
-                        color="inherit"
-                        sx={{ textDecoration: "none" }}
-                        onClick={handleClose2}
-                      >
-                        Пользователи
-                      </MenuItem></>
+                    ) : (
+                      <>
+                        <MenuItem
+                          component={Link}
+                          to="/admin"
+                          color="inherit"
+                          sx={{ textDecoration: "none" }}
+                          onClick={handleClose2}
+                        >
+                          Ежедневный отчет
+                        </MenuItem>
+                        <MenuItem
+                          component={Link}
+                          to="/journal"
+                          color="inherit"
+                          sx={{ textDecoration: "none" }}
+                          onClick={handleClose2}
+                        >
+                          Сводный отчет
+                        </MenuItem>
+                        <MenuItem
+                          component={Link}
+                          to="/users"
+                          color="inherit"
+                          sx={{ textDecoration: "none" }}
+                          onClick={handleClose2}
+                        >
+                          Пользователи
+                        </MenuItem>
+                      </>
                     )}
                   </Box>
                 )}
@@ -282,20 +295,46 @@ export default function Nav({ showAlert }) {
           )}
 
           {/* Профиль */}
-          <Tooltip title="Аккаунт" sx={{ marginLeft: "auto" }}>
-            <IconButton
-              onClick={handleClick}
-              size="small"
-              // sx={{ ml: 2 }}
-              aria-controls={open ? "account-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? "true" : undefined}
+          <Box sx={{ marginLeft: "auto" }}>
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              alignSelf="center"
+              spacing={3}
             >
-              <Avatar
-                sx={{ width: 32, height: 32, backgroundColor: "#DA532B" }}
-              ></Avatar>
-            </IconButton>
-          </Tooltip>
+              <Box
+                sx={{
+                  fontWeight: "bold",
+                  fontSize: "0.75rem",
+                  color: "white",
+                  // backgroundColor: "grey",
+                  backgroundColor:
+                    (urlcode !== "Офис" && "#E55151") ||
+                    (urlcode === "Офис" && "#56C114"),
+                  borderRadius: 8,
+                  padding: "3px 10px",
+                  display: "inline-block",
+                }}
+              >
+                {urlcode}
+              </Box>
+              <Tooltip title="Аккаунт">
+                <IconButton
+                  onClick={handleClick}
+                  size="small"
+                  // sx={{ ml: 2 }}
+                  aria-controls={open ? "account-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                >
+                  <Avatar
+                    sx={{ width: 32, height: 32, backgroundColor: "#DA532B" }}
+                  ></Avatar>
+                </IconButton>
+              </Tooltip>
+            </Stack>
+          </Box>
 
           {/* кнопки в профиле */}
           <Box>
@@ -336,17 +375,32 @@ export default function Nav({ showAlert }) {
             >
               {!user ? (
                 <Box>
-                  <MenuItem component={Link} to="/signin" color="inherit" key={1}>
+                  <MenuItem
+                    component={Link}
+                    to="/signin"
+                    color="inherit"
+                    key={1}
+                  >
                     <Avatar /> Войти
                   </MenuItem>
 
-                  <MenuItem component={Link} to="/signup" color="inherit" key={2}>
+                  <MenuItem
+                    component={Link}
+                    to="/signup"
+                    color="inherit"
+                    key={2}
+                  >
                     <Avatar /> Зарегестрироваться
                   </MenuItem>
                 </Box>
               ) : (
                 <Box>
-                  <MenuItem component={Link} to="/account" color="inherit" key={3}>
+                  <MenuItem
+                    component={Link}
+                    to="/account"
+                    color="inherit"
+                    key={3}
+                  >
                     <Avatar /> Профиль
                   </MenuItem>
 
