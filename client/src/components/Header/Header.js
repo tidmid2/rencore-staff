@@ -70,7 +70,7 @@ export default function Nav({ showAlert }) {
   }
 
   useEffect(() => {
-    if (window.location.host !== "staff.rencore.test") {
+    if (window.location.host !== "staff.bestprofi.local") {
       setUrlcode("Удаленно");
     } else {
       setUrlcode("Офис");
