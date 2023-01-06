@@ -38,7 +38,7 @@ export default function AddDocument({ showAlert }) {
       return navigate("/document");
     } else {
       var urlcode;
-      if(window.location.href==='http://staff.rencore.test/document'){urlcode=true;} else{urlcode=false;}
+      if (window.location.host !== "staff.bestprofi.local"){urlcode=false;} else{urlcode=true;}
       e.preventDefault();
       const data = new FormData(e.currentTarget);
       try {
