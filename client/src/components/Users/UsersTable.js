@@ -64,7 +64,7 @@ function Row(props) {
   const handleSubmit = async(e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if(typeBeat!==4){
+    if(typeBeat!==5){
       if(typeBeat!==3){
         if(typeBeat!==2){
           if(typeBeat!==4){
@@ -300,7 +300,7 @@ return (
           <Grid item><Tooltip title="Изменить"><CreateIcon onClick={()=>{setUserId((row.id)); setTypeBeat(1); handleOpen();}}/></Tooltip></Grid>
           <Grid item><Tooltip title="Удалить карточку"><CreditCardOffIcon onClick={()=>{setUserId((row.id)); setTypeBeat(2); handleOpen();}}/></Tooltip></Grid>
           <Grid item>{ row.blocked!==true ? <><Tooltip title="Заблокировать"><BlockIcon onClick={()=>{setUserId((row.id)); setTypeBeat(3); handleOpen();}}/></Tooltip></> : <><Tooltip title="Разблокировать"><CheckIcon onClick={()=>{setUserId((row.id)); setTypeBeat(4); handleOpen();}}/></Tooltip></>}</Grid>
-          <Grid item><Tooltip title="Сменить время"><AccessTimeIcon onClick={()=>{setUserId((row.id)); setTypeBeat(4); handleOpen();}}/></Tooltip></Grid>
+          <Grid item><Tooltip title="Сменить время"><AccessTimeIcon onClick={()=>{setUserId((row.id)); setTypeBeat(5); handleOpen();}}/></Tooltip></Grid>
         </Grid>
 
         <Modal
