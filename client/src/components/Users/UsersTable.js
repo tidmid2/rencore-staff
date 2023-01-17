@@ -145,7 +145,7 @@ function Row(props) {
           //block user
           try {
             // eslint-disable-next-line
-            const idd = await document2({ id: userId }).unwrap();
+            const idd = await document1({ id: userId }).unwrap();
             dispatch(
               showSnackbar({
                 message: "Пользователь успешно заблокирован",
