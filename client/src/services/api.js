@@ -56,7 +56,7 @@ export const api = createApi({
     }),
     updatePassAdmin: builder.mutation({
       query: (credentials) => ({
-        url: `/document/change`,
+        url: `/admin/updatepasswordadmin`,
         method: "POST",
         body: credentials,
       }),
