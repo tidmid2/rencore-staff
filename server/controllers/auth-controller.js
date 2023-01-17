@@ -288,7 +288,7 @@ try {
     }
     const secret = process.env.SESSION_SECRET + newDocument.password;
     const token = jwt.sign({ email: newDocument.email, id: newDocument.id }, secret, {expiresIn: "5m",});
-      const link = `http://localhost/resetpassword/${newDocument.id}/${token}`;
+      const link = `http://connect.bestprofi.com/resetpassword/${newDocument.id}/${token}`;
       var transporter = nodemailer.createTransport({
         host: "smtp.yandex.kz",
         port: 465,
