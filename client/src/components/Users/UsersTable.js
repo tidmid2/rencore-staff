@@ -65,9 +65,9 @@ function Row(props) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     if(typeBeat!==5){
-      if(typeBeat!==3){
-        if(typeBeat!==2){
-          if(typeBeat!==4){
+      if(typeBeat!==4){
+        if(typeBeat!==3){
+          if(typeBeat!==2){
             //change PASSWORD
             try {
               // eslint-disable-next-line 
@@ -91,28 +91,7 @@ function Row(props) {
             }
           }
           else {
-            //Разблокировать
-            try {
-              // eslint-disable-next-line 
-              const idd = await document1({id: userId, blocked: false}).unwrap();
-              dispatch(showSnackbar({
-                message: 'Пользователь успешно разблокирован',
-                severity: 'success'
-              }));
-            navigate('/');
-            navigate('/users');
-            } catch (err) {
-              console.log(err);
-              const errMsg = err?.data?.error?.data || 'Произошла ошибка при разблокировке пользователя.'
-              dispatch(showSnackbar({
-                message: errMsg,
-                severity: 'error'
-              }));
-            }
-          }
-        }
-        else{
-          //Delete card from user
+            //Delete card from user
           try {
             // eslint-disable-next-line 
             const idd = await document2({id: userId}).unwrap();
@@ -130,22 +109,43 @@ function Row(props) {
               severity: 'error'
             }));
           }
+          }
+        }
+        else{
+          //block user
+          try {
+            // eslint-disable-next-line 
+            const idd = await document2({id: userId}).unwrap();
+            dispatch(showSnackbar({
+              message: 'Пользователь успешно заблокирован',
+              severity: 'success'
+            }));
+          navigate('/');
+          navigate('/users');
+          } catch (err) {
+            console.log(err);
+            const errMsg = err?.data?.error?.data || 'Произошла ошибка при блокировке пользователя.'
+            dispatch(showSnackbar({
+              message: errMsg,
+              severity: 'error'
+            }));
+          }
         };
       }
       else{
-        //block user
+        //Разблокировать
         try {
           // eslint-disable-next-line 
-          const idd = await document2({id: userId}).unwrap();
+          const idd = await document1({id: userId, blocked: false}).unwrap();
           dispatch(showSnackbar({
-            message: 'Пользователь успешно заблокирован',
+            message: 'Пользователь успешно разблокирован',
             severity: 'success'
           }));
         navigate('/');
         navigate('/users');
         } catch (err) {
           console.log(err);
-          const errMsg = err?.data?.error?.data || 'Произошла ошибка при блокировке пользователя.'
+          const errMsg = err?.data?.error?.data || 'Произошла ошибка при разблокировке пользователя.'
           dispatch(showSnackbar({
             message: errMsg,
             severity: 'error'
