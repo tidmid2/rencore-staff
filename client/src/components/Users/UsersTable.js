@@ -112,7 +112,7 @@ function Row(props) {
           }
         }
         else{
-          //Delete carad from user
+          //Delete card from user
           try {
             // eslint-disable-next-line 
             const idd = await document2({id: userId}).unwrap();
