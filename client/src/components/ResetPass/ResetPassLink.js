@@ -20,6 +20,7 @@ export default function ResetPassword({showAlert}) {
         try {
           const id = await reset({
             email: data.get('email'),
+            link: window.location.host,
         }).unwrap();
         dispatch(showSnackbar({
           message: 'На вашу почту была отправлена ссылка с восстановлением',

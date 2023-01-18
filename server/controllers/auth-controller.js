@@ -278,7 +278,7 @@ const changeAdminCommentController = async (req, res, next) => {
 
 //Reset password from user
 const forgotPassLinkController = async (req, res, next) => {
-const {email} = req.body;
+const {email, link} = req.body;
 try {
     const newDocument = await forgotPassLink(email)
     if (!newDocument) {
@@ -288,7 +288,7 @@ try {
     }
     const secret = process.env.SESSION_SECRET + newDocument.password;
     const token = jwt.sign({ email: newDocument.email, id: newDocument.id }, secret, {expiresIn: "5m",});
-      const link = `http://connect.bestprofi.com/resetpassword/${newDocument.id}/${token}`;
+      const linkk = `http://${link}/resetpassword/${newDocument.id}/${token}`;
       var transporter = nodemailer.createTransport({
         host: "smtp.yandex.kz",
         port: 465,
@@ -329,7 +329,7 @@ try {
           console.log("Email sent: " + info.response);
         }
       });
-      return res.json(link)
+      return res.json(linkk)
 } catch(err) {
     return next(err);
 }
@@ -354,7 +354,7 @@ const forgotPassVerifyController = async (req, res, next) => {
 const ResetPassController = async (req, res, next) => {
 const { password,id, token } = req.body;
 try {
-    const oldUser = await ResetPass(id)
+    const oldUser = await changePassAdminCheck(id)
     if (!oldUser) {
         return res.status(422).json({
             error: { status: 422, data: "Нет данных."}
@@ -363,7 +363,7 @@ try {
     const secret = process.env.SESSION_SECRET + oldUser.password;
     const verify = jwt.verify(token, secret);
     const encryptedPassword = await bcrypt.hash(password, 10);
-    const newPass = await forgot2Pass(encryptedPassword,id)
+    const newPass = await ResetPass(encryptedPassword,id)
     console.log(newPass);
     res.status(200).json("Пароль успешно обновлен")
 } catch(err) {
