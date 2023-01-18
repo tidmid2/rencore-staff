@@ -278,7 +278,7 @@ const changeAdminCommentController = async (req, res, next) => {
 
 //Reset password from user
 const forgotPassLinkController = async (req, res, next) => {
-const {email, link} = req.body;
+const {email, link } = req.body;
 try {
     const newDocument = await forgotPassLink(email)
     if (!newDocument) {
@@ -288,7 +288,8 @@ try {
     }
     const secret = process.env.SESSION_SECRET + newDocument.password;
     const token = jwt.sign({ email: newDocument.email, id: newDocument.id }, secret, {expiresIn: "5m",});
-      const linkk = `http://${link}/resetpassword/${newDocument.id}/${token}`;
+      const linkt = `http://${link}/resetpassword/${newDocument.id}/${token}`;
+      console.log(linkt)
       var transporter = nodemailer.createTransport({
         host: "smtp.yandex.kz",
         port: 465,
@@ -312,7 +313,7 @@ try {
                         <div style="padding: 15px 0;"> 
                             Уважаемый <b>${newDocument.email}</b>. Вы сделали запрос на получение забытого пароля на сайте Staff-Rencore Чтобы получить новый пароль, пройдите по ссылке ниже:
                         </div>
-                        <a href="${link}" style="width: 400px;margin:0 auto;display: block;background: #4CAF50 url(d&#097;ta:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAwCAIAAABfUYfWAAAAH0lEQVQImWMw6DdgYmBgYGJkZESlmZiwijPhEB8g9QD08gGkFcH1FgAAAABJRU5ErkJggg==) repeat-x 0 0;color: #fff;font-weight:bold; line-height: 44px;text-align: center;text-transform: uppercase;text-decoration: none;border-radius: 3px;text-shadow: 0 1px 3px rgba(0,0,0,.35);border: 1px solid #388E3C;box-shadow: inset 0 1px rgba(255,255,255,.4);">
+                        <a href="${linkt}" style="width: 400px;margin:0 auto;display: block;background: #4CAF50 url(d&#097;ta:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAwCAIAAABfUYfWAAAAH0lEQVQImWMw6DdgYmBgYGJkZESlmZiwijPhEB8g9QD08gGkFcH1FgAAAABJRU5ErkJggg==) repeat-x 0 0;color: #fff;font-weight:bold; line-height: 44px;text-align: center;text-transform: uppercase;text-decoration: none;border-radius: 3px;text-shadow: 0 1px 3px rgba(0,0,0,.35);border: 1px solid #388E3C;box-shadow: inset 0 1px rgba(255,255,255,.4);">
                             Восстановить пароль
                         </a>
                         <div style="padding: 15px 0;"> 
@@ -329,7 +330,7 @@ try {
           console.log("Email sent: " + info.response);
         }
       });
-      return res.json(linkk)
+      res.status(200).json("Ссылка отправлена на почту")
 } catch(err) {
     return next(err);
 }

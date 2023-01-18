@@ -104,10 +104,10 @@ export const api = createApi({
       }),
     }),
     reset: builder.mutation({
-      query: (email) => ({
+      query: (email,link) => ({
         url: "/auth/forgot-pass",
         method: "POST",
-        body: email,
+        body: email,link,
       }),
     }),
     logout: builder.mutation({

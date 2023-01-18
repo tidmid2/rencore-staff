@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import {useState } from "react";
 import { useDispatch } from 'react-redux';
 
 import { Avatar, Button, TextField, Link, Grid, Box, Typography, Container } from '@mui/material';
@@ -27,7 +28,7 @@ export default function ResetPassword({showAlert}) {
           severity: 'success'
         }));
           navigate('/');
-          return id;
+          return null;
         } catch (err) {
           console.log(err);
           const errMsg = err?.data?.error?.data || 'Произошла ошибка при восстановлении.'
