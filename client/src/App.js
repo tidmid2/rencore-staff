@@ -50,16 +50,12 @@ function App() {
 
   const [document] = useAuthMutation();
 
-  // hasJWT();
+  
   async function checkauth() {
     try {
-      if(hasJWT!==true){
-        return;
-      }
-      else{
-        const user = await document().unwrap();
-        dispatch(setCredentials({ user }));
-      }
+
+      const user = await document().unwrap();
+      dispatch(setCredentials({ user }));
     } catch (err) {
       console.log(err);
       const errMsg =
