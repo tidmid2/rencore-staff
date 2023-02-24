@@ -100,7 +100,6 @@ const Personal = () => {
       }
     };
 
-    
     return fetchdata();
   }, [value, value2]);
 
@@ -144,8 +143,8 @@ const Personal = () => {
       </Typography>
       <Stack
         direction="row"
-        justifyContent="flex-end"
-        alignItems="flex-end"
+        justifycontent="flex-end"
+        alignitems="flex-end"
         spacing={3}
       >
         <FormControl sx={{ width: "250px" }}>
@@ -153,7 +152,7 @@ const Personal = () => {
             <InputLabel id="demo-simple-select-label">Сотрудник</InputLabel>
             <Select
               fullWidth
-              value={iduser ? iduser : ""}
+              value={iduser || ""}
               id="demo-simple-select-label"
               label="Сотрудник"
               onChange={handleChange}
@@ -165,7 +164,9 @@ const Personal = () => {
                   </MenuItem>
                 ))
               ) : (
-                <MenuItem value={"0"} />
+                <MenuItem key="" value="">
+                  <em>None</em>
+                </MenuItem>
               )}
             </Select>
           </Box>
@@ -176,8 +177,8 @@ const Personal = () => {
         <TextField
           id="date"
           mt={2}
-          value={value2 ? value2 : ""}
-          inputFormat="YYYY-MM-DD"
+          value={value2 || ""}
+          inputformat="YYYY-MM-DD"
           label="Дата"
           type="date"
           sx={{ width: 150, marginLeft: "auto" }}
@@ -194,8 +195,8 @@ const Personal = () => {
         <TextField
           id="date"
           mt={2}
-          value={value ? value : ""}
-          inputFormat="YYYY-MM-DD"
+          value={value || ""}
+          inputformat="YYYY-MM-DD"
           label="Дата"
           type="date"
           sx={{ width: 150, marginLeft: "auto" }}
@@ -232,12 +233,12 @@ const Personal = () => {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
+                justifycontent: "center",
+                alignitems: "center",
                 width: "100%",
               }}
             >
-              <CircularProgress justifyContent="center" alignItems="center" />
+              <CircularProgress justifycontent="center" alignitems="center" />
             </Box>
           ) : (
             <TableBody>
@@ -263,14 +264,16 @@ const Personal = () => {
                       {row.statred}
                     </Typography>
                     <> </>
-                    <Typography className={classes.status} style={{
-                                backgroundColor:
-                                  ((row.office===true && '#56C114') ||
-                                  (row.office===false && '#E55151'))
-                                }}
-                            >
-                              {row.office ? 'Офис' : 'УД'}
-                            </Typography>
+                    <Typography
+                      className={classes.status}
+                      style={{
+                        backgroundColor:
+                          (row.office === true && "#56C114") ||
+                          (row.office === false && "#E55151"),
+                      }}
+                    >
+                      {row.office ? "Офис" : "УД"}
+                    </Typography>
                   </TableCell>
                   <TableCell>{row.late}</TableCell>
                   <TableCell>{row.work}</TableCell>
@@ -279,7 +282,6 @@ const Personal = () => {
             </TableBody>
           )}
         </Table>
-        
       </TableContainer>
       {/* <Button onClick={handleClick}>Export</Button> */}
     </Box>

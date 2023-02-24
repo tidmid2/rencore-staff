@@ -24,7 +24,7 @@ import Logout from "@mui/icons-material/Logout";
 import { logOut } from "../../features/auth/authSlice";
 import { useLogoutMutation } from "../../services/api";
 import { showSnackbar } from "../../features/ui/uiSlice";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth  } from "../../hooks/useAuth";
 
 import logo from "../../images/favicon.ico";
 
@@ -51,6 +51,7 @@ export default function Nav({ showAlert }) {
     try {
       await logoutOfApi().unwrap();
       dispatch(logOut());
+      document.location.reload();
       dispatch(
         showSnackbar({
           message: "Вы успешно вышли с аккаунта",

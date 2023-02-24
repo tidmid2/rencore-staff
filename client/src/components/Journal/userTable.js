@@ -144,7 +144,7 @@ export default function UserTable() {
           id="date"
           mt={2}
           value={value2}
-          inputFormat="YYYY-MM-DD"
+          inputformat="YYYY-MM-DD"
           label="Дата"
           type="date"
           sx={{ width: 150, marginLeft: "auto" }}
@@ -160,7 +160,7 @@ export default function UserTable() {
           id="date"
           mt={2}
           value={value}
-          inputFormat="YYYY-MM-DD"
+          inputformat="YYYY-MM-DD"
           label="Дата"
           type="date"
           sx={{ width: 150, marginLeft: "auto" }}
@@ -219,7 +219,7 @@ export default function UserTable() {
 
                   <TableCell>
                   {row.zdays>0 ? <Tooltip title="Пришел" sx={{ marginLeft: "auto" }}>
-                      <Typography
+                      <><Typography
                         className={classes.workdays}
                         style={{
                           backgroundColor:
@@ -228,7 +228,7 @@ export default function UserTable() {
                         }}
                       >
                         {row.zdays}
-                      </Typography>
+                      </Typography></>
                     </Tooltip> : <></>
                   }
 

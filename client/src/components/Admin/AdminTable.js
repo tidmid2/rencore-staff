@@ -396,10 +396,13 @@ function Row(props) {
 
 Row.propTypes = {
   row: PropTypes.shape({
-    user_id: PropTypes.string.isRequired,
+    uid: PropTypes.number.isRequired,
     dt: PropTypes.string,
     time: PropTypes.string.isRequired,
+    tmstart: PropTypes.string.isRequired,
+    tmend: PropTypes.string,
     comment: PropTypes.string,
+    office: PropTypes.bool.isRequired,
     time2: PropTypes.string,
     comment2: PropTypes.string,
   }).isRequired,
@@ -473,7 +476,7 @@ export default function AdminTable() {
           id="date"
           mt={2}
           value={value}
-          inputFormat="YYYY-MM-DD"
+          inputformat="YYYY-MM-DD"
           label="Дата"
           type="date"
           sx={{ width: 150, marginLeft: "auto" }}

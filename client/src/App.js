@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -21,15 +21,15 @@ import Journal from "./components/Journal/Journal";
 import MsgSnackBar from "./util/SnackBar";
 
 import { useAuth } from "./hooks/useAuth";
-import { useAuthMutation } from "./services/api";
-import { showSnackbar } from "./features/ui/uiSlice";
-import { setCredentials } from "./features/auth/authSlice";
+// import { useAuthMutation } from "./services/api";
+// import { showSnackbar } from "./features/ui/uiSlice";
+// import { setCredentials } from "./features/auth/authSlice";
 
 const theme = createTheme();
 
 function RequireAuth({ children, redirectTo }) {
   const { user } = useAuth();
-  return user ? children : <Navigate to={redirectTo} />;
+  return user != null ? children : <Navigate to={redirectTo} />;
 }
 
 function RequireAdmin({ children, redirectTo }) {
@@ -37,37 +37,36 @@ function RequireAdmin({ children, redirectTo }) {
   return user.isadmin === 1 ? children : <Navigate to={redirectTo} />;
 }
 
-function hasJWT() {
-  let flag = false;
-  localStorage.getItem("x-access-token") ? (flag = true) : (flag = false);
-  return flag;
-}
+// function hasJWT() {
+//   let flag = false;
+//   localStorage.getItem("x-access-token") ? (flag = true) : (flag = false);
+//   return flag;
+// }
 
 function App() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const [authed, setAuthed] = useState(false);
+  // const [authed, setAuthed] = useState(false);
 
-  const [document] = useAuthMutation();
+  // const [document] = useAuthMutation();
 
-  
-  async function checkauth() {
-    try {
+  // async function checkauth() {
+  //   try {
 
-      const user = await document().unwrap();
-      dispatch(setCredentials({ user }));
-    } catch (err) {
-      console.log(err);
-      const errMsg =
-        err?.data?.error?.data || "Произошло ошибка при авторизации.";
-      dispatch(
-        showSnackbar({
-          message: errMsg,
-          severity: "error",
-        })
-      );
-    }
-  }
+  //     const user = await document().unwrap();
+  //     dispatch(setCredentials({ user }));
+  //   } catch (err) {
+  //     console.log(err);
+  //     const errMsg =
+  //       err?.data?.error?.data || "Произошло ошибка при авторизации.";
+  //     dispatch(
+  //       showSnackbar({
+  //         message: errMsg,
+  //         severity: "error",
+  //       })
+  //     );
+  //   }
+  // }
 
   // useEffect(() => {
   //   hasJWT();
@@ -80,12 +79,11 @@ function App() {
   //   }
   // }, []);
 
-
-  useEffect(() => {
-    hasJWT();
-    checkauth();
-    return;
-  }, []);
+  // useEffect(() => {
+  //   hasJWT();
+  //   checkauth();
+  //   return;
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -111,7 +109,7 @@ function App() {
               <Route
                 path="/account"
                 element={
-                  <RequireAuth redirectTo="/">
+                  <RequireAuth redirectTo="/signin">
                     <Account />
                   </RequireAuth>
                 }
@@ -119,7 +117,7 @@ function App() {
               <Route
                 path="/document"
                 element={
-                  <RequireAuth redirectTo="/">
+                  <RequireAuth redirectTo="/signin">
                     <Document />
                   </RequireAuth>
                 }
@@ -127,7 +125,7 @@ function App() {
               <Route
                 path="/admin"
                 element={
-                  <RequireAuth redirectTo="/">
+                  <RequireAuth redirectTo="/signin">
                     <RequireAdmin redirectTo="/">
                       <Admin />
                     </RequireAdmin>
@@ -137,7 +135,7 @@ function App() {
               <Route
                 path="/journal"
                 element={
-                  <RequireAuth redirectTo="/">
+                  <RequireAuth redirectTo="/signin">
                     <RequireAdmin redirectTo="/">
                       <Journal />
                     </RequireAdmin>
@@ -147,7 +145,7 @@ function App() {
               <Route
                 path="/journal/:user/:dt1/:dt2"
                 element={
-                  <RequireAuth redirectTo="/">
+                  <RequireAuth redirectTo="/signin">
                     <RequireAdmin redirectTo="/">
                       <Personal />
                     </RequireAdmin>
@@ -157,7 +155,7 @@ function App() {
               <Route
                 path="/users"
                 element={
-                  <RequireAuth redirectTo="/">
+                  <RequireAuth redirectTo="/signin">
                     <RequireAdmin redirectTo="/">
                       <Users />
                     </RequireAdmin>
