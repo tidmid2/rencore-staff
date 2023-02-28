@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import axios from "axios";
 
 import {
   AppBar,
@@ -24,7 +25,7 @@ import Logout from "@mui/icons-material/Logout";
 import { logOut } from "../../features/auth/authSlice";
 import { useLogoutMutation } from "../../services/api";
 import { showSnackbar } from "../../features/ui/uiSlice";
-import { useAuth  } from "../../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 import logo from "../../images/favicon.ico";
 
@@ -42,6 +43,7 @@ export default function Nav({ showAlert }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
   const [anchorEl3, setAnchorEl3] = useState(null);
+  const [getIP, setGetIP] = useState();
 
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorEl2);
@@ -70,14 +72,29 @@ export default function Nav({ showAlert }) {
     }
   }
 
+  const fetchData = async () => {
+    try {
+      const res = await axios.get("https://httpbin.org/ip");
+      if (res.status === 200) {
+        let data = res.data;
+        setGetIP(data.origin);
+      } else {
+        console.log("Ошибка получения данных");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    if (window.location.host !== "staff.bestprofi.local") {
+    fetchData();
+    if (getIP !== "82.200.148.114") {
       setUrlcode("Удаленно");
     } else {
       setUrlcode("Офис");
     }
     return;
-  }, [urlcode]);
+  }, [getIP]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

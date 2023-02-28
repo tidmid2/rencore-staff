@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import { Button, Box, Container, TextField, Modal } from "@mui/material";
 
@@ -24,28 +25,46 @@ export default function AddDocument({ showAlert }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [open, setOpen] = React.useState(false);
-  const [clicked, setClicked] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const [getIP, setGetIP] = useState();
   const [document] = useDocumentMutation();
   const { user } = useAuth();
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const fetchData = async () => {
+    try {
+      const res = await axios.get("https://httpbin.org/ip");
+      if (res.status === 200) {
+        let data = res.data;
+        setGetIP(data.origin);
+      } else {
+        console.log("Ошибка получения данных");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    return;
+  }, [getIP]);
+
   const handleSubmit = async (e) => {
     setClicked(true);
     if (clicked) {
       return navigate("/document");
     } else {
-      var urlcode;
-      if (window.location.host !== "staff.bestprofi.local"){urlcode=false;} else{urlcode=true;}
       e.preventDefault();
       const data = new FormData(e.currentTarget);
       try {
         const id = await document({
           user_id: user.id,
           comment: data.get("comment"),
-          office: urlcode,
+          ip: getIP,
         }).unwrap();
         dispatch(
           showSnackbar({

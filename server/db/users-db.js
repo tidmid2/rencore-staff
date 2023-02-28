@@ -164,10 +164,10 @@ const fetchDocumentInsideByUserDb = async (user_id, id_smeny) => {
   }
 };
 
-const createDocumentByUserDb = async ({ user_id, comment, office }) => {
-  const text = `INSERT INTO documents(user_id, comment,office)
+const createDocumentByUserDb = async ({ user_id, comment, ip }) => {
+  const text = `INSERT INTO documents(user_id, comment,ip)
                   VALUES($1, $2, $3) RETURNING *`;
-  const values = [user_id, comment,office];
+  const values = [user_id, comment,ip];
   try {
     const res = await db.query(text, values);
     return res.rows[0];

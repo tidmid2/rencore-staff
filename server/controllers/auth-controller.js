@@ -103,12 +103,12 @@ const logoutUser = (req, res, next) => {
 //User actions
 //Создание отметки в documents
 const createDocumentByUserController = async (req, res, next) => {
-    const { user_id,comment, office } = req.body;
+    const { user_id,comment, ip } = req.body;
     try {
         const document = {
             user_id, 
             comment,
-            office
+            ip
         }
         const newDocument = await createDocumentByUser(document);
         return res.status(201).json(newDocument);
@@ -449,6 +449,68 @@ const changeTimeEndAdminController = async (req, res, next) => {
 }
 //End
 
+// const http = require('http');
+// const https = require('https');
+
+// const getiP = http.createServer((req, res, next) => {
+//     // Отправляем запрос на httpbin.org, чтобы получить информацию о внешнем IP-адресе сервера.
+//     const request = https.get('https://httpbin.org/ip', (response) => {
+//       let data = '';
+//       response.on('data', (chunk) => {
+//         data += chunk;
+//       });
+//       response.on('end', () => {
+//         const externalIp = JSON.parse(data).origin;
+  
+//         console.log(`External IP: ${externalIp}`);
+  
+//         res.statusCode = 200;
+//         res.setHeader('Content-Type', 'application/json');
+//         res.end(JSON.stringify({ ip: externalIp }));
+//       });
+//     });
+  
+//     request.on('error', (error) => {
+//       console.error(`Error: ${error.message}`);
+//       const request2 = https.get('https://api.ipify.org?format=json', (response2) => {
+//         let data2 = '';
+//         response2.on('data', (chunk) => {
+//           data2 += chunk;
+//         });
+//         response2.on('end', () => {
+//           try {
+//             const externalIp2 = JSON.parse(data2).ip;
+  
+//             console.log(`External IP: ${externalIp2}`);
+  
+//             res.statusCode = 200;
+//             res.setHeader('Content-Type', 'application/json');
+//             res.end(JSON.stringify({ ip: externalIp2 }));
+//           } catch (e) {
+//             console.error(`Error2: ${e.message}`);
+//             res.writeHead(500, { 'Content-Type': 'text/plain' });
+//             res.write('Internal Server Error');
+//             res.end();
+//           }
+//         });
+//         response2.on('error', (error2) => {
+//           console.error(`Error2: ${error2.message}`);
+//           res.writeHead(500, { 'Content-Type': 'text/plain' });
+//           res.write('Internal Server Error');
+//           res.end();
+//         });
+//       });
+  
+//       request2.on('error', (error2) => {
+//         console.error(`Error2: ${error2.message}`);
+//         res.writeHead(500, { 'Content-Type': 'text/plain' });
+//         res.write('Internal Server Error');
+//         res.end();
+//       });
+//     });
+//   });
+  
+
 module.exports = {
     signUpUser, 
     loginUser, 
@@ -478,4 +540,5 @@ module.exports = {
     changePassAdminController,
     changeTimeStartAdminController,
     changeTimeEndAdminController,
+    // getiP
 }
