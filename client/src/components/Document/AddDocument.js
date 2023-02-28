@@ -58,6 +58,8 @@ export default function AddDocument({ showAlert }) {
     if (clicked) {
       return navigate("/document");
     } else {
+      var urlcode;
+      if (window.location.host !== "staff.bestprofi.local"){urlcode=false;} else{urlcode=true;}
       e.preventDefault();
       const data = new FormData(e.currentTarget);
       try {
@@ -65,6 +67,7 @@ export default function AddDocument({ showAlert }) {
           user_id: user.id,
           comment: data.get("comment"),
           ip: getIP,
+          office: urlcode,
         }).unwrap();
         dispatch(
           showSnackbar({

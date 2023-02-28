@@ -79,7 +79,10 @@ const changePassAdminDB = async (password, id) => {
 
 const changeTimeStartAdminDB = async (id, tmst) => {
   try {
-    const res = await db.query(`update users set tmstart = $1 where id = $2`, [ tmst, id ]);
+    const res = await db.query(`update users set tmstart = $1 where id = $2`, [
+      tmst,
+      id,
+    ]);
     return res.rows[0];
   } catch (e) {
     throw new Error(error.message);
@@ -87,13 +90,16 @@ const changeTimeStartAdminDB = async (id, tmst) => {
 };
 
 const changeTimeEndAdminDB = async (id, tmst) => {
-    try {
-      const res = await db.query(`update users set tmend = $1 where id = $2`,[tmst, id]);
-      return res.rows[0];
-    } catch (e) {
-      throw new Error(error.message);
-    }
-  };
+  try {
+    const res = await db.query(`update users set tmend = $1 where id = $2`, [
+      tmst,
+      id,
+    ]);
+    return res.rows[0];
+  } catch (e) {
+    throw new Error(error.message);
+  }
+};
 
 const blockUserDB = async ({ id, blocked }) => {
   try {
@@ -164,10 +170,10 @@ const fetchDocumentInsideByUserDb = async (user_id, id_smeny) => {
   }
 };
 
-const createDocumentByUserDb = async ({ user_id, comment, ip }) => {
-  const text = `INSERT INTO documents(user_id, comment,ip)
-                  VALUES($1, $2, $3) RETURNING *`;
-  const values = [user_id, comment,ip];
+const createDocumentByUserDb = async ({ user_id, comment, ip, office }) => {
+  const text = `INSERT INTO documents(user_id, comment,ip,office)
+                  VALUES($1, $2, $3, $4) RETURNING *`;
+  const values = [user_id, comment, ip, office];
   try {
     const res = await db.query(text, values);
     return res.rows[0];
@@ -176,9 +182,12 @@ const createDocumentByUserDb = async ({ user_id, comment, ip }) => {
   }
 };
 
-const changeCommentDB = async (uid,comment) => {
+const changeCommentDB = async (uid, comment) => {
   try {
-    const res = await db.query(`update documents set comment = $1 where uid = $2`, [comment,uid]);
+    const res = await db.query(
+      `update documents set comment = $1 where uid = $2`,
+      [comment, uid]
+    );
     return res.rows[0];
   } catch (e) {
     throw new Error(error.message);
@@ -228,9 +237,12 @@ const dailyReport2Db = async (user_id, id_smeny) => {
   }
 };
 
-const changeAdminCommentDB = async (uid,comment) => {
+const changeAdminCommentDB = async (uid, comment) => {
   try {
-    const res = await db.query(`update documents set ad_comment = $1 where uid = $2`, [comment,uid]);
+    const res = await db.query(
+      `update documents set ad_comment = $1 where uid = $2`,
+      [comment, uid]
+    );
     return res.rows[0];
   } catch (e) {
     throw new Error(error.message);
