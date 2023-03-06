@@ -160,14 +160,13 @@ function Row(props) {
     }
   };
 
-  const handleClick2 = () => {
+  const handleClick2 = async () => {
     setOpen(!open);
     if (!open) {
-      isLoading ? (
-        <CircularProgress color="secondary" />
-      ) : (
-        fetchData(row.user, new Date(row.dt).toLocaleDateString())
-      );
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await fetchData(row.user, new Date(row.dt).toLocaleDateString());
+      setIsLoading(false);
     }
   };
 
@@ -274,118 +273,129 @@ function Row(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            {userinfo.length !== 0 ? (
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="h6" gutterBottom component="div">
-                  История отметок
-                </Typography>
+            {!isLoading ? (
+              <>
+                {userinfo.length !== 0 ? (
+                  <Box sx={{ margin: 1 }}>
+                    <Typography variant="h6" gutterBottom component="div">
+                      История отметок
+                    </Typography>
 
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Дата</TableCell>
-                      <TableCell>Время</TableCell>
-                      <TableCell>Комментарии</TableCell>
-                      <TableCell align="right">Статус</TableCell>
-                      <TableCell align="right"></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  {isLoading ? (
-                    <CircularProgress color="secondary" />
-                  ) : (
-                    <TableBody>
-                      {userinfo.map((row2) => (
-                        <TableRow key={row2.uid}>
-                          <TableCell scope="row">
-                            {new Date(row2.dt).toLocaleDateString()}
-                          </TableCell>
-                          <TableCell>
-                            {row2.time}
-                            <> </>
-                            <Typography
-                              className={classes.status}
-                              style={{
-                                backgroundColor:
-                                  (row2.office === true && "#56C114") ||
-                                  (row2.office === false && "#E55151"),
-                              }}
-                            >
-                              {row2.office ? "Офис" : "УД"}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{row2.comment}</TableCell>
-                          <TableCell align="right">
-                            <Typography
-                              className={classes.status}
-                              style={{
-                                backgroundColor:
-                                  (row2.id_op === "Опоздал" && "#E55151") ||
-                                  (row2.id_op === "Ушел" && "#303F9F") ||
-                                  (row2.id_op === "Вернулся" && "#2FB18A") ||
-                                  (row2.id_op === "Пришел" && "#56C114"),
-                              }}
-                            >
-                              {row2.id_op}
-                            </Typography>
-                          </TableCell>
-                          <TableCell align="right">
-                            <CreateIcon
-                              onClick={() => {
-                                setUserId(row2.uid);
-                                handleOpen();
-                              }}
-                            />
-                            <Modal
-                              open={openn}
-                              onClose={handleClose}
-                              aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
-                              <Box sx={style}>
-                                <Box
-                                  component="form"
-                                  onSubmit={handleSubmit}
-                                  sx={{ mt: 3 }}
-                                >
-                                  <Typography
-                                    display="flex"
-                                    justifyContent="center"
-                                    variant="h7"
-                                  ></Typography>
-                                  <TextField
-                                    inputProps={{
-                                      minLength: 0,
-                                      maxLength: 100,
-                                    }}
-                                    fullWidth
-                                    name="ad_comm"
-                                    type="text"
-                                    onChange={(e) => {
-                                      setAcomment(e.target.value);
-                                    }}
-                                    id="ad_comm"
-                                  />
-                                  <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                  >
-                                    Оставить комменатарии
-                                  </Button>
-                                </Box>
-                              </Box>
-                            </Modal>
-                          </TableCell>
+                    <Table size="small" aria-label="purchases">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Дата</TableCell>
+                          <TableCell>Время</TableCell>
+                          <TableCell>Комментарии</TableCell>
+                          <TableCell align="right">Статус</TableCell>
+                          <TableCell align="right"></TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  )}
-                </Table>
-                {/* <Button onClick={handleClick}>Export</Button> */}
-              </Box>
+                      </TableHead>
+                      <TableBody>
+                        {userinfo.map((row2) => (
+                          <TableRow key={row2.uid}>
+                            <TableCell scope="row">
+                              {new Date(row2.dt).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              {row2.time}
+                              <> </>
+                              <Typography
+                                className={classes.status}
+                                style={{
+                                  backgroundColor:
+                                    (row2.office === true && "#56C114") ||
+                                    (row2.office === false && "#E55151"),
+                                }}
+                              >
+                                {row2.office ? "Офис" : "УД"}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{row2.comment}</TableCell>
+                            <TableCell align="right">
+                              <Typography
+                                className={classes.status}
+                                style={{
+                                  backgroundColor:
+                                    (row2.id_op === "Опоздал" && "#E55151") ||
+                                    (row2.id_op === "Ушел" && "#303F9F") ||
+                                    (row2.id_op === "Вернулся" && "#2FB18A") ||
+                                    (row2.id_op === "Пришел" && "#56C114"),
+                                }}
+                              >
+                                {row2.id_op}
+                              </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                              <CreateIcon
+                                onClick={() => {
+                                  setUserId(row2.uid);
+                                  handleOpen();
+                                }}
+                              />
+                              <Modal
+                                open={openn}
+                                onClose={handleClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                              >
+                                <Box sx={style}>
+                                  <Box
+                                    component="form"
+                                    onSubmit={handleSubmit}
+                                    sx={{ mt: 3 }}
+                                  >
+                                    <Typography
+                                      display="flex"
+                                      justifyContent="center"
+                                      variant="h7"
+                                    ></Typography>
+                                    <TextField
+                                      inputProps={{
+                                        minLength: 0,
+                                        maxLength: 100,
+                                      }}
+                                      fullWidth
+                                      name="ad_comm"
+                                      type="text"
+                                      onChange={(e) => {
+                                        setAcomment(e.target.value);
+                                      }}
+                                      id="ad_comm"
+                                    />
+                                    <Button
+                                      type="submit"
+                                      fullWidth
+                                      variant="contained"
+                                      sx={{ mt: 3, mb: 2 }}
+                                    >
+                                      Оставить комменатарии
+                                    </Button>
+                                  </Box>
+                                </Box>
+                              </Modal>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    {/* <Button onClick={handleClick}>Export</Button> */}
+                  </Box>
+                ) : (
+                  <Clear />
+                )}
+              </>
             ) : (
-              <Clear />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 2,
+                }}
+              >
+                <CircularProgress />
+              </Box>
             )}
           </Collapse>
         </TableCell>
@@ -419,14 +429,7 @@ Row.propTypes = {
 
 export default function AdminTable() {
   const [users, setUsers] = useState([]);
-
-  // const handleClick = () => {
-  //   var wb = XLSX.utils.book_new(),
-  //   ws = XLSX.utils.json_to_sheet(users);
-  //   XLSX.utils.sheet_add_aoa(ws,[["User", "UID", "Сотрудник", "Дата", "Время прихода", "Комментарии", "Время ухода", "Комментарии"]], { origin: "A1" });
-  //   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
-  //   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
-  // };
+  const [isLoading, setIsLoading] = useState(false);
 
   let date = new Date();
   let DT =
@@ -437,33 +440,27 @@ export default function AdminTable() {
     addZero(date.getDate());
   const [value, setValue] = useState(DT);
 
-  //old fetchdata
-  // useEffect(() => {
-
-  //   fetch('/api/admin/'+value)
-  //     .then((response) => response.json())
-  //     .then((json) => setUsers(json))
-  //     .catch((error) => error)
-
-  //     return;
-  // }, [value]);
-  //new fetch data
   useEffect(() => {
     const fetchdata = async () => {
-      try {
-        const res = await fetch("/api/admin/" + value);
-        if (res.status === 200) {
-          let data = await res.json();
-          setUsers(data);
-        } else {
-          console.log("Ошибка получения данных");
+      setIsLoading(true);
+      setTimeout(async () => {
+        try {
+          const res = await fetch("/api/admin/" + value);
+          if (res.status === 200) {
+            let data = await res.json();
+            setUsers(data);
+          } else {
+            console.log("Ошибка получения данных");
+          }
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.log(error);
-      }
+      }, 1500);
     };
 
-    return fetchdata();
+    fetchdata();
   }, [value]);
 
   return (
@@ -488,28 +485,38 @@ export default function AdminTable() {
           }}
         />
       </Stack>
-      <TableContainer component={Paper}>
-        <Table aria-label="collapsible table">
-          <TableHead>
-            <TableRow>
-              <TableCell />
-              <TableCell>Сотрудник</TableCell>
-              <TableCell>Дата</TableCell>
-              <TableCell>Время прихода</TableCell>
-              <TableCell>Комментарии</TableCell>
-              <TableCell>Время ухода</TableCell>
-              <TableCell>Комментарии</TableCell>
-              <TableCell align="right"></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((row) => (
-              <Row key={row.uid} row={row} />
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      {/* <Button onClick={handleClick}>Export</Button> */}
+      {isLoading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="300px"
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table aria-label="collapsible table">
+            <TableHead>
+              <TableRow>
+                <TableCell />
+                <TableCell>Сотрудник</TableCell>
+                <TableCell>Дата</TableCell>
+                <TableCell>Время прихода</TableCell>
+                <TableCell>Комментарии</TableCell>
+                <TableCell>Время ухода</TableCell>
+                <TableCell>Комментарии</TableCell>
+                <TableCell align="right"></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((row) => (
+                <Row key={row.uid} row={row} />
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 }
