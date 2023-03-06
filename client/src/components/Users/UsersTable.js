@@ -18,6 +18,7 @@ import {
   TextField,
   Button,
   Grid,
+  CircularProgress,
 } from "@mui/material";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -579,11 +580,13 @@ Row.propTypes = {
 
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  //new fetchdata
   useEffect(() => {
     const fetchdata = async () => {
       try {
+        // Добавляем задержку 1.5 секунды
+        await new Promise(resolve => setTimeout(resolve, 1500));
         const res = await fetch("/api/admin/users");
         if (res.status === 200) {
           let data = await res.json();
@@ -593,20 +596,12 @@ export default function UsersTable() {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
-    return fetchdata();
+    fetchdata();
   }, []);
-
-  //old fetch
-  // useEffect(() => {
-  //   fetch('/api/admin/users')
-  //     .then((response) => response.json())
-  //     .then((json) => setUsers(json))
-  //     .catch((error) => error)
-
-  //   return;
-  // }, []);
 
   return (
     <Box>
@@ -627,11 +622,22 @@ export default function UsersTable() {
             </TableRow>
           </TableHead>
 
-          <TableBody>
-            {users.map((row) => (
-              <Row key={row.id} row={row} />
-            ))}
-          </TableBody>
+          {loading ? (
+            // Добавляем анимацию загрузки
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={7} align="center">
+                  <CircularProgress />
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {users.map((row) => (
+                <Row key={row.id} row={row} />
+              ))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
     </Box>

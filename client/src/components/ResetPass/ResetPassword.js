@@ -111,7 +111,6 @@ export default function ResetPass({ showAlert }) {
         </Box>
       </Container>
     ) : (
-      // <Loading></Loading>
       <CircularProgress/>
     );
   } else {
