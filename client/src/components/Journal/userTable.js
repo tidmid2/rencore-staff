@@ -20,7 +20,7 @@ import {
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 
 const useStyles = makeStyles((theme) => ({
   status: {
@@ -74,28 +74,32 @@ export default function UserTable() {
 
   const [value, setValue] = useState(DT);
   const [value2, setValue2] = useState(dt);
-  
+
   const fetchData = async (value, value2) => {
     setIsLoading(true);
-    try {
-      const response = await fetch(
-        "/api/admin/dt1/" + value2 + "/dt2/" + value
-      );
-      if (!response.ok) {
-        throw new Error(`Error! status: ${response.status}`);
+    setTimeout(async () => {
+      try {
+        const response = await fetch(
+          "/api/admin/dt1/" + value2 + "/dt2/" + value
+        );
+        if (!response.ok) {
+          throw new Error(`Error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        setUsers(result);
+      } catch (err) {
+        return err;
+      } finally {
+        setIsLoading(false);
       }
-      const result = await response.json();
-      setUsers(result);
-    } catch (err) {
-      return err;
-    } finally {
-      setIsLoading(false);
-    }
+    }, 1500);
   };
 
   const fetchDataXls = async (value, value2) => {
     try {
-      const response = await fetch("/api/admin/xls/dt1/" + value2 + "/dt2/" + value);
+      const response = await fetch(
+        "/api/admin/xls/dt1/" + value2 + "/dt2/" + value
+      );
       if (!response.ok) {
         throw new Error(`Error! status: ${response.status}`);
       }
@@ -104,7 +108,7 @@ export default function UserTable() {
       xlsDownload(result);
     } catch (err) {
       return err;
-    } 
+    }
     // finally {
     //   return xlsDownload(uxls);
     // }
@@ -112,11 +116,11 @@ export default function UserTable() {
 
   const xlsDownload = (result) => {
     var wb = XLSX.utils.book_new(),
-    ws = XLSX.utils.json_to_sheet(result);
-    XLSX.utils.book_append_sheet(wb,ws,"Сводный отчет по сотрудникам");
-    XLSX.writeFile(wb,"Сводный отчет по сотрудникам.xlsx");
+      ws = XLSX.utils.json_to_sheet(result);
+    XLSX.utils.book_append_sheet(wb, ws, "Сводный отчет по сотрудникам");
+    XLSX.writeFile(wb, "Сводный отчет по сотрудникам.xlsx");
     return;
-  }
+  };
 
   const handleClick = () => {
     fetchDataXls(value, value2);
@@ -193,15 +197,11 @@ export default function UserTable() {
             </TableRow>
           </TableHead>
           {isLoading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <CircularProgress />
-            </Box>
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
           ) : (
             <TableBody>
               {users.map((row) => (
@@ -218,34 +218,41 @@ export default function UserTable() {
                   </TableCell>
 
                   <TableCell>
-                  {row.zdays>0 ? <Tooltip title="Пришел" sx={{ marginLeft: "auto" }}>
-                      <><Typography
-                        className={classes.workdays}
-                        style={{
-                          backgroundColor:
-                            (row.zdays > 0 && "#56C114") ||
-                            (row.zdays <= 0 && "white"),
-                        }}
-                      >
-                        {row.zdays}
-                      </Typography></>
-                    </Tooltip> : <></>
-                  }
+                    {row.zdays > 0 ? (
+                      <Tooltip title="Пришел" sx={{ marginLeft: "auto" }}>
+                        <>
+                          <Typography
+                            className={classes.workdays}
+                            style={{
+                              backgroundColor:
+                                (row.zdays > 0 && "#56C114") ||
+                                (row.zdays <= 0 && "white"),
+                            }}
+                          >
+                            {row.zdays}
+                          </Typography>
+                        </>
+                      </Tooltip>
+                    ) : (
+                      <></>
+                    )}
 
-                  {row.ydays>0  ? <Tooltip title="Опоздал дней" sx={{ marginLeft: "auto" }}>
-                      <Typography
-                        
-                        className={classes.workdays}
-                        style={{
-                          backgroundColor:
-                            (row.ydays > 0 && "#E55151") ||
-                            (row.ydays <= 0 && "white"),
-                        }}
-                      >
-                        {row.ydays} 
-                      </Typography>
-                    </Tooltip> : <></>
-                  }
+                    {row.ydays > 0 ? (
+                      <Tooltip title="Опоздал дней" sx={{ marginLeft: "auto" }}>
+                        <Typography
+                          className={classes.workdays}
+                          style={{
+                            backgroundColor:
+                              (row.ydays > 0 && "#E55151") ||
+                              (row.ydays <= 0 && "white"),
+                          }}
+                        >
+                          {row.ydays}
+                        </Typography>
+                      </Tooltip>
+                    ) : (
+                      <></>
+                    )}
                   </TableCell>
 
                   <TableCell>{row.late}</TableCell>

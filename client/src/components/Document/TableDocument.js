@@ -434,7 +434,7 @@ export default function CollapsibleTable() {
       }
     };
 
-    fetchdata();
+    return fetchdata();
   }, [user]);
 
   // old fetchdata

@@ -61,20 +61,22 @@ const Personal = () => {
 
   const fetchData = async (iduser, value, value2) => {
     setIsLoading(true);
-    try {
-      const response = await fetch(
-        "/api/admin/user/" + iduser + "/dt1/" + value2 + "/dt2/" + value
-      );
-      if (!response.ok) {
-        throw new Error(`Error! status: ${response.status}`);
+    setTimeout(async () => {
+      try {
+        const response = await fetch(
+          "/api/admin/user/" + iduser + "/dt1/" + value2 + "/dt2/" + value
+        );
+        if (!response.ok) {
+          throw new Error(`Error! status: ${response.status}`);
+        }
+        const result = await response.json();
+        setUsers(result);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
       }
-      const result = await response.json();
-      setUsers(result);
-    } catch (err) {
-      return err;
-    } finally {
-      setIsLoading(false);
-    }
+    }, 1500);
   };
 
   useEffect(() => {
@@ -230,16 +232,11 @@ const Personal = () => {
             </TableRow>
           </TableHead>
           {isLoading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifycontent: "center",
-                alignitems: "center",
-                width: "100%",
-              }}
-            >
-              <CircularProgress justifycontent="center" alignitems="center" />
-            </Box>
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
           ) : (
             <TableBody>
               {users.map((row) => (
