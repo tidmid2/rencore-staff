@@ -29,7 +29,6 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { useAuth } from "../../hooks/useAuth";
 import Clear from "../MiniComponents/Clear";
-import Load from "../MiniComponents/Loading";
 import { useUpdateCommentMutation } from "../../services/api";
 
 import { showSnackbar } from "../../features/ui/uiSlice";
@@ -82,8 +81,8 @@ function Row(props) {
   const handleClose = () => setOpenn(false);
 
   const fetchData = async (id_smeny) => {
-    setIsLoading(true);
     try {
+      // setIsLoading(true);
       const response = await fetch(
         "/api/document/id/" + user.id + "/id_smeny/" + id_smeny
       );
@@ -94,15 +93,19 @@ function Row(props) {
       setUserinfo(result);
     } catch (err) {
       return err;
-    } finally {
-      setIsLoading(false);
     }
+    // finally {
+    //   setIsLoading(false);
+    // }
   };
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setOpen(!open);
     if (!open) {
-      isLoading ? <Load /> : fetchData(row.id_smeny);
+      setIsLoading(true);
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await fetchData(row.id_smeny);
+      setIsLoading(false);
     }
   };
 
@@ -234,141 +237,154 @@ function Row(props) {
           </Modal>
         </TableCell>
       </TableRow>
-
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout="auto" unmountOnExit>
-            {userinfo.length !== 0 ? (
-              <Box sx={{ margin: 1 }}>
-                <Typography variant="h6" gutterBottom component="div">
-                  История отметок
-                </Typography>
-
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Время</TableCell>
-                      <TableCell>Комментарии</TableCell>
-                      <TableCell align="right">Статус</TableCell>
-                      <TableCell align="right"></TableCell>
-                    </TableRow>
-                  </TableHead>
-                  {!isLoading ? (
-                    <TableBody>
-                      {userinfo.map((row2) => (
-                        <TableRow key={row2.uid}>
-                          <TableCell scope="row">
-                            {row2.time}
-                            <> </>
-                            <Typography
-                              className={classes.status}
-                              style={{
-                                backgroundColor:
-                                  (row2.office === true && "#56C114") ||
-                                  (row2.office === false && "#E55151"),
-                              }}
-                            >
-                              {row2.office ? "Офис" : "УД"}
-                            </Typography>
-                          </TableCell>
-                          <TableCell>{row2.comment}</TableCell>
-                          <TableCell align="right">
-                            <Typography
-                              className={classes.status}
-                              style={{
-                                backgroundColor:
-                                  (row2.id_op === "Опоздал" && "#E55151") ||
-                                  (row2.id_op === "Ушел" && "#303F9F") ||
-                                  (row2.id_op === "Вернулся" && "#2FB18A") ||
-                                  (row2.id_op === "Пришел" && "#56C114"),
-                              }}
-                            >
-                              {row2.id_op}
-                            </Typography>
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <CreateIcon
-                              onClick={() => {
-                                setUserId(row2.uid);
-                                setUcomment(row2.comment);
-                                setAcomment(row2.ad_comment);
-                                handleOpen();
-                              }}
-                            />
-                            <Modal
-                              open={openn}
-                              onClose={handleClose}
-                              aria-labelledby="modal-modal-title"
-                              aria-describedby="modal-modal-description"
-                            >
-                              <Box sx={style}>
-                                <Box
-                                  component="form"
-                                  onSubmit={handleSubmit}
-                                  sx={{ mt: 3 }}
-                                >
-                                  <Typography
-                                    display="flex"
-                                    justifyContent="center"
-                                    variant="h7"
-                                  >
-                                    Ваш комментарии
-                                  </Typography>
-                                  <TextField
-                                    inputProps={{ minLength: 0, maxLength: 100 }}
-                                    fullWidth
-                                    name="comm"
-                                    type="text"
-                                    defaultValue={ucomment}
-                                    id="comm"
-                                    onChange={(e) => {
-                                      setUcomment(e.target.value);
-                                    }}
-                                  />
-
-                                  <Typography
-                                    display="flex"
-                                    justifyContent="center"
-                                    variant="h7"
-                                  >
-                                    Комментарии Администратора
-                                  </Typography>
-                                  <TextField
-                                    inputProps={{
-                                      minLength: 0,
-                                      maxLength: 100,
-                                    }}
-                                    fullWidth
-                                    name="ad_comm"
-                                    type="text"
-                                    value={acomment}
-                                    disabled
-                                    id="ad_comm"
-                                    autoFocus
-                                  />
-                                  <Button
-                                    type="submit"
-                                    fullWidth
-                                    variant="contained"
-                                    sx={{ mt: 3, mb: 2 }}
-                                  >
-                                    Сменить комменатарии
-                                  </Button>
-                                </Box>
-                              </Box>
-                            </Modal>
-                          </TableCell>
+            {!isLoading ? (
+              <>
+                {userinfo.length !== 0 ? (
+                  <Box sx={{ margin: 1 }}>
+                    <Typography variant="h6" gutterBottom component="div">
+                      История отметок
+                    </Typography>
+                    <Table size="small" aria-label="purchases">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Время</TableCell>
+                          <TableCell>Комментарии</TableCell>
+                          <TableCell align="right">Статус</TableCell>
+                          <TableCell align="right"></TableCell>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  ) : (
-                    <Load />
-                  )}
-                </Table>
-              </Box>
+                      </TableHead>
+
+                      <TableBody>
+                        {userinfo.map((row2) => (
+                          <TableRow key={row2.uid}>
+                            <TableCell scope="row">
+                              {row2.time}
+                              <> </>
+                              <Typography
+                                className={classes.status}
+                                style={{
+                                  backgroundColor:
+                                    (row2.office === true && "#56C114") ||
+                                    (row2.office === false && "#E55151"),
+                                }}
+                              >
+                                {row2.office ? "Офис" : "УД"}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{row2.comment}</TableCell>
+                            <TableCell align="right">
+                              <Typography
+                                className={classes.status}
+                                style={{
+                                  backgroundColor:
+                                    (row2.id_op === "Опоздал" && "#E55151") ||
+                                    (row2.id_op === "Ушел" && "#303F9F") ||
+                                    (row2.id_op === "Вернулся" && "#2FB18A") ||
+                                    (row2.id_op === "Пришел" && "#56C114"),
+                                }}
+                              >
+                                {row2.id_op}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell align="right">
+                              <CreateIcon
+                                onClick={() => {
+                                  setUserId(row2.uid);
+                                  setUcomment(row2.comment);
+                                  setAcomment(row2.ad_comment);
+                                  handleOpen();
+                                }}
+                              />
+                              <Modal
+                                open={openn}
+                                onClose={handleClose}
+                                aria-labelledby="modal-modal-title"
+                                aria-describedby="modal-modal-description"
+                              >
+                                <Box sx={style}>
+                                  <Box
+                                    component="form"
+                                    onSubmit={handleSubmit}
+                                    sx={{ mt: 3 }}
+                                  >
+                                    <Typography
+                                      display="flex"
+                                      justifyContent="center"
+                                      variant="h7"
+                                    >
+                                      Ваш комментарии
+                                    </Typography>
+                                    <TextField
+                                      inputProps={{
+                                        minLength: 0,
+                                        maxLength: 100,
+                                      }}
+                                      fullWidth
+                                      name="comm"
+                                      type="text"
+                                      defaultValue={ucomment}
+                                      id="comm"
+                                      onChange={(e) => {
+                                        setUcomment(e.target.value);
+                                      }}
+                                    />
+
+                                    <Typography
+                                      display="flex"
+                                      justifyContent="center"
+                                      variant="h7"
+                                    >
+                                      Комментарии Администратора
+                                    </Typography>
+                                    <TextField
+                                      inputProps={{
+                                        minLength: 0,
+                                        maxLength: 100,
+                                      }}
+                                      fullWidth
+                                      name="ad_comm"
+                                      type="text"
+                                      value={acomment}
+                                      disabled
+                                      id="ad_comm"
+                                      autoFocus
+                                    />
+                                    <Button
+                                      type="submit"
+                                      fullWidth
+                                      variant="contained"
+                                      sx={{ mt: 3, mb: 2 }}
+                                    >
+                                      Сменить комменатарии
+                                    </Button>
+                                  </Box>
+                                </Box>
+                              </Modal>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                ) : (
+                  <Clear />
+                )}
+              </>
             ) : (
-              <Clear />
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: 2,
+                }}
+              >
+                <CircularProgress />
+              </Box>
             )}
           </Collapse>
         </TableCell>
@@ -402,20 +418,23 @@ export default function CollapsibleTable() {
   useEffect(() => {
     const fetchdata = async () => {
       try {
-        const res = await fetch("/api/document/id/" + user.id);
-        if (res.status === 200) {
-          let data = await res.json();
-          setUsers(data);
-          setIsLoading(false);
-        } else {
-          console.log("Ошибка получения данных");
-        }
+        setIsLoading(true);
+        setTimeout(async () => {
+          const res = await fetch("/api/document/id/" + user.id);
+          if (res.status === 200) {
+            let data = await res.json();
+            setUsers(data);
+            setIsLoading(false);
+          } else {
+            console.log("Ошибка получения данных");
+          }
+        }, 1000);
       } catch (error) {
         console.log(error);
       }
     };
 
-    return fetchdata();
+    fetchdata();
   }, [user]);
 
   // old fetchdata
@@ -441,15 +460,17 @@ export default function CollapsibleTable() {
             <TableCell align="right"></TableCell>
           </TableRow>
         </TableHead>
-        {isLoading ? (
-          <CircularProgress color="secondary" />
-        ) : (
-          <TableBody>
-            {users.map((row) => (
-              <Row key={row.uid} row={row} />
-            ))}
-          </TableBody>
-        )}
+        <TableBody>
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={6} align="center">
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
+          ) : (
+            users.map((row) => <Row key={row.uid} row={row} />)
+          )}
+        </TableBody>
       </Table>
     </TableContainer>
   );

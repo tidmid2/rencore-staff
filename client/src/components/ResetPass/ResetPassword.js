@@ -11,13 +11,14 @@ import {
   Box,
   Typography,
   Container,
+  CircularProgress,
 } from "@mui/material";
 
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import { showSnackbar } from "../../features/ui/uiSlice";
 import { useUpdatePassMutation } from "../../services/api";
-import Loading from "../MiniComponents/Loading";
+// import Loading from "../MiniComponents/Loading";
 
 export default function ResetPass({ showAlert }) {
   const navigate = useNavigate();
@@ -110,7 +111,8 @@ export default function ResetPass({ showAlert }) {
         </Box>
       </Container>
     ) : (
-      <Loading></Loading>
+      // <Loading></Loading>
+      <CircularProgress/>
     );
   } else {
     return (
