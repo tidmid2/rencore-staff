@@ -55,9 +55,7 @@ export default function UserTable() {
   const classes = useStyles();
 
   const [users, setUsers] = useState([]);
-  // const [uxls, setUxls] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  // const [isLoadingXls, setIsLoadingXls] = useState(true);
   let date = new Date();
   let DT =
     addZero(date.getFullYear()) +
@@ -104,14 +102,10 @@ export default function UserTable() {
         throw new Error(`Error! status: ${response.status}`);
       }
       const result = await response.json();
-      // setUxls(result);
       xlsDownload(result);
     } catch (err) {
       return err;
     }
-    // finally {
-    //   return xlsDownload(uxls);
-    // }
   };
 
   const xlsDownload = (result) => {

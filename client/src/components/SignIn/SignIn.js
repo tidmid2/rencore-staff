@@ -29,8 +29,7 @@ export default function SignIn() {
         severity: 'success'
       }));
       const token  =  user.token;
-      localStorage.setItem("x-access-token", token);
-      // setAuthToken(token);
+      localStorage.setItem("x-access-token", token); 
       navigate('/document');
       
     } catch (err) {

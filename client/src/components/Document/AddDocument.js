@@ -63,6 +63,7 @@ export default function AddDocument({ showAlert }) {
       e.preventDefault();
       const data = new FormData(e.currentTarget);
       try {
+        // eslint-disable-next-line
         const id = await document({
           user_id: user.id,
           comment: data.get("comment"),
@@ -77,7 +78,6 @@ export default function AddDocument({ showAlert }) {
         );
         navigate("/");
         navigate("/document");
-        // return id;
         setClicked(false);
       } catch (err) {
         console.log(err);

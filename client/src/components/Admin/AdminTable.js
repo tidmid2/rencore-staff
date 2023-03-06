@@ -30,7 +30,6 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { makeStyles } from "@material-ui/core/styles";
 import CreateIcon from "@mui/icons-material/Create";
-// import * as XLSX from 'xlsx';
 
 import Clear from "../MiniComponents/Clear";
 
@@ -54,17 +53,6 @@ function addZero(num) {
   }
 }
 
-// function formatDate(date){
-//   let comp='';
-//   for(let i = 0; i < date.length; i++){
-//     if(date[i]!=='T'){
-//       comp+=date[i];
-//     }
-//     else{
-//       return(comp);
-//     }
-//   }
-// };
 const useStyles = makeStyles((theme) => ({
   status: {
     fontWeight: "bold",
@@ -77,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
   },
   dt: {
     fontWeight: "bold",
-    // fontSize: '0.75rem',
     color: "white",
     backgroundColor: "grey",
     alignContent: "center",
@@ -101,7 +88,6 @@ function Row(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [openn, setOpenn] = useState(false);
   const [userId, setUserId] = useState();
-  const [ucomment, setUcomment] = useState();
   const [acomment, setAcomment] = useState();
 
   const handleOpen = () => {
@@ -125,16 +111,10 @@ function Row(props) {
     }
   };
 
-  // const handleClick = () => {
-  //   var wb = XLSX.utils.book_new(),
-  //   ws = XLSX.utils.json_to_sheet(userinfo);
-  //   XLSX.utils.book_append_sheet(wb,ws,"Отчеты по сменам");
-  //   XLSX.writeFile(wb,"Отчеты по сменам.xlsx");
-  // };
-
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      // eslint-disable-next-line
       const idd = await document({
         comment: acomment,
         uid: userId,
@@ -214,7 +194,6 @@ function Row(props) {
             style={{
               backgroundColor:
                 (row.time2 < row.tmend && "#303F9F") ||
-                // (row2.time2===null && '#E55151') ||
                 (row.time2 >= row.tmend && "#56C114"),
             }}
           >
@@ -257,7 +236,6 @@ function Row(props) {
                 />
                 <Button
                   type="submit"
-                  // onClick={handleSubmit}
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}

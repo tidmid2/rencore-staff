@@ -82,7 +82,6 @@ function Row(props) {
 
   const fetchData = async (id_smeny) => {
     try {
-      // setIsLoading(true);
       const response = await fetch(
         "/api/document/id/" + user.id + "/id_smeny/" + id_smeny
       );
@@ -94,9 +93,6 @@ function Row(props) {
     } catch (err) {
       return err;
     }
-    // finally {
-    //   setIsLoading(false);
-    // }
   };
 
   const handleClick = async () => {
@@ -112,6 +108,7 @@ function Row(props) {
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
+      // eslint-disable-next-line
       const idd = await document({
         comment: ucomment,
         uid: userId,
@@ -225,7 +222,6 @@ function Row(props) {
                 />
                 <Button
                   type="submit"
-                  // onClick={handleSubmit}
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}
@@ -414,7 +410,6 @@ export default function CollapsibleTable() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  //new fetchdata
   useEffect(() => {
     const fetchdata = async () => {
       try {
@@ -436,16 +431,6 @@ export default function CollapsibleTable() {
 
     return fetchdata();
   }, [user]);
-
-  // old fetchdata
-  // useEffect(() => {
-  //   fetch('/api/document/id/' + user.id)
-  //     .then((response) => response.json())
-  //     .then((json) => setUsers(json), setIsLoading(false))
-  //     .catch((error) => error)
-
-  //     return ;
-  // }, [user]);
 
   return (
     <TableContainer component={Paper}>

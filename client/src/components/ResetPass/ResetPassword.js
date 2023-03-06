@@ -18,7 +18,6 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 import { showSnackbar } from "../../features/ui/uiSlice";
 import { useUpdatePassMutation } from "../../services/api";
-// import Loading from "../MiniComponents/Loading";
 
 export default function ResetPass({ showAlert }) {
   const navigate = useNavigate();
@@ -27,8 +26,9 @@ export default function ResetPass({ showAlert }) {
   const { id, token } = useParams();
 
   const [reset] = useUpdatePassMutation();
-
+  // eslint-disable-next-line
   const [iduser, setIduser] = useState(id);
+  // eslint-disable-next-line
   const [idtoken, setIdoken] = useState(token);
   const [tokenstatus, setTokenstatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

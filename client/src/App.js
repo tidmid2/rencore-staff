@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, Container, Box } from "@mui/material/";
@@ -21,9 +20,6 @@ import Journal from "./components/Journal/Journal";
 import MsgSnackBar from "./util/SnackBar";
 
 import { useAuth } from "./hooks/useAuth";
-// import { useAuthMutation } from "./services/api";
-// import { showSnackbar } from "./features/ui/uiSlice";
-// import { setCredentials } from "./features/auth/authSlice";
 
 const theme = createTheme();
 
@@ -37,53 +33,8 @@ function RequireAdmin({ children, redirectTo }) {
   return user.isadmin === 1 ? children : <Navigate to={redirectTo} />;
 }
 
-// function hasJWT() {
-//   let flag = false;
-//   localStorage.getItem("x-access-token") ? (flag = true) : (flag = false);
-//   return flag;
-// }
 
 function App() {
-  // const dispatch = useDispatch();
-
-  // const [authed, setAuthed] = useState(false);
-
-  // const [document] = useAuthMutation();
-
-  // async function checkauth() {
-  //   try {
-
-  //     const user = await document().unwrap();
-  //     dispatch(setCredentials({ user }));
-  //   } catch (err) {
-  //     console.log(err);
-  //     const errMsg =
-  //       err?.data?.error?.data || "Произошло ошибка при авторизации.";
-  //     dispatch(
-  //       showSnackbar({
-  //         message: errMsg,
-  //         severity: "error",
-  //       })
-  //     );
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   hasJWT();
-  //   if (!authed && !hasJWT()) {
-  //     return;
-  //   } else {
-  //     setAuthed(true);
-  //     checkauth();
-  //     return;
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   hasJWT();
-  //   checkauth();
-  //   return;
-  // }, []);
 
   return (
     <ThemeProvider theme={theme}>

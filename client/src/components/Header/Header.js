@@ -210,7 +210,6 @@ export default function Nav({ showAlert }) {
               <IconButton
                 onClick={handleClick2}
                 size="small"
-                // sx={{ ml: 2 }}
                 aria-controls={open2 ? "account-menu2" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open2 ? "true" : undefined}
@@ -223,7 +222,6 @@ export default function Nav({ showAlert }) {
                 id="account-menu2"
                 open={open2}
                 onClose={handleClose2}
-                // onClick={handleClose2}
                 PaperProps={{
                   elevation: 0,
                   sx: {
@@ -326,7 +324,6 @@ export default function Nav({ showAlert }) {
                   fontWeight: "bold",
                   fontSize: "0.75rem",
                   color: "white",
-                  // backgroundColor: "grey",
                   backgroundColor:
                     (urlcode !== "Офис" && "#E55151") ||
                     (urlcode === "Офис" && "#56C114"),
@@ -341,7 +338,6 @@ export default function Nav({ showAlert }) {
                 <IconButton
                   onClick={handleClick}
                   size="small"
-                  // sx={{ ml: 2 }}
                   aria-controls={open ? "account-menu" : undefined}
                   aria-haspopup="true"
                   aria-expanded={open ? "true" : undefined}

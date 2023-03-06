@@ -60,7 +60,6 @@ router.post('/auth', verifyToken)
 router.post('/auth/signup', validateSignUpUser, signUpUser)
 router.post('/auth/login', validateLoginUser, loginUser)
 router.post('/auth/logout', logoutUser)
-// router.get('/ip', getIP)
 
 //get all users for admin
 router.get('/admin/users', getUsersController)

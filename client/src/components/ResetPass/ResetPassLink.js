@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-// import {useState } from "react";
 import { useDispatch } from 'react-redux';
 
 import { Avatar, Button, TextField, Link, Grid, Box, Typography, Container } from '@mui/material';
@@ -19,6 +18,7 @@ export default function ResetPassword({showAlert}) {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
         try {
+          // eslint-disable-next-line
           const id = await reset({
             email: data.get('email'),
             link: window.location.host,
