@@ -485,38 +485,36 @@ export default function AdminTable() {
           }}
         />
       </Stack>
-      {isLoading ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="300px"
-        >
-          <CircularProgress />
-        </Box>
-      ) : (
-        <TableContainer component={Paper}>
-          <Table aria-label="collapsible table">
-            <TableHead>
-              <TableRow>
-                <TableCell />
-                <TableCell>Сотрудник</TableCell>
-                <TableCell>Дата</TableCell>
-                <TableCell>Время прихода</TableCell>
-                <TableCell>Комментарии</TableCell>
-                <TableCell>Время ухода</TableCell>
-                <TableCell>Комментарии</TableCell>
-                <TableCell align="right"></TableCell>
-              </TableRow>
-            </TableHead>
+
+      <TableContainer component={Paper}>
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell>Сотрудник</TableCell>
+              <TableCell>Дата</TableCell>
+              <TableCell>Время прихода</TableCell>
+              <TableCell>Комментарии</TableCell>
+              <TableCell>Время ухода</TableCell>
+              <TableCell>Комментарии</TableCell>
+              <TableCell align="right"></TableCell>
+            </TableRow>
+          </TableHead>
+          {isLoading ? (
+            <TableRow>
+              <TableCell colSpan={8} align="center">
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
+          ) : (
             <TableBody>
               {users.map((row) => (
                 <Row key={row.uid} row={row} />
               ))}
             </TableBody>
-          </Table>
-        </TableContainer>
-      )}
+          )}
+        </Table>
+      </TableContainer>
     </Box>
   );
 }
