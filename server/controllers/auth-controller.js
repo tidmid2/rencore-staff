@@ -329,7 +329,7 @@ const forgotPassLinkController = async (req, res, next) => {
       secure: true,
       auth: {
         user: "sysadmin@bp-yurclub.kz",
-        pass: "UA1?e2IxoRts",
+        pass: "Qwe12345!",
       },
     });
     var mailOptions = {
