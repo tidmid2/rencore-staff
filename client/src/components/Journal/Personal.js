@@ -4,24 +4,27 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
-  Stack,
-  Select,
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  TableRow,
-  TableHead,
-  TableContainer,
-  TableCell,
-  TableBody,
-  Table,
   Box,
-  InputLabel,
+  Button,
   CircularProgress,
-  MenuItem,
   FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
 } from "@mui/material";
+
+import * as XLSX from "xlsx";
+
 
 const useStyles = makeStyles((theme) => ({
   status: {
@@ -74,6 +77,31 @@ const Personal = () => {
         setIsLoading(false);
       }
     }, 1500);
+  };
+
+  const fetchDataXls = async (iduser, value, value2) => {
+    try {
+      const response = await fetch("/api/admin/user/xls/user/" + iduser + "/dt1/" + value2 + "/dt2/" + value);
+      if (!response.ok) {
+        throw new Error(`Error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      xlsDownload(result);
+    } catch (err) {
+      return err;
+    }
+  };
+
+  const xlsDownload = (result) => {
+    var wb = XLSX.utils.book_new(),
+      ws = XLSX.utils.json_to_sheet(result);
+    XLSX.utils.book_append_sheet(wb, ws, "Сводный отчет по сотруднику");
+    XLSX.writeFile(wb, "Сводный отчет по сотруднику.xlsx");
+    return;
+  };
+
+  const handleClick = () => {
+    fetchDataXls(iduser, value, value2);
   };
 
   useEffect(() => {
@@ -246,7 +274,7 @@ const Personal = () => {
           )}
         </Table>
       </TableContainer>
-      {/* <Button onClick={handleClick}>Export</Button> */}
+      <Button onClick={handleClick}>Export</Button>
     </Box>
   );
 };

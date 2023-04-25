@@ -293,6 +293,40 @@ const consolidatedReportDb = async (dt1, dt2, user) => {
   }
 };
 
+const consolidatedReportXLSDb = async (dt1, dt2, user) => {
+  try {
+    const res = await db.query(
+      `select ROW_NUMBER () over () as "№", to_char(s.dtstart , 'YYYY-MM-DD') as "Дата", d.time as "Время прихода", concat(u.first_name,' ',u.last_name) as "Сотрудник",
+      (select case when id_op=5 then time
+                  else u.tmend end 
+      from documents 
+      where user_id=d.user_id and dt::Date=s.dtstart::Date
+      ORDER BY uid DESC limit 1) as "Время ухода", 
+      
+      ((select case when id_op=5 then time
+                  else u.tmend end 
+      from documents 
+      where user_id=d.user_id and dt::Date=s.dtstart::Date
+      ORDER BY uid DESC limit 1)-d.time)::Time as "Отработано",
+  
+      (case when d.time>=u.tmend then null
+          when d.time>=u.tmstart then (d.time-u.tmstart)
+          else null end)::Time as "Опоздание",
+    d.comment as "Комментарии",d.ad_comment as "Комментарий Администратора"
+    from documents d
+    inner join tbsmeny s ON s.id = d.id_smeny
+    inner join users u ON u.id = d.user_id
+    where (d.id_op=2 or d.id_op=1) and u.id=$3 and (to_char(s.dtstart , 'YYYY-MM-DD') >= $1 and  to_char(s.dtstart , 'YYYY-MM-DD') <= $2)
+    group by s.dtstart,d.time,"Сотрудник",d.comment,d.user_id,u.tmend,u.tmstart,d.ad_comment
+    order by s.dtstart desc`,
+      [dt1, dt2, user]
+    );
+    return res.rows;
+  } catch (e) {
+    throw new Error(e.message);
+  }
+};
+
 const consolidatedReportInsideDb = async (dt1, dt2) => {
   try {
     const res = await db.query(
@@ -366,6 +400,7 @@ module.exports = {
   consolidatedReportDb,
   consolidatedReportInsideDb,
   consolidatedReportForXlsDb,
+  consolidatedReportXLSDb,
 
   getUsersDb,
   blockUserDB,

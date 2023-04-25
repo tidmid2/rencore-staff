@@ -16,6 +16,7 @@ const {
     consolidatedReportController,
     consolidatedReportInsideController,
     consolidatedReportForXlsController,
+    consolidatedReportXLSController,
 
     forgotPassLinkController,
     forgotPassVerifyController,
@@ -83,6 +84,7 @@ router.post('/document/changes', validateComment, changeCommentController )
 //consolidated reports
 router.get('/admin/dt1/:dt1/dt2/:dt2',  dateForConsolidatedReportController )
 router.get('/admin/user/:user/dt1/:dt1/dt2/:dt2',  consolidatedReportController )
+router.get('/admin/user/xls/user/:user/dt1/:dt1/dt2/:dt2',  consolidatedReportXLSController )
 router.get('/admin/admin/dt1/:dt1/dt2/:dt2',  consolidatedReportInsideController ) 
 router.get('/admin/xls/dt1/:dt1/dt2/:dt2',  consolidatedReportForXlsController )
 

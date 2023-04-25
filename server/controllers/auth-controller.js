@@ -15,6 +15,7 @@ const {
   consolidatedReport,
   consolidatedReportInside,
   consolidatedReportForXls,
+  consolidatedReportXLS,
 
   forgotPassLink,
   forgotPassVerify,
@@ -235,6 +236,21 @@ const consolidatedReportForXlsController = async (req, res, next) => {
   try {
     const { dt1, dt2 } = req.params;
     const newDocument = await consolidatedReportForXls(dt1, dt2);
+    if (!newDocument) {
+      return res.status(422).json({
+        error: { status: 422, data: "Нет данных." },
+      });
+    }
+    return res.json(newDocument);
+  } catch (err) {
+    return next(err);
+  }
+};
+
+const consolidatedReportXLSController = async (req, res, next) => {
+  try {
+    const { dt1, dt2, user } = req.params;
+    const newDocument = await consolidatedReportXLS(dt1, dt2, user);
     if (!newDocument) {
       return res.status(422).json({
         error: { status: 422, data: "Нет данных." },
@@ -483,6 +499,7 @@ module.exports = {
   consolidatedReportController,
   consolidatedReportInsideController,
   consolidatedReportForXlsController,
+  consolidatedReportXLSController,
 
   forgotPassLinkController,
   forgotPassVerifyController,
