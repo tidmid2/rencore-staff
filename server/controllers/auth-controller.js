@@ -324,16 +324,16 @@ const forgotPassLinkController = async (req, res, next) => {
     const linkt = `http://${link}/resetpassword/${newDocument.id}/${token}`;
     console.log(linkt);
     var transporter = nodemailer.createTransport({
-      host: "smtp.yandex.kz",
+      host: "mail.bestprofi.kz",
       port: 465,
       secure: true,
       auth: {
-        user: "vorozheikin.i@bestprofi.com",
-        pass: "d8365382",
+        user: "sysadmin@bp-yurclub.kz",
+        pass: "UA1?e2IxoRts",
       },
     });
     var mailOptions = {
-      from: "vorozheikin.i@bestprofi.com",
+      from: "sysadmin@bp-yurclub.kz",
       to: newDocument.email,
       subject: "Password Reset",
       text: "Password Reset",
